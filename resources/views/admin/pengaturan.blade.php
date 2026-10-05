@@ -39,7 +39,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Email Resmi</label>
-                    <input type="email" name="email" value="{{ old('email', $pengaturan->email) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <input type="text" name="email" value="{{ old('email', $pengaturan->email) }}" placeholder="Contoh: smk13bdg@gmail.com / info@smkn13bdg.sch.id" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
                 </div>
 
                 <div>

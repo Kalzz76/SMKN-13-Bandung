@@ -1,3 +1,6 @@
+@php
+    $sitePengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -16,9 +19,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <a href="{{ url('/') }}" class="flex items-center space-x-3">
-                    <div class="bg-white p-2 rounded-xl text-emerald-900 font-black text-xl shadow">13</div>
+                    @if(!empty($sitePengaturan->logo))
+                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung" class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
+                    @else
+                        <div class="bg-white p-2 rounded-xl text-emerald-900 font-black text-xl shadow">13</div>
+                    @endif
                     <div>
-                        <span class="text-lg font-bold tracking-tight block leading-tight">SMKN 13 BANDUNG</span>
+                        <span class="text-lg font-bold tracking-tight block leading-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
                         <span class="text-xs text-emerald-200 tracking-wider">Official Portal & CMS</span>
                     </div>
                 </a>
@@ -110,33 +117,41 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <div class="flex items-center space-x-3 mb-4">
-                    <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold">13</div>
-                    <span class="text-white font-bold text-lg">SMKN 13 Bandung</span>
+                    @if(!empty($sitePengaturan->logo))
+                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung" class="h-10 w-10 object-contain bg-white rounded-xl p-1">
+                    @else
+                        <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold">13</div>
+                    @endif
+                    <span class="text-white font-bold text-lg">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
                 </div>
-                <p class="text-sm text-slate-400">Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung, Jawa Barat 40286.</p>
+                <p class="text-sm text-slate-400 leading-relaxed">{{ $sitePengaturan->alamat ?? 'Jl. Soekarno-Hatta KM. 10, Kelurahan Jatisari, Kecamatan Buahbatu, Kota Bandung, Jawa Barat, Kode Pos 40286' }}</p>
+                @if(!empty($sitePengaturan->npsn))
+                    <p class="text-xs text-emerald-400 mt-2 font-medium">NPSN: {{ $sitePengaturan->npsn }}</p>
+                @endif
             </div>
             <div>
                 <h4 class="text-white font-bold mb-3">Tautan Cepat</h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('publik.profil') }}" class="hover:text-emerald-400">Profil Sekolah</a></li>
+                    <li><a href="{{ route('publik.profil') }}" class="hover:text-emerald-400">Profil & Sejarah</a></li>
                     <li><a href="{{ route('publik.jurusan') }}" class="hover:text-emerald-400">Jurusan Keahlian</a></li>
-                    <li><a href="{{ route('publik.berita') }}" class="hover:text-emerald-400">Berita Terkini</a></li>
+                    <li><a href="{{ route('publik.berita') }}" class="hover:text-emerald-400">Berita & Informasi</a></li>
                     <li><a href="{{ route('publik.galeri') }}" class="hover:text-emerald-400">Galeri Fasilitas</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-3">Jam Operasional</h4>
-                <p class="text-sm">Senin - Jumat: 07.00 - 16.00 WIB</p>
-                <p class="text-sm mt-1 text-slate-500">Sabtu - Minggu: Libur</p>
+                <p class="text-sm text-slate-300">Senin – Jumat: 07.00 – 16.00 WIB</p>
+                <p class="text-sm mt-1 text-slate-500">Sabtu – Minggu & Libur Nasional: Tutup</p>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-3">Kontak</h4>
-                <p class="text-sm">Email: info@smkn13bandung.sch.id</p>
-                <p class="text-sm mt-1">Telp: (022) 7801234</p>
+                <h4 class="text-white font-bold mb-3">Kontak Resmi</h4>
+                <p class="text-sm text-slate-300">Email: {{ $sitePengaturan->email ?? 'smk13bdg@gmail.com' }}</p>
+                <p class="text-sm mt-1 text-slate-300">Telp/Fax: {{ $sitePengaturan->telepon ?? '(022) 7318960' }}</p>
+                <p class="text-xs mt-2 text-emerald-400">{{ $sitePengaturan->social_media ?? 'Instagram: @smkn13bdg' }}</p>
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-slate-800 text-center text-xs">
-            &copy; 2026 SMK Negeri 13 Bandung. All rights reserved.
+            &copy; {{ date('Y') }} {{ $sitePengaturan->nama_sekolah ?? 'SMK Negeri 13 Bandung' }}. All rights reserved.
         </div>
     </footer>
 

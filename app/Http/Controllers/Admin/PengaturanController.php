@@ -32,7 +32,7 @@ class PengaturanController extends Controller
             'nama_sekolah' => 'required|string|max:255',
             'npsn' => 'nullable|string|max:50',
             'alamat' => 'nullable|string',
-            'email' => 'nullable|email|max:100',
+            'email' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:50',
             'social_media' => 'nullable|string|max:100',
             'jam_operasional' => 'nullable|string|max:100',

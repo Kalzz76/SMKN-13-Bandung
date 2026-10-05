@@ -29,7 +29,7 @@
                         <div class="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center text-4xl mb-4 text-emerald-300">
                             <i class="fa-solid fa-user-tie"></i>
                         </div>
-                        <span class="font-bold text-lg text-center">{{ $pengaturan->nama_kepsek ?? 'Dr. H. Ahmad Supriyadi, M.Pd.' }}</span>
+                        <span class="font-bold text-lg text-center">{{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}</span>
                     </div>
                 @endif
                 <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-emerald-900 text-white text-xs px-4 py-1.5 rounded-full shadow font-bold whitespace-nowrap">
@@ -39,16 +39,16 @@
         </div>
         <div class="md:col-span-2 space-y-4">
             <h2 class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Sambutan Pimpinan</h2>
-            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ $pengaturan->judul_sambutan ?? 'Mewujudkan Pendidikan Vokasi Berkualitas Tinggi' }}</h3>
-            <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
-                "{{ $pengaturan->sambutan ?? 'Selamat datang di portal resmi SMK Negeri 13 Bandung. Kami berkomitmen meningkatkan mutu pelayanan pendidikan, adaptif terhadap perkembangan teknologi industri terkini, serta menanamkan karakter luhur kepada seluruh peserta didik.' }}"
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ $pengaturan->judul_sambutan ?? 'Mewujudkan Pendidikan Vokasi Unggul, Berkarakter, dan Berdaya Saing Global' }}</h3>
+            <p class="text-slate-600 leading-relaxed text-sm sm:text-base whitespace-pre-line">
+                {{ $pengaturan->sambutan ?? 'Assalamu’alaikum Warahmatullahi Wabarakatuh, Selamat datang di portal resmi SMK Negeri 13 Bandung...' }}
             </p>
             <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div>
-                    <h4 class="font-bold text-slate-900">{{ $pengaturan->nama_kepsek ?? 'Dr. H. Ahmad Supriyadi, M.Pd.' }}</h4>
+                    <h4 class="font-bold text-slate-900">{{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}</h4>
                     <p class="text-xs text-slate-500">Kepala SMK Negeri 13 Bandung</p>
                 </div>
-                <div class="text-emerald-800 font-serif italic text-2xl hidden sm:block">Ahmad Supriyadi</div>
+                <div class="text-emerald-800 font-serif italic text-xl hidden sm:block">{{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}</div>
             </div>
         </div>
     </div>

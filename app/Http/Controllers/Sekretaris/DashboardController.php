@@ -19,7 +19,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $tabAktif = $request->get('tab', 'pengganti');
+        $tabAktif = $request->get('tab', 'jadwal');
 
         $hariIniMap = [
             'Monday' => 'Senin',
@@ -34,9 +34,49 @@ class DashboardController extends Controller
         $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
 
         $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $daftarKelas = Kelas::with(['ruangan', 'waliKelas'])->orderBy('nama')->get();
+
+        $user = auth()->user();
+        $siswaUser = Siswa::where('nama', $user->name)->first();
+        $defaultKelas = $siswaUser ? $siswaUser->kelas : ($daftarKelas->where('nama', 'XI RPL 1')->first() ?? $daftarKelas->first());
+        $kelasId = $request->get('kelas_id', $defaultKelas->id ?? null);
+        $kelasAktif = $daftarKelas->firstWhere('id', $kelasId) ?? $defaultKelas;
+
+        $daftarSiswaKelas = $kelasAktif ? Siswa::where('id_kelas', $kelasAktif->id)->orderBy('nama')->get() : collect();
+
+        $jadwalKelasHariIni = $kelasAktif ? Jadwal::with(['mapel', 'guru', 'ruangan'])
+            ->where('id_kelas', $kelasAktif->id)
+            ->where('hari', $namaHariIni)
+            ->orderBy('jam_ke_mulai')
+            ->get() : collect();
+
+        $jadwalKelasMingguan = $kelasAktif ? Jadwal::with(['mapel', 'guru', 'ruangan'])
+            ->where('id_kelas', $kelasAktif->id)
+            ->orderBy('jam_ke_mulai')
+            ->get()
+            ->groupBy('hari') : collect();
+
+        $statusAbsensiSiswa = [];
+        $rekapAbsensiHariIni = [];
+        $detailAbsensiTersimpan = [];
+        foreach ($jadwalKelasHariIni as $j) {
+            $records = AbsensiSiswa::where('id_jadwal', $j->id)
+                ->where('tanggal', $tanggalHariIni)
+                ->get();
+            $statusAbsensiSiswa[$j->id] = $records->isNotEmpty();
+            if ($records->isNotEmpty()) {
+                $rekapAbsensiHariIni[$j->id] = [
+                    'hadir' => $records->where('status', 'Hadir')->count(),
+                    'sakit' => $records->where('status', 'Sakit')->count(),
+                    'izin' => $records->where('status', 'Izin')->count(),
+                    'alpa' => $records->where('status', 'Alpa')->count(),
+                    'total' => $records->count(),
+                ];
+                $detailAbsensiTersimpan[$j->id] = $records->keyBy('id_siswa');
+            }
+        }
 
         $absensiHariIniList = AbsensiGuru::where('tanggal', $tanggalHariIni)->get()->keyBy('id_guru');
-
         $guruBelumAbsen = $daftarGuru->filter(function ($g) use ($absensiHariIniList) {
             return !isset($absensiHariIniList[$g->id]);
         });
@@ -50,7 +90,6 @@ class DashboardController extends Controller
         $hariMatriks = $request->get('hari', in_array($namaHariIni, ['Sabtu', 'Minggu']) ? 'Senin' : $namaHariIni);
         $daftarHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
         $slotJam = JamPelajaran::orderBy('urutan')->get();
-        $daftarKelas = Kelas::with(['ruangan', 'waliKelas'])->orderBy('nama')->get();
         $jadwalMatriks = Jadwal::with(['mapel', 'guru', 'ruangan', 'kelas'])
             ->where('hari', $hariMatriks)
             ->get();
@@ -98,9 +137,8 @@ class DashboardController extends Controller
         }
 
         $daftarMapel = Mapel::orderBy('nama')->get();
-        $kelasId = $request->get('kelas_id', $daftarKelas->first()->id ?? null);
         $mapelId = $request->get('mapel_id');
-        $kelasTerpilih = $kelasId ? Kelas::find($kelasId) : null;
+        $kelasTerpilih = $kelasAktif;
         $rekapSiswa = [];
 
         if ($kelasTerpilih) {
@@ -140,6 +178,13 @@ class DashboardController extends Controller
             'tabAktif',
             'namaHariIni',
             'tanggalHariIni',
+            'kelasAktif',
+            'daftarSiswaKelas',
+            'jadwalKelasHariIni',
+            'jadwalKelasMingguan',
+            'statusAbsensiSiswa',
+            'rekapAbsensiHariIni',
+            'detailAbsensiTersimpan',
             'daftarGuru',
             'absensiHariIniList',
             'guruBelumAbsen',
@@ -161,6 +206,43 @@ class DashboardController extends Controller
             'kelasTerpilih',
             'rekapSiswa'
         ));
+    }
+
+    public function simpanAbsensiSiswa(Request $request, $id)
+    {
+        $jadwal = Jadwal::with(['kelas.siswa', 'mapel', 'guru'])->findOrFail($id);
+
+        $request->validate([
+            'status' => 'required|array',
+            'status.*' => 'in:Hadir,Sakit,Izin,Alpa',
+            'keterangan' => 'nullable|array',
+        ]);
+
+        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+
+        foreach ($request->status as $siswaId => $statusKehadiran) {
+            $ket = $request->keterangan[$siswaId] ?? null;
+
+            AbsensiSiswa::updateOrCreate(
+                [
+                    'id_jadwal' => $jadwal->id,
+                    'id_siswa' => $siswaId,
+                    'tanggal' => $tanggalHariIni,
+                ],
+                [
+                    'status' => $statusKehadiran,
+                    'keterangan' => $ket,
+                    'id_guru_pengisi' => $jadwal->id_guru,
+                ]
+            );
+        }
+
+        LogAktivitas::catat('Absensi Siswa oleh Sekretaris', "Mencatat absensi siswa kelas {$jadwal->kelas->nama} mapel {$jadwal->mapel->nama}");
+
+        return redirect()->route('sekretaris.dashboard', [
+            'tab' => 'jadwal',
+            'kelas_id' => $jadwal->id_kelas,
+        ])->with('sukses', "Presensi siswa kelas {$jadwal->kelas->nama} untuk mata pelajaran {$jadwal->mapel->nama} berhasil disimpan!");
     }
 
     public function simpanAbsensiPengganti(Request $request)

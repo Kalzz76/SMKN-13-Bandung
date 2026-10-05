@@ -43,6 +43,7 @@
     </div>
 
     @include('partials.modal-pesan')
+    @include('partials.modal-logout')
 
     <script>
     function toggleAdminSidebar() {

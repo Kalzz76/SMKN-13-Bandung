@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $sekretaris = User::create([
-            'name' => 'Sekretaris Sekolah',
+            'name' => 'RAIKHANIA RIZKY PUTRI HERDIANA',
             'username' => 'sekretaris',
             'password' => Hash::make('sekretaris123'),
             'role' => 'sekretaris',
@@ -75,22 +75,23 @@ class DatabaseSeeder extends Seeder
 
         PengaturanSekolah::create([
             'nama_sekolah' => 'SMK Negeri 13 Bandung',
-            'npsn' => '20219145',
-            'alamat' => 'Jl. Soekarno-Hatta Km. 10 Gedebage, Kota Bandung, Jawa Barat 40286',
-            'email' => 'info@smkn13bandung.sch.id',
-            'telepon' => '(022) 7801234 / 7805678',
-            'social_media' => '@smkn13bandung',
-            'jam_operasional' => 'Senin - Jumat: 07.00 - 16.00 WIB',
-            'logo' => null,
-            'slogan' => 'Unggul, Berkarakter & Berdaya Saing',
-            'deskripsi_singkat' => 'Pusat pendidikan kejuruan unggulan yang mencetak generasi kompeten di bidang teknologi, siap kerja, mandiri, dan berakhlak mulia.',
-            'visi' => 'Menjadi pusat pendidikan kejuruan unggulan yang menghasilkan lulusan cerdas, kompetitif, berkarakter Pancasila, dan berwawasan global.',
-            'misi' => "Menyelenggarakan pembelajaran berbasis teknologi industri modern.\nMenjalin kemitraan strategis dengan Dunia Usaha dan Dunia Industri (DUDI).\nMembentuk karakter disiplin, berakhlak mulia, dan siap kerja.",
-            'sejarah' => 'Berdiri sejak tahun 2004 di Jalan Soekarno-Hatta Kota Bandung, SMK Negeri 13 Bandung konsisten menjadi rujukan pendidikan kejuruan bermutu tinggi. Dengan berfokus pada bidang teknologi informasi, rekayasa perangkat lunak, dan telekomunikasi, sekolah ini telah melahirkan ribuan alumni yang sukses berkarier di industri multinasional maupun wirausaha mandiri.',
-            'nama_kepsek' => 'Dr. H. Ahmad Supriyadi, M.Pd.',
+            'npsn' => '20219161',
+            'alamat' => 'Jl. Soekarno-Hatta KM. 10, Kelurahan Jatisari, Kecamatan Buahbatu, Kota Bandung, Jawa Barat, Kode Pos 40286',
+            'email' => 'smk13bdg@gmail.com / info@smkn13bdg.sch.id',
+            'telepon' => '(022) 7318960',
+            'social_media' => 'Instagram: @smkn13bdg / @smkn13bandung | YouTube: SMKN 13 Bandung Official',
+            'jam_operasional' => 'Senin – Jumat: 07.00 – 16.00 WIB | Sabtu – Minggu & Hari Libur Nasional: Tutup',
+            'logo' => 'pengaturan/u1uuRkFr8pwEBbiYShmpK5yMGVU1S7ywCSBifCi0.jpg',
+            'slogan' => 'Terdepan dalam Karakter, Unggul dalam Kompetensi, Berdaya Saing Global.',
+            'deskripsi_singkat' => 'SMK Negeri 13 Bandung merupakan sekolah kejuruan negeri unggulan di Kota Bandung yang berfokus pada pengembangan vokasi bidang Sains dan Teknologi Informasi. Kami berkomitmen mencetak lulusan berkarakter, kompeten, dan siap bersaing di dunia kerja maupun perguruan tinggi.',
+            'visi' => 'Terwujudnya lulusan yang berakhlak mulia, kompeten, dan berdaya suai di tingkat internasional pada tahun 2030.',
+            'misi' => "Menyelenggarakan program penguatan pendidikan karakter berlandaskan nilai-nilai luhur dan Profil Pelajar Pancasila / Gapura Panca Waluya.\nMenerapkan kurikulum berbasis kompetensi yang selaras dengan perkembangan Industri 4.0 dan kebutuhan dunia kerja.\nMenyeimbangkan dan meningkatkan sarana prasarana sekolah sesuai Standar Nasional Pendidikan (SNP) serta standar industri.\nMenjalin kemitraan strategis dengan Dunia Usaha, Dunia Industri, dan Institusi Pendidikan (DU/DI/IP) skala nasional dan internasional.\nMenerapkan budaya sekolah ramah lingkungan (Green School) melalui tata kelola sampah, hemat energi, dan pengolahan limbah laboratorium.",
+            'sejarah' => "Cikal bakal SMK Negeri 13 Bandung bermula pada 16 September 1938 dengan nama Sekolah Analis Kimia ITB yang dipelopori oleh Prof. C. O. Schaeffer di bawah Departemen Kimia Institut Teknologi Bandung.\n\nPada tahun 1988, pengelolaannya dialihkan ke Departemen Pendidikan dan Kebudayaan dengan nama SMT Kimia Bandung. Selanjutnya, melalui SK Menteri Pendidikan No. 036/O/1997, nama sekolah resmi berganti menjadi SMK Negeri 13 Bandung. Seiring berjalannya waktu, SMKN 13 Bandung bertransformasi tidak hanya unggul di bidang Analisis Kimia, tetapi juga menjadi pusat keunggulan di bidang Teknologi Informasi (RPL dan TKJ/TJKT).",
+            'nama_kepsek' => 'Agus Nugroho, S.Pd., M.T.',
             'foto_kepsek' => null,
-            'judul_sambutan' => 'Mewujudkan Pendidikan Vokasi Berkualitas Tinggi',
-            'sambutan' => 'Assalamualaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi SMK Negeri 13 Bandung. Kami berkomitmen meningkatkan mutu pelayanan pendidikan, adaptif terhadap perkembangan teknologi industri terkini, serta menanamkan karakter luhur kepada seluruh peserta didik.',
+            'judul_sambutan' => 'Mewujudkan Pendidikan Vokasi Unggul, Berkarakter, dan Berdaya Saing Global',
+            'sambutan' => "Assalamu’alaikum Warahmatullahi Wabarakatuh,\n\nSelamat datang di portal resmi SMK Negeri 13 Bandung. Puji dan syukur kita panjatkan ke hadirat Allah SWT atas rahmat dan karunia-Nya sehingga website resmi ini hadir sebagai media informasi, komunikasi, dan transparansi publik sekolah kami.\n\nSebagai sekolah vokasi yang berlandaskan sejarah panjang dan reputasi tinggi, SMKN 13 Bandung terus berinovasi untuk menyelaraskan sistem pembelajaran dengan kebutuhan dunia kerja dan dinamika teknologi global. Kami tidak hanya menempah keterampilan teknis (hard skills) peserta didik, namun juga membangun integritas, kedisiplinan, serta nilai-nilai karakter (soft skills) agar lulusan kami menjadi pribadi yang tangguh, adaptif, dan siap berkontribusi bagi masyarakat.\n\nTerima kasih atas kepercayaan seluruh masyarakat, pihak industri, dan orang tua siswa yang terus berjalan beriringan bersama kami. Semoga platform ini dapat memberikan manfaat yang luas bagi seluruh pemangku kepentingan.\n\nWassalamu’alaikum Warahmatullahi Wabarakatuh.",
+            'struktur_organisasi' => PengaturanSekolah::defaultStruktur(),
             'gambar_struktur' => null,
             'lat_sekolah' => -6.94520000,
             'long_sekolah' => 107.67650000,
@@ -179,6 +180,12 @@ class DatabaseSeeder extends Seeder
             'id_wali_kelas' => $guruNofa->id,
         ]);
 
+        $kelasXIRPL = Kelas::create([
+            'nama' => 'XI RPL 1',
+            'id_ruangan' => $ruangLab->id,
+            'id_wali_kelas' => $guruRefky->id,
+        ]);
+
         $kelasXII = Kelas::create([
             'nama' => 'XII RPL 1',
             'id_ruangan' => $ruangLab->id,
@@ -188,6 +195,26 @@ class DatabaseSeeder extends Seeder
                 'bendahara_1' => 'Siti Nurhaliza',
             ],
         ]);
+
+        $siswaXIRPL = [
+            ['nis' => '102101', 'nama' => 'Aditya Pratama', 'jenis_kelamin' => 'L'],
+            ['nis' => '102102', 'nama' => 'Anisa Rahmawati', 'jenis_kelamin' => 'P'],
+            ['nis' => '102103', 'nama' => 'Bintang Ramadhan', 'jenis_kelamin' => 'L'],
+            ['nis' => '102104', 'nama' => 'Citra Dewi', 'jenis_kelamin' => 'P'],
+            ['nis' => '102105', 'nama' => 'Dimas Anggara', 'jenis_kelamin' => 'L'],
+            ['nis' => '102106', 'nama' => 'RAIKHANIA RIZKY PUTRI HERDIANA', 'jenis_kelamin' => 'P'],
+            ['nis' => '102107', 'nama' => 'Rifki Hidayat', 'jenis_kelamin' => 'L'],
+            ['nis' => '102108', 'nama' => 'Zahra Aulia', 'jenis_kelamin' => 'P'],
+        ];
+        foreach ($siswaXIRPL as $s) {
+            Siswa::create([
+                'nis' => $s['nis'],
+                'nama' => $s['nama'],
+                'jenis_kelamin' => $s['jenis_kelamin'],
+                'id_kelas' => $kelasXIRPL->id,
+                'tahun_ajaran' => '2026/2027',
+            ]);
+        }
 
         Siswa::create([
             'nis' => '100123',
@@ -344,6 +371,26 @@ class DatabaseSeeder extends Seeder
             'hari' => 'Senin',
             'jam_ke_mulai' => 1,
             'jam_ke_selesai' => 3,
+        ]);
+
+        Jadwal::create([
+            'id_kelas' => $kelasXIRPL->id,
+            'id_mapel' => $mapelDpk->id,
+            'id_guru' => $guruRefky->id,
+            'id_ruangan' => $ruangLab->id,
+            'hari' => 'Senin',
+            'jam_ke_mulai' => 1,
+            'jam_ke_selesai' => 3,
+        ]);
+
+        Jadwal::create([
+            'id_kelas' => $kelasXIRPL->id,
+            'id_mapel' => $mapelMath->id,
+            'id_guru' => $guruNofa->id,
+            'id_ruangan' => $ruangLab->id,
+            'hari' => 'Senin',
+            'jam_ke_mulai' => 4,
+            'jam_ke_selesai' => 5,
         ]);
 
         Ekstrakurikuler::create([

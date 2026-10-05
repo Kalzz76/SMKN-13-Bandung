@@ -1,11 +1,11 @@
 @extends('layouts.admin', ['title' => 'Profil & Sambutan - Admin SMKN 13 Bandung'])
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-5xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">Profil & Sambutan Pimpinan</h1>
-            <p class="text-sm text-slate-500 mt-1">Kelola konten narasi beranda, visi misi, sejarah, dan sambutan kepala sekolah.</p>
+            <h1 class="text-2xl font-black text-slate-900">Profil, Sambutan & Struktur Organisasi</h1>
+            <p class="text-sm text-slate-500 mt-1">Kelola narasi beranda, visi misi, sejarah, sambutan pimpinan, dan struktur organisasi sekolah.</p>
         </div>
     </div>
 
@@ -51,9 +51,406 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Sejarah Singkat Sekolah</label>
                 <textarea name="sejarah" rows="5" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">{{ old('sejarah', $pengaturan->sejarah) }}</textarea>
             </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Bagan Struktur Organisasi Sekolah</label>
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-slate-100">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-sitemap text-emerald-700"></i>
+                    <span>Bagan Struktur Organisasi Sekolah (Dinamis)</span>
+                </h2>
+                <div class="flex items-center space-x-2">
+                    <label class="text-xs font-bold text-slate-600">Tahun Pelajaran:</label>
+                    <input type="text" name="struktur_organisasi[tahun_pelajaran]" value="{{ old('struktur_organisasi.tahun_pelajaran', $struktur['tahun_pelajaran'] ?? '2025 - 2026') }}" class="px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-bold w-36 text-center focus:border-emerald-600 focus:outline-none bg-slate-50">
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-500">
+                Ubah nama pejabat di bawah ini untuk memperbarui bagan organisasi sekolah tanpa perlu mendesain atau mengunggah ulang gambar.
+            </p>
+
+            <div class="space-y-6">
+                <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-100 space-y-3">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-emerald-950 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-crown text-emerald-700"></i>
+                        <span>1. Puncak Pimpinan & Pendamping</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kepala Sekolah</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_kepala_sekolah']) && file_exists(public_path('storage/' . $struktur['foto_kepala_sekolah'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_kepala_sekolah']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-user-tie"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[kepala_sekolah]" value="{{ old('struktur_organisasi.kepala_sekolah', $struktur['kepala_sekolah'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-emerald-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[kepala_sekolah]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Komite Sekolah</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_komite_sekolah']) && file_exists(public_path('storage/' . $struktur['foto_komite_sekolah'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_komite_sekolah']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[komite_sekolah]" value="{{ old('struktur_organisasi.komite_sekolah', $struktur['komite_sekolah'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[komite_sekolah]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Pendamping Sekolah</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_pendamping_sekolah']) && file_exists(public_path('storage/' . $struktur['foto_pendamping_sekolah'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_pendamping_sekolah']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-user-check"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[pendamping_sekolah]" value="{{ old('struktur_organisasi.pendamping_sekolah', $struktur['pendamping_sekolah'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[pendamping_sekolah]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-amber-50/60 rounded-xl border border-amber-100 space-y-3">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-amber-950 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-book-open text-amber-700"></i>
+                        <span>2. Bidang Kurikulum & Pembelajaran</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Wakasek Bid. Kurikulum</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_wakasek_kurikulum']) && file_exists(public_path('storage/' . $struktur['foto_wakasek_kurikulum'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_wakasek_kurikulum']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-amber-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-book"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[wakasek_kurikulum]" value="{{ old('struktur_organisasi.wakasek_kurikulum', $struktur['wakasek_kurikulum'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-amber-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[wakasek_kurikulum]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kepala Perpustakaan</label>
+                            <input type="text" name="struktur_organisasi[kepala_perpus]" value="{{ old('struktur_organisasi.kepala_perpus', $struktur['kepala_perpus'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator TEFA & BLUD</label>
+                            <input type="text" name="struktur_organisasi[koor_tefa]" value="{{ old('struktur_organisasi.koor_tefa', $struktur['koor_tefa'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Sekretaris BLUD</label>
+                            <input type="text" name="struktur_organisasi[sekretaris_blud]" value="{{ old('struktur_organisasi.sekretaris_blud', $struktur['sekretaris_blud'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Bendahara BLUD</label>
+                            <input type="text" name="struktur_organisasi[bendahara_blud]" value="{{ old('struktur_organisasi.bendahara_blud', $struktur['bendahara_blud'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Perencanaan Kurikulum</label>
+                            <input type="text" name="struktur_organisasi[staf_kurikulum]" value="{{ old('struktur_organisasi.staf_kurikulum', $struktur['staf_kurikulum'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf PBM & Evaluasi</label>
+                            <input type="text" name="struktur_organisasi[staf_pbm]" value="{{ old('struktur_organisasi.staf_pbm', $struktur['staf_pbm'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Administrasi Akademik</label>
+                            <input type="text" name="struktur_organisasi[staf_adm_akademik]" value="{{ old('struktur_organisasi.staf_adm_akademik', $struktur['staf_adm_akademik'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-amber-600">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-sky-50/60 rounded-xl border border-sky-100 space-y-3">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-sky-950 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-user-group text-sky-700"></i>
+                        <span>3. Bidang Kesiswaan & Kedisiplinan</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Wakasek Bid. Kesiswaan</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_wakasek_kesiswaan']) && file_exists(public_path('storage/' . $struktur['foto_wakasek_kesiswaan'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_wakasek_kesiswaan']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-sky-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-user-graduate"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[wakasek_kesiswaan]" value="{{ old('struktur_organisasi.wakasek_kesiswaan', $struktur['wakasek_kesiswaan'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-sky-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[wakasek_kesiswaan]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator Bimbingan & Konseling (BK)</label>
+                            <input type="text" name="struktur_organisasi[koor_bk]" value="{{ old('struktur_organisasi.koor_bk', $struktur['koor_bk'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-sky-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Pembiasaan Akademik & Non</label>
+                            <input type="text" name="struktur_organisasi[staf_pembiasaan]" value="{{ old('struktur_organisasi.staf_pembiasaan', $struktur['staf_pembiasaan'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-sky-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Penegakan Disiplin & Tatib</label>
+                            <input type="text" name="struktur_organisasi[staf_tatib]" value="{{ old('struktur_organisasi.staf_tatib', $struktur['staf_tatib'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-sky-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Pembina OSIS & MPK</label>
+                            <input type="text" name="struktur_organisasi[staf_osis]" value="{{ old('struktur_organisasi.staf_osis', $struktur['staf_osis'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-sky-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Ekstrakurikuler</label>
+                            <input type="text" name="struktur_organisasi[staf_ekskul]" value="{{ old('struktur_organisasi.staf_ekskul', $struktur['staf_ekskul'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-sky-600">
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Karakter & Budi Pekerti</label>
+                            <input type="text" name="struktur_organisasi[staf_karakter]" value="{{ old('struktur_organisasi.staf_karakter', $struktur['staf_karakter'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-sky-600">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-100 space-y-3">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-emerald-950 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-building text-emerald-700"></i>
+                        <span>4. Bidang Sarana & Prasarana</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Wakasek Bid. Sarana & Prasarana</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_wakasek_sarpras']) && file_exists(public_path('storage/' . $struktur['foto_wakasek_sarpras'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_wakasek_sarpras']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-building"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[wakasek_sarpras]" value="{{ old('struktur_organisasi.wakasek_sarpras', $struktur['wakasek_sarpras'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-emerald-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[wakasek_sarpras]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator Lingkungan Hidup</label>
+                            <input type="text" name="struktur_organisasi[koor_lh]" value="{{ old('struktur_organisasi.koor_lh', $struktur['koor_lh'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Gedung & Bangunan</label>
+                            <input type="text" name="struktur_organisasi[staf_gedung]" value="{{ old('struktur_organisasi.staf_gedung', $struktur['staf_gedung'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Lab Kimia</label>
+                            <input type="text" name="struktur_organisasi[staf_lab_kimia]" value="{{ old('struktur_organisasi.staf_lab_kimia', $struktur['staf_lab_kimia'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Lab TEI & RPL</label>
+                            <input type="text" name="struktur_organisasi[staf_lab_rpl]" value="{{ old('struktur_organisasi.staf_lab_rpl', $struktur['staf_lab_rpl'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator KOPMYNTA</label>
+                            <input type="text" name="struktur_organisasi[koor_kopmynta]" value="{{ old('struktur_organisasi.koor_kopmynta', $struktur['koor_kopmynta'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Sekretaris KOPMYNTA</label>
+                            <input type="text" name="struktur_organisasi[sekretaris_kopmynta]" value="{{ old('struktur_organisasi.sekretaris_kopmynta', $struktur['sekretaris_kopmynta'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Bendahara KOPMYNTA</label>
+                            <input type="text" name="struktur_organisasi[bendahara_kopmynta]" value="{{ old('struktur_organisasi.bendahara_kopmynta', $struktur['bendahara_kopmynta'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-emerald-600">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-purple-50/60 rounded-xl border border-purple-100 space-y-3">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-purple-950 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-handshake text-purple-700"></i>
+                        <span>5. Bidang Hubungan Industri & Masyarakat (Hubinmas)</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Wakasek Bid. Hubinmas</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_wakasek_hubinmas']) && file_exists(public_path('storage/' . $struktur['foto_wakasek_hubinmas'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_wakasek_hubinmas']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-purple-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-handshake"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[wakasek_hubinmas]" value="{{ old('struktur_organisasi.wakasek_hubinmas', $struktur['wakasek_hubinmas'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-purple-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[wakasek_hubinmas]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-purple-100 file:text-purple-800 hover:file:bg-purple-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator BKK</label>
+                            <input type="text" name="struktur_organisasi[koor_bkk]" value="{{ old('struktur_organisasi.koor_bkk', $struktur['koor_bkk'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-purple-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf BKK</label>
+                            <input type="text" name="struktur_organisasi[staf_bkk]" value="{{ old('struktur_organisasi.staf_bkk', $struktur['staf_bkk'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-purple-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Hubin Humas 1</label>
+                            <input type="text" name="struktur_organisasi[staf_hubin_1]" value="{{ old('struktur_organisasi.staf_hubin_1', $struktur['staf_hubin_1'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-purple-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Hubin Humas 2</label>
+                            <input type="text" name="struktur_organisasi[staf_hubin_2]" value="{{ old('struktur_organisasi.staf_hubin_2', $struktur['staf_hubin_2'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-purple-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Kemitraan & Magang</label>
+                            <input type="text" name="struktur_organisasi[staf_magang]" value="{{ old('struktur_organisasi.staf_magang', $struktur['staf_magang'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-purple-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator SPW</label>
+                            <input type="text" name="struktur_organisasi[koor_spw]" value="{{ old('struktur_organisasi.koor_spw', $struktur['koor_spw'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-purple-600">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-900 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-shield-halved text-slate-700"></i>
+                        <span>6. Tata Usaha, Manajemen Mutu & Program Keahlian</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koordinator Tata Usaha</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_koor_tu']) && file_exists(public_path('storage/' . $struktur['foto_koor_tu'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_koor_tu']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-slate-400 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-folder"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[koor_tu]" value="{{ old('struktur_organisasi.koor_tu', $struktur['koor_tu'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-slate-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[koor_tu]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-slate-200 file:text-slate-800 hover:file:bg-slate-300 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tenaga Administrasi</label>
+                            <input type="text" name="struktur_organisasi[tenaga_adm]" value="{{ old('struktur_organisasi.tenaga_adm', $struktur['tenaga_adm'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Wakil Manajemen Mutu & SDM</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_wakil_mutu']) && file_exists(public_path('storage/' . $struktur['foto_wakil_mutu'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_wakil_mutu']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-amber-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-award"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[wakil_mutu]" value="{{ old('struktur_organisasi.wakil_mutu', $struktur['wakil_mutu'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-slate-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[wakil_mutu]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">PJ Pengelola Aset Digital</label>
+                            <input type="text" name="struktur_organisasi[pj_aset_digital]" value="{{ old('struktur_organisasi.pj_aset_digital', $struktur['pj_aset_digital'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Audit Mutu Internal</label>
+                            <input type="text" name="struktur_organisasi[staf_mutu]" value="{{ old('struktur_organisasi.staf_mutu', $struktur['staf_mutu'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Staf Bidang SDM</label>
+                            <input type="text" name="struktur_organisasi[staf_sdm]" value="{{ old('struktur_organisasi.staf_sdm', $struktur['staf_sdm'] ?? '') }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs focus:border-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kepala Program Kimia Analisis</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_kaprog_kimia']) && file_exists(public_path('storage/' . $struktur['foto_kaprog_kimia'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_kaprog_kimia']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-flask"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[kaprog_kimia]" value="{{ old('struktur_organisasi.kaprog_kimia', $struktur['kaprog_kimia'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-slate-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[kaprog_kimia]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kepala Program TJKT</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_kaprog_tjkt']) && file_exists(public_path('storage/' . $struktur['foto_kaprog_tjkt'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_kaprog_tjkt']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-sky-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-network-wired"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[kaprog_tjkt]" value="{{ old('struktur_organisasi.kaprog_tjkt', $struktur['kaprog_tjkt'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-slate-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[kaprog_tjkt]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kepala Program PPLG</label>
+                            <div class="flex items-center space-x-2">
+                                @if(!empty($struktur['foto_kaprog_pplg']) && file_exists(public_path('storage/' . $struktur['foto_kaprog_pplg'])))
+                                    <img src="{{ asset('storage/' . $struktur['foto_kaprog_pplg']) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-purple-500 flex-shrink-0">
+                                @else
+                                    <div class="w-9 h-9 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs flex-shrink-0">
+                                        <i class="fa-solid fa-code"></i>
+                                    </div>
+                                @endif
+                                <input type="text" name="struktur_organisasi[kaprog_pplg]" value="{{ old('struktur_organisasi.kaprog_pplg', $struktur['kaprog_pplg'] ?? '') }}" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 outline-none text-xs font-bold focus:border-slate-600">
+                            </div>
+                            <div class="mt-1.5">
+                                <label class="text-[10px] text-slate-500 font-medium block">Foto Wajah (Opsional):</label>
+                                <input type="file" name="foto_struktur[kaprog_pplg]" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:bg-purple-100 file:text-purple-800 hover:file:bg-purple-200 cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Opsi Cadangan: Unggah Gambar Bagan (Opsional)</label>
                 <div class="flex items-center space-x-6 mt-2">
                     @if($pengaturan->gambar_struktur)
                         <div class="w-24 h-24 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-50 flex items-center justify-center p-1">
@@ -62,7 +459,7 @@
                     @endif
                     <div class="flex-grow">
                         <input type="file" name="gambar_struktur" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                        <p class="text-xs text-slate-400 mt-1">Format: JPG, JPEG, PNG. Maksimal 2MB.</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Jika diunggah, gambar bagan ini dapat digunakan sebagai alternatif tampilan.</p>
                     </div>
                 </div>
             </div>

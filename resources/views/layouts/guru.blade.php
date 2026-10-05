@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
@@ -29,13 +28,10 @@
                         <span class="text-[10px] text-slate-500 block">Profil Saya</span>
                     </div>
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-3.5 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span class="hidden sm:inline">Keluar</span>
-                    </button>
-                </form>
+                <button type="button" onclick="openLogoutModal()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-3.5 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Keluar</span>
+                </button>
             </div>
         </div>
 
@@ -53,5 +49,6 @@
     </div>
 
     @include('partials.modal-pesan')
+    @include('partials.modal-logout')
 </body>
 </html>

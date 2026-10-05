@@ -25,13 +25,14 @@ class PublikController extends Controller
     {
         $pengaturan = PengaturanSekolah::first();
         $daftarGuru = Guru::where('tampil_publik', true)->get();
+        $struktur = $pengaturan ? $pengaturan->struktur : PengaturanSekolah::defaultStruktur();
 
         $daftarMisi = [];
         if ($pengaturan && !empty($pengaturan->misi)) {
             $daftarMisi = array_filter(array_map('trim', explode("\n", $pengaturan->misi)));
         }
 
-        return view('publik.profil', compact('pengaturan', 'daftarGuru', 'daftarMisi'));
+        return view('publik.profil', compact('pengaturan', 'daftarGuru', 'daftarMisi', 'struktur'));
     }
 
     public function jurusan()

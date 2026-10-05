@@ -22,6 +22,8 @@ class HalamanPublikTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('SMK Negeri 13 Bandung');
         $response->assertSee('Sambutan Pimpinan');
+        $response->assertSee('Agus Nugroho, S.Pd., M.T.');
+        $response->assertSee('Terdepan dalam Karakter, Unggul dalam Kompetensi, Berdaya Saing Global.');
     }
 
     public function test_halaman_profil_menampilkan_visi_misi_dan_guru(): void
@@ -71,7 +73,10 @@ class HalamanPublikTest extends TestCase
     {
         $response = $this->get('/kontak');
         $response->assertStatus(200);
-        $response->assertSee('Alamat Kampus');
+        $response->assertSee('20219161');
+        $response->assertSee('Soekarno-Hatta KM. 10');
+        $response->assertSee('smk13bdg@gmail.com');
+        $response->assertSee('https://smkn13bdg.sch.id');
         $response->assertSee('Jam Operasional Layanan');
     }
 

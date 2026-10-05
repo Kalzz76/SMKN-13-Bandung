@@ -183,4 +183,31 @@ class SekretarisDanLaporanTest extends TestCase
             'alasan' => 'Kondisi kesehatan memburuk',
         ]);
     }
+
+    public function test_sekretaris_dapat_mengabsen_siswa_di_kelas(): void
+    {
+        $jadwal = \App\Models\Jadwal::with('kelas.siswa')->first();
+        $siswa = $jadwal->kelas->siswa->first();
+
+        $response = $this->actingAs($this->sekretaris)->post('/sekretaris/absensi-siswa/' . $jadwal->id, [
+            'status' => [
+                $siswa->id => 'Hadir',
+            ],
+            'keterangan' => [
+                $siswa->id => 'Tepat waktu',
+            ],
+        ]);
+
+        $response->assertRedirect('/sekretaris?tab=jadwal&kelas_id=' . $jadwal->id_kelas);
+        $response->assertSessionHas('sukses');
+
+        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        $this->assertDatabaseHas('absensi_siswa', [
+            'id_jadwal' => $jadwal->id,
+            'id_siswa' => $siswa->id,
+            'tanggal' => $tanggalHariIni,
+            'status' => 'Hadir',
+            'keterangan' => 'Tepat waktu',
+        ]);
+    }
 }

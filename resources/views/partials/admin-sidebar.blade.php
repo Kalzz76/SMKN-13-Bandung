@@ -117,12 +117,9 @@
     </div>
 
     <div class="p-4 border-t border-slate-800 flex-shrink-0">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Keluar ke Portal</span>
-            </button>
-        </form>
+        <button type="button" onclick="openLogoutModal()" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Keluar ke Portal</span>
+        </button>
     </div>
 </aside>

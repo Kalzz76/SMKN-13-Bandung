@@ -23,7 +23,9 @@ class ProfilSekolahController extends Controller
             ]);
         }
 
-        return view('admin.profil-sambutan', compact('pengaturan'));
+        $struktur = $pengaturan->struktur;
+
+        return view('admin.profil-sambutan', compact('pengaturan', 'struktur'));
     }
 
     public function update(Request $request)
@@ -39,6 +41,8 @@ class ProfilSekolahController extends Controller
             'sambutan' => 'nullable|string',
             'foto_kepsek' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'gambar_struktur' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'struktur_organisasi' => 'nullable|array',
+            'foto_struktur.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $pengaturan = PengaturanSekolah::first();
@@ -54,6 +58,43 @@ class ProfilSekolahController extends Controller
         $pengaturan->nama_kepsek = $request->nama_kepsek;
         $pengaturan->judul_sambutan = $request->judul_sambutan;
         $pengaturan->sambutan = $request->sambutan;
+
+        $strukturData = $request->input('struktur_organisasi', []);
+        $existingStruktur = $pengaturan->struktur_organisasi ?? [];
+        if (!is_array($existingStruktur)) {
+            $existingStruktur = [];
+        }
+
+        $photoKeys = [
+            'kepala_sekolah',
+            'komite_sekolah',
+            'pendamping_sekolah',
+            'wakasek_kurikulum',
+            'wakasek_kesiswaan',
+            'wakasek_sarpras',
+            'wakasek_hubinmas',
+            'koor_tu',
+            'wakil_mutu',
+            'kaprog_kimia',
+            'kaprog_tjkt',
+            'kaprog_pplg',
+        ];
+
+        foreach ($photoKeys as $key) {
+            $fotoKey = 'foto_' . $key;
+            if ($request->hasFile("foto_struktur.{$key}")) {
+                if (!empty($existingStruktur[$fotoKey]) && Storage::disk('public')->exists($existingStruktur[$fotoKey])) {
+                    Storage::disk('public')->delete($existingStruktur[$fotoKey]);
+                }
+                $strukturData[$fotoKey] = $request->file("foto_struktur.{$key}")->store('profil/struktur', 'public');
+            } elseif (isset($existingStruktur[$fotoKey])) {
+                $strukturData[$fotoKey] = $existingStruktur[$fotoKey];
+            }
+        }
+
+        if ($request->has('struktur_organisasi') || $request->hasFile('foto_struktur')) {
+            $pengaturan->struktur_organisasi = $strukturData;
+        }
 
         if ($request->hasFile('foto_kepsek')) {
             if ($pengaturan->foto_kepsek && Storage::disk('public')->exists($pengaturan->foto_kepsek)) {
@@ -71,8 +112,8 @@ class ProfilSekolahController extends Controller
 
         $pengaturan->save();
 
-        LogAktivitas::catat('Ubah Profil Sekolah', 'Memperbarui profil sekolah, visi misi, dan sambutan pimpinan');
+        LogAktivitas::catat('Ubah Profil Sekolah', 'Memperbarui profil sekolah, struktur organisasi, dan sambutan pimpinan');
 
-        return redirect()->route('admin.profil-sambutan.index')->with('sukses', 'Profil dan sambutan kepala sekolah berhasil diperbarui.');
+        return redirect()->route('admin.profil-sambutan.index')->with('sukses', 'Profil, sambutan kepala sekolah, dan struktur organisasi berhasil diperbarui.');
     }
 }
