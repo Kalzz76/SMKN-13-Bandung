@@ -122,6 +122,13 @@ class DataMasterDanJadwalTest extends TestCase
         Storage::fake('public');
         $foto = UploadedFile::fake()->image('guru.jpg');
 
+        $responseNipHuruf = $this->actingAs($this->admin)->post('/admin/guru', [
+            'nama' => 'Guru Penguji Gagal',
+            'nip' => 'NIP12345ABC',
+            'jenis' => 'Guru',
+        ]);
+        $responseNipHuruf->assertSessionHasErrors('nip');
+
         $responseTambah = $this->actingAs($this->admin)->post('/admin/guru', [
             'nama' => 'Guru Penguji, S.T.',
             'nip' => '199505052020051005',
@@ -201,27 +208,49 @@ class DataMasterDanJadwalTest extends TestCase
     {
         $kelas = Kelas::first();
 
+        $responseNisHuruf = $this->actingAs($this->admin)->post('/admin/siswa', [
+            'nis' => 'NIS100ABC',
+            'nisn' => '0081234567',
+            'nama' => 'Siswa Gagal',
+            'jenis_kelamin' => 'L',
+            'id_kelas' => $kelas->id,
+            'tahun_ajaran' => '2026/2027',
+        ]);
+        $responseNisHuruf->assertSessionHasErrors('nis');
+
+        $responseNisnHuruf = $this->actingAs($this->admin)->post('/admin/siswa', [
+            'nis' => '100998',
+            'nisn' => 'NISN123ABC',
+            'nama' => 'Siswa Gagal NISN',
+            'jenis_kelamin' => 'L',
+            'id_kelas' => $kelas->id,
+            'tahun_ajaran' => '2026/2027',
+        ]);
+        $responseNisnHuruf->assertSessionHasErrors('nisn');
+
         $responseTambah = $this->actingAs($this->admin)->post('/admin/siswa', [
             'nis' => '100999',
+            'nisn' => '0081234567',
             'nama' => 'Siswa Percobaan',
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelas->id,
             'tahun_ajaran' => '2026/2027',
         ]);
         $responseTambah->assertRedirect('/admin/siswa');
-        $this->assertDatabaseHas('siswa', ['nis' => '100999']);
+        $this->assertDatabaseHas('siswa', ['nis' => '100999', 'nisn' => '0081234567']);
 
         $siswa = Siswa::where('nis', '100999')->first();
 
         $responseEdit = $this->actingAs($this->admin)->put('/admin/siswa/' . $siswa->id, [
             'nis' => '100999',
+            'nisn' => '0089876543',
             'nama' => 'Siswa Percobaan Update',
             'jenis_kelamin' => 'P',
             'id_kelas' => $kelas->id,
             'tahun_ajaran' => '2026/2027',
         ]);
         $responseEdit->assertRedirect('/admin/siswa');
-        $this->assertDatabaseHas('siswa', ['id' => $siswa->id, 'nama' => 'Siswa Percobaan Update', 'jenis_kelamin' => 'P']);
+        $this->assertDatabaseHas('siswa', ['id' => $siswa->id, 'nama' => 'Siswa Percobaan Update', 'nisn' => '0089876543', 'jenis_kelamin' => 'P']);
 
         $responseHapus = $this->actingAs($this->admin)->delete('/admin/siswa/' . $siswa->id);
         $responseHapus->assertRedirect('/admin/siswa');

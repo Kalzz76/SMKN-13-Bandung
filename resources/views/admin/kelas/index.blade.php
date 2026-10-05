@@ -72,6 +72,14 @@
                                         <button type="button"
                                             data-id="{{ $k->id }}"
                                             data-nama="{{ $k->nama }}"
+                                            data-siswa='@json($k->siswa)'
+                                            onclick="openShowModal(this)"
+                                            class="bg-sky-50 hover:bg-sky-100 text-sky-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center">
+                                            <i class="fa-solid fa-eye mr-1"></i> Show
+                                        </button>
+                                        <button type="button"
+                                            data-id="{{ $k->id }}"
+                                            data-nama="{{ $k->nama }}"
                                             data-ruangan="{{ $k->id_ruangan }}"
                                             data-wali="{{ $k->id_wali_kelas }}"
                                             onclick="openEditModal(this)"
@@ -177,6 +185,54 @@
     </div>
 </div>
 
+<div id="showModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl relative max-h-[90vh] flex flex-col">
+        <button type="button" onclick="closeShowModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center text-lg font-bold">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                    <span>Daftar Siswa Kelas</span>
+                    <span id="showNamaKelas" class="text-emerald-700 font-black"></span>
+                </h3>
+                <p id="showTotalSiswa" class="text-xs text-slate-500"></p>
+            </div>
+        </div>
+
+        <div class="flex-grow overflow-y-auto">
+            <div id="showTableContainer" class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider">
+                        <tr>
+                            <th class="p-3 rounded-l-lg text-center w-12">No</th>
+                            <th class="p-3">NIS</th>
+                            <th class="p-3">Nama Siswa</th>
+                            <th class="p-3 text-center">L/P</th>
+                            <th class="p-3 rounded-r-lg">Tahun Ajaran</th>
+                        </tr>
+                    </thead>
+                    <tbody id="showTbodySiswa" class="divide-y divide-slate-100">
+                    </tbody>
+                </table>
+            </div>
+            <div id="showEmptySiswa" class="p-10 text-center text-slate-400 hidden">
+                <i class="fa-solid fa-user-slash text-3xl mb-2 text-slate-300"></i>
+                <p class="text-sm font-medium">Belum ada siswa yang terdaftar di kelas ini.</p>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-4 border-t border-slate-100 mt-4 flex-shrink-0">
+            <button type="button" onclick="closeShowModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 function openTambahModal() {
     document.getElementById('tambahModal').classList.remove('hidden');
@@ -199,6 +255,59 @@ function openEditModal(button) {
 }
 function closeEditModal() {
     document.getElementById('editModal').classList.add('hidden');
+}
+function openShowModal(button) {
+    const nama = button.getAttribute('data-nama');
+    let siswa = [];
+    try {
+        siswa = JSON.parse(button.getAttribute('data-siswa') || '[]');
+    } catch (e) {
+        siswa = [];
+    }
+
+    document.getElementById('showNamaKelas').textContent = nama;
+    document.getElementById('showTotalSiswa').textContent = siswa.length + ' Siswa Terdaftar';
+
+    const tbody = document.getElementById('showTbodySiswa');
+    const emptyState = document.getElementById('showEmptySiswa');
+    const tableContainer = document.getElementById('showTableContainer');
+
+    tbody.innerHTML = '';
+
+    if (siswa.length === 0) {
+        tableContainer.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+    } else {
+        emptyState.classList.add('hidden');
+        tableContainer.classList.remove('hidden');
+
+        siswa.forEach((s, idx) => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition border-b border-slate-100 text-xs';
+            tr.innerHTML = `
+                <td class="p-3 text-slate-400 font-medium text-center font-mono">${idx + 1}</td>
+                <td class="p-3 font-mono font-bold text-slate-700">${escapeHtml(s.nis || '-')}</td>
+                <td class="p-3 font-semibold text-slate-900">${escapeHtml(s.nama || '-')}</td>
+                <td class="p-3 text-center">
+                    <span class="px-2 py-0.5 rounded-md font-bold text-[10px] ${s.jenis_kelamin === 'L' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'}">
+                        ${s.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}
+                    </span>
+                </td>
+                <td class="p-3 text-slate-600 font-medium font-mono">${escapeHtml(s.tahun_ajaran || '-')}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById('showModal').classList.remove('hidden');
+}
+function closeShowModal() {
+    document.getElementById('showModal').classList.add('hidden');
+}
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 </script>
 @endsection

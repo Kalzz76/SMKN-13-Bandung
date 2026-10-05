@@ -185,6 +185,7 @@ class DatabaseSeeder extends Seeder
 
         Siswa::create([
             'nis' => '100123',
+            'nisn' => '0081234001',
             'nama' => 'Rizky Pratama',
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelasXII->id,
@@ -193,6 +194,7 @@ class DatabaseSeeder extends Seeder
 
         Siswa::create([
             'nis' => '100124',
+            'nisn' => '0081234002',
             'nama' => 'Siti Nurhaliza',
             'jenis_kelamin' => 'P',
             'id_kelas' => $kelasXII->id,
@@ -201,6 +203,7 @@ class DatabaseSeeder extends Seeder
 
         Siswa::create([
             'nis' => '100125',
+            'nisn' => '0081234003',
             'nama' => 'Ahmad Fauzi',
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelasX1->id,

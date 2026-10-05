@@ -18,6 +18,11 @@ class Guru extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class, 'id_mapel');
+    }
+
     public function kelasWali()
     {
         return $this->hasMany(Kelas::class, 'id_wali_kelas');

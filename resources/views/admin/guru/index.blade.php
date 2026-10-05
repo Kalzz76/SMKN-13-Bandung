@@ -53,10 +53,8 @@
                                 data-nama="{{ $g->nama }}"
                                 data-nip="{{ $g->nip }}"
                                 data-jenis="{{ $g->jenis }}"
-                                data-jabatan="{{ $g->jabatan }}"
-                                data-mapel="{{ $g->mapel_utama }}"
+                                data-idmapel="{{ $g->id_mapel }}"
                                 data-publik="{{ $g->tampil_publik }}"
-                                data-userid="{{ $g->user_id }}"
                                 onclick="openEditModal(this)"
                                 class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs transition">
                                 <i class="fa-solid fa-pen"></i>
@@ -89,9 +87,10 @@
                         </div>
 
                         <div class="w-full my-3 pt-3 border-t border-slate-100 text-xs text-slate-600 space-y-1">
-                            <div><strong class="text-slate-800">Jabatan:</strong> {{ $g->jabatan }}</div>
-                            @if($g->mapel_utama)
-                                <div class="line-clamp-1"><strong class="text-slate-800">Mapel:</strong> {{ $g->mapel_utama }}</div>
+                            @if($g->mapel || $g->mapel_utama)
+                                <div class="line-clamp-1"><strong class="text-slate-800">Mapel:</strong> {{ $g->mapel ? $g->mapel->nama : $g->mapel_utama }}</div>
+                            @else
+                                <div class="text-slate-400 italic">Belum ada mapel</div>
                             @endif
                         </div>
 
@@ -135,41 +134,30 @@
         <form method="POST" action="{{ route('admin.guru.store') }}" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar <span class="text-rose-500">*</span></label>
                 <input type="text" name="nama" placeholder="Contoh: Refky, M.Kom." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">NIP (Opsional)</label>
-                    <input type="text" name="nip" placeholder="1985..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NIP <span class="text-rose-500">*</span></label>
+                    <input type="text" name="nip" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="1985..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Tenaga</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Tenaga <span class="text-rose-500">*</span></label>
                     <select name="jenis" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="Guru">Guru Pengajar</option>
                         <option value="Staff">Staff Tata Usaha</option>
                     </select>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jabatan Tugas</label>
-                    <input type="text" name="jabatan" placeholder="Contoh: Guru Pengajar / Ka. Lab" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran Utama</label>
-                    <input type="text" name="mapel_utama" placeholder="Contoh: Produktif RPL" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                </div>
-            </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Hubungkan Akun Login Guru</label>
-                <select name="user_id" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                    <option value="">-- Belum Dihubungkan --</option>
-                    @foreach($akunGuruTersedia as $u)
-                        <option value="{{ $u->id }}">{{ $u->name }} (username: {{ $u->username }})</option>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran Utama</label>
+                <select name="id_mapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <option value="">-- Pilih Mata Pelajaran --</option>
+                    @foreach($daftarMapel as $m)
+                        <option value="{{ $m->id }}">{{ $m->nama }} ({{ $m->kode }})</option>
                     @endforeach
                 </select>
-                <p class="text-xs text-slate-400 mt-1">Hanya menampilkan akun role 'guru' yang belum terhubung ke guru lain.</p>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Foto Formal</label>
@@ -197,38 +185,28 @@
             @csrf
             @method('PUT')
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar <span class="text-rose-500">*</span></label>
                 <input type="text" id="editNama" name="nama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">NIP (Opsional)</label>
-                    <input type="text" id="editNip" name="nip" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NIP <span class="text-rose-500">*</span></label>
+                    <input type="text" id="editNip" name="nip" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Tenaga</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Tenaga <span class="text-rose-500">*</span></label>
                     <select id="editJenis" name="jenis" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="Guru">Guru Pengajar</option>
                         <option value="Staff">Staff Tata Usaha</option>
                     </select>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jabatan Tugas</label>
-                    <input type="text" id="editJabatan" name="jabatan" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran Utama</label>
-                    <input type="text" id="editMapel" name="mapel_utama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                </div>
-            </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Hubungkan Akun Login Guru</label>
-                <select id="editUserId" name="user_id" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                    <option value="">-- Belum Dihubungkan --</option>
-                    @foreach($semuaAkunGuru as $u)
-                        <option value="{{ $u->id }}">{{ $u->name }} (username: {{ $u->username }})</option>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran Utama</label>
+                <select id="editIdMapel" name="id_mapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <option value="">-- Pilih Mata Pelajaran --</option>
+                    @foreach($daftarMapel as $m)
+                        <option value="{{ $m->id }}">{{ $m->nama }} ({{ $m->kode }})</option>
                     @endforeach
                 </select>
             </div>
@@ -260,18 +238,14 @@ function openEditModal(button) {
     const nama = button.getAttribute('data-nama');
     const nip = button.getAttribute('data-nip');
     const jenis = button.getAttribute('data-jenis');
-    const jabatan = button.getAttribute('data-jabatan');
-    const mapel = button.getAttribute('data-mapel');
+    const idmapel = button.getAttribute('data-idmapel');
     const publik = button.getAttribute('data-publik');
-    const userid = button.getAttribute('data-userid');
 
     document.getElementById('editForm').action = '/admin/guru/' + id;
     document.getElementById('editNama').value = nama;
     document.getElementById('editNip').value = nip || '';
     document.getElementById('editJenis').value = jenis;
-    document.getElementById('editJabatan').value = jabatan;
-    document.getElementById('editMapel').value = mapel || '';
-    document.getElementById('editUserId').value = userid || '';
+    document.getElementById('editIdMapel').value = idmapel || '';
     document.getElementById('editTampilPublik').checked = publik == '1';
 
     document.getElementById('editModal').classList.remove('hidden');

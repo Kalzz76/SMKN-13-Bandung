@@ -60,7 +60,7 @@
                         @foreach($daftarSiswa as $index => $s)
                             <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-3.5 font-medium text-slate-400">{{ $daftarSiswa->firstItem() + $index }}</td>
-                                <td class="p-3.5 font-mono font-bold text-slate-900">{{ $s->nis }}</td>
+                                <td class="p-3.5 font-mono text-slate-900"><span class="font-bold">{{ $s->nis }}</span><span class="text-slate-400 font-normal"> / </span><span class="text-slate-600">{{ $s->nisn ?? '-' }}</span></td>
                                 <td class="p-3.5 font-bold text-slate-900">{{ $s->nama }}</td>
                                 <td class="p-3.5">
                                     <span class="text-xs font-semibold px-2 py-0.5 rounded {{ $s->jenis_kelamin === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800' }}">
@@ -78,6 +78,7 @@
                                         <button type="button"
                                             data-id="{{ $s->id }}"
                                             data-nis="{{ $s->nis }}"
+                                            data-nisn="{{ $s->nisn }}"
                                             data-nama="{{ $s->nama }}"
                                             data-jk="{{ $s->jenis_kelamin }}"
                                             data-kelas="{{ $s->id_kelas }}"
@@ -109,36 +110,42 @@
 </div>
 
 <div id="tambahModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+    <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative">
         <button type="button" onclick="closeTambahModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
         <h3 class="text-xl font-bold text-slate-900 mb-4">Tambah Siswa Baru</h3>
         <form method="POST" action="{{ route('admin.siswa.store') }}" class="space-y-4">
             @csrf
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">NIS / NISN</label>
-                <input type="text" name="nis" placeholder="Contoh: 100123" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NIS <span class="text-rose-500">*</span></label>
+                    <input type="text" name="nis" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Contoh: 100123" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NISN <span class="text-rose-500">*</span></label>
+                    <input type="text" name="nisn" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Contoh: 0081234567" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
                 <input type="text" name="nama" placeholder="Contoh: Rizky Pratama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Kelamin</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Kelamin <span class="text-rose-500">*</span></label>
                     <select name="jenis_kelamin" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="L">Laki-laki</option>
                         <option value="P">Perempuan</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
                     <input type="text" name="tahun_ajaran" value="2026/2027" placeholder="2026/2027" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
                 <select name="id_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                     <option value="">-- Pilih Kelas --</option>
                     @foreach($daftarKelas as $k)
@@ -155,7 +162,7 @@
 </div>
 
 <div id="editModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+    <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative">
         <button type="button" onclick="closeEditModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
@@ -163,29 +170,35 @@
         <form id="editForm" method="POST" action="" class="space-y-4">
             @csrf
             @method('PUT')
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">NIS / NISN</label>
-                <input type="text" id="editNis" name="nis" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NIS <span class="text-rose-500">*</span></label>
+                    <input type="text" id="editNis" name="nis" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">NISN <span class="text-rose-500">*</span></label>
+                    <input type="text" id="editNisn" name="nisn" inputmode="numeric" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
                 <input type="text" id="editNama" name="nama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Kelamin</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Kelamin <span class="text-rose-500">*</span></label>
                     <select id="editJk" name="jenis_kelamin" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="L">Laki-laki</option>
                         <option value="P">Perempuan</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
                     <input type="text" id="editTahun" name="tahun_ajaran" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
                 <select id="editKelas" name="id_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                     <option value="">-- Pilih Kelas --</option>
                     @foreach($daftarKelas as $k)
@@ -211,6 +224,7 @@ function closeTambahModal() {
 function openEditModal(button) {
     const id = button.getAttribute('data-id');
     const nis = button.getAttribute('data-nis');
+    const nisn = button.getAttribute('data-nisn');
     const nama = button.getAttribute('data-nama');
     const jk = button.getAttribute('data-jk');
     const kelas = button.getAttribute('data-kelas');
@@ -218,6 +232,7 @@ function openEditModal(button) {
 
     document.getElementById('editForm').action = '/admin/siswa/' + id;
     document.getElementById('editNis').value = nis;
+    document.getElementById('editNisn').value = nisn || '';
     document.getElementById('editNama').value = nama;
     document.getElementById('editJk').value = jk;
     document.getElementById('editKelas').value = kelas;

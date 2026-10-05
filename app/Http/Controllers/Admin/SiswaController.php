@@ -22,6 +22,7 @@ class SiswaController extends Controller
             $cari = $request->cari;
             $query->where(function ($q) use ($cari) {
                 $q->where('nis', 'like', "%{$cari}%")
+                  ->orWhere('nisn', 'like', "%{$cari}%")
                   ->orWhere('nama', 'like', "%{$cari}%")
                   ->orWhere('tahun_ajaran', 'like', "%{$cari}%")
                   ->orWhereHas('kelas', function ($kq) use ($cari) {
@@ -39,15 +40,20 @@ class SiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nis' => 'required|string|max:50|unique:siswa,nis',
+            'nis' => ['required', 'regex:/^[0-9]+$/', 'max:50', 'unique:siswa,nis'],
+            'nisn' => ['required', 'regex:/^[0-9]+$/', 'max:50', 'unique:siswa,nisn'],
             'nama' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
             'id_kelas' => 'required|exists:kelas,id',
             'tahun_ajaran' => 'required|string|max:20',
+        ], [
+            'nis.regex' => 'NIS hanya boleh berisi angka.',
+            'nisn.regex' => 'NISN hanya boleh berisi angka.',
         ]);
 
         $siswa = Siswa::create([
             'nis' => $request->nis,
+            'nisn' => $request->nisn,
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
             'id_kelas' => $request->id_kelas,
@@ -64,15 +70,20 @@ class SiswaController extends Controller
         $siswa = Siswa::findOrFail($id);
 
         $request->validate([
-            'nis' => 'required|string|max:50|unique:siswa,nis,' . $id,
+            'nis' => ['required', 'regex:/^[0-9]+$/', 'max:50', 'unique:siswa,nis,' . $id],
+            'nisn' => ['required', 'regex:/^[0-9]+$/', 'max:50', 'unique:siswa,nisn,' . $id],
             'nama' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
             'id_kelas' => 'required|exists:kelas,id',
             'tahun_ajaran' => 'required|string|max:20',
+        ], [
+            'nis.regex' => 'NIS hanya boleh berisi angka.',
+            'nisn.regex' => 'NISN hanya boleh berisi angka.',
         ]);
 
         $siswa->update([
             'nis' => $request->nis,
+            'nisn' => $request->nisn,
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
             'id_kelas' => $request->id_kelas,
