@@ -6,7 +6,7 @@
         <div>
             <h2 class="text-xl font-black text-slate-900 flex items-center space-x-2">
                 <i class="fa-solid fa-clipboard-user text-emerald-700"></i>
-                <span>G. Laporan & Rekapitulasi Absensi</span>
+                <span>Laporan & Rekapitulasi Absensi</span>
             </h2>
             <p class="text-xs text-slate-500 mt-1">
                 Laporan komprehensif kehadiran pendidik dan peserta didik dengan opsi cetak dan ekspor CSV.

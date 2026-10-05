@@ -24,83 +24,108 @@
             </div>
         </div>
 
-        <div class="flex-grow overflow-y-auto py-4 px-3 space-y-1 text-sm">
-            <a href="{{ route('admin.dashboard') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-chart-pie w-5"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ url('/admin/barcode') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/barcode*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-qrcode w-5"></i>
-                <span>Barcode Absensi</span>
-            </a>
-            <a href="{{ url('/admin/siswa') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/siswa*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-user-graduate w-5"></i>
-                <span>A. Data Siswa</span>
-            </a>
-            <a href="{{ url('/admin/kelas') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/kelas*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-chalkboard w-5"></i>
-                <span>B. Manajemen Kelas</span>
-            </a>
-            <a href="{{ url('/admin/guru') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/guru*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-chalkboard-user w-5"></i>
-                <span>C. Data Guru</span>
-            </a>
-            <a href="{{ url('/admin/barcode') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/barcode*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-qrcode w-5"></i>
-                <span>Barcode Guru</span>
-            </a>
-            <a href="{{ url('/admin/ruangan') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/ruangan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-door-open w-5"></i>
-                <span>D. Data Ruangan</span>
-            </a>
-            <a href="{{ url('/admin/mapel') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/mapel*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-book w-5"></i>
-                <span>E. Mata Pelajaran</span>
-            </a>
-            <a href="{{ url('/admin/jadwal') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/jadwal*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-calendar-days w-5"></i>
-                <span>F. Jadwal Pelajaran</span>
-            </a>
-            <a href="{{ url('/admin/laporan') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/laporan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-clipboard-user w-5"></i>
-                <span>G. Laporan Absensi</span>
-            </a>
-            <a href="{{ url('/admin/berita') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/berita*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-newspaper w-5"></i>
-                <span>H. Berita</span>
-            </a>
-            <a href="{{ url('/admin/galeri') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/galeri*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-images w-5"></i>
-                <span>I. Galeri & Fasilitas</span>
-            </a>
-            <a href="{{ url('/admin/user') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/user*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-users-gear w-5"></i>
-                <span>J. Manajemen Akun</span>
-            </a>
-            <a href="{{ url('/admin/pengaturan') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/pengaturan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-gears w-5"></i>
-                <span>K. Pengaturan Sekolah</span>
-            </a>
-            <a href="{{ url('/admin/profil-sambutan') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/profil-sambutan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-id-card w-5"></i>
-                <span>L. Profil & Sambutan</span>
-            </a>
-            <a href="{{ url('/admin/jurusan') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/jurusan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-layer-group w-5"></i>
-                <span>M. Jurusan</span>
-            </a>
-            <a href="{{ url('/admin/ekskul') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/ekskul*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-volleyball w-5"></i>
-                <span>N. Ekstrakurikuler</span>
-            </a>
-            <a href="{{ url('/admin/prestasi') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/prestasi*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-trophy w-5"></i>
-                <span>O. Prestasi</span>
-            </a>
-            <a href="{{ url('/admin/log') }}" class="w-full text-left px-4 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/log*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
-                <i class="fa-solid fa-clock-rotate-left w-5"></i>
-                <span>P. Log Aktivitas</span>
-            </a>
+        <div class="flex-grow overflow-y-auto py-4 px-3 space-y-4 text-sm">
+            <div>
+                <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Utama</p>
+                <div class="space-y-1">
+                    <a href="{{ route('admin.dashboard') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Master Data</p>
+                <div class="space-y-1">
+                    <a href="{{ url('/admin/siswa') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/siswa*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-user-graduate w-5 text-center"></i>
+                        <span>Data Siswa</span>
+                    </a>
+                    <a href="{{ url('/admin/kelas') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/kelas*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-chalkboard w-5 text-center"></i>
+                        <span>Manajemen Kelas</span>
+                    </a>
+                    <a href="{{ url('/admin/guru') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/guru*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-chalkboard-user w-5 text-center"></i>
+                        <span>Data Guru</span>
+                    </a>
+                    <a href="{{ url('/admin/ruangan') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/ruangan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-door-open w-5 text-center"></i>
+                        <span>Data Ruangan</span>
+                    </a>
+                    <a href="{{ url('/admin/mapel') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/mapel*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-book w-5 text-center"></i>
+                        <span>Mata Pelajaran</span>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Akademik & Presensi</p>
+                <div class="space-y-1">
+                    <a href="{{ url('/admin/jadwal') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/jadwal*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-calendar-days w-5 text-center"></i>
+                        <span>Jadwal Pelajaran</span>
+                    </a>
+                    <a href="{{ url('/admin/barcode') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/barcode*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-qrcode w-5 text-center"></i>
+                        <span>Barcode Guru</span>
+                    </a>
+                    <a href="{{ url('/admin/laporan') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/laporan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-clipboard-user w-5 text-center"></i>
+                        <span>Laporan Absensi</span>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Informasi Publik</p>
+                <div class="space-y-1">
+                    <a href="{{ url('/admin/berita') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/berita*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-newspaper w-5 text-center"></i>
+                        <span>Berita</span>
+                    </a>
+                    <a href="{{ url('/admin/galeri') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/galeri*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-images w-5 text-center"></i>
+                        <span>Galeri & Fasilitas</span>
+                    </a>
+                    <a href="{{ url('/admin/jurusan') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/jurusan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-layer-group w-5 text-center"></i>
+                        <span>Jurusan</span>
+                    </a>
+                    <a href="{{ url('/admin/ekskul') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/ekskul*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-volleyball w-5 text-center"></i>
+                        <span>Ekstrakurikuler</span>
+                    </a>
+                    <a href="{{ url('/admin/prestasi') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/prestasi*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-trophy w-5 text-center"></i>
+                        <span>Prestasi</span>
+                    </a>
+                    <a href="{{ url('/admin/profil-sambutan') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/profil-sambutan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-id-card w-5 text-center"></i>
+                        <span>Profil & Sambutan</span>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Pengaturan Sistem</p>
+                <div class="space-y-1">
+                    <a href="{{ url('/admin/user') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/user*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-users-gear w-5 text-center"></i>
+                        <span>Manajemen Akun</span>
+                    </a>
+                    <a href="{{ url('/admin/pengaturan') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/pengaturan*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-gears w-5 text-center"></i>
+                        <span>Pengaturan Sekolah</span>
+                    </a>
+                    <a href="{{ url('/admin/log') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->is('admin/log*') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-clock-rotate-left w-5 text-center"></i>
+                        <span>Log Aktivitas</span>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div class="p-4 border-t border-slate-800">

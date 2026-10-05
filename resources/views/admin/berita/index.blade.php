@@ -1,10 +1,10 @@
-@extends('layouts.admin', ['title' => 'H. Manajemen Berita - Admin SMKN 13 Bandung'])
+@extends('layouts.admin', ['title' => 'Manajemen Berita - Admin SMKN 13 Bandung'])
 
 @section('content')
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">H. Manajemen Berita</h1>
+            <h1 class="text-2xl font-black text-slate-900">Manajemen Berita</h1>
             <p class="text-sm text-slate-500 mt-1">Publikasi warta sekolah, kegiatan ekstrakurikuler, dan informasi prestasi.</p>
         </div>
         <button type="button" onclick="openTambahModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">

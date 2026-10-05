@@ -6,7 +6,7 @@
         <div>
             <h2 class="text-xl font-black text-slate-900 flex items-center space-x-2">
                 <i class="fa-solid fa-clock-rotate-left text-emerald-700"></i>
-                <span>P. Log Aktivitas Sistem</span>
+                <span>Log Aktivitas Sistem</span>
             </h2>
             <p class="text-xs text-slate-500 mt-1">
                 Riwayat jejak audit pencatatan perubahan data, autentikasi, dan aktivitas penting pada sistem CMS.

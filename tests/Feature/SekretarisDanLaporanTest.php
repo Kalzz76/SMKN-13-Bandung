@@ -80,7 +80,7 @@ class SekretarisDanLaporanTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/log');
         $response->assertStatus(200);
-        $response->assertSee('P. Log Aktivitas Sistem');
+        $response->assertSee('Log Aktivitas Sistem');
         $response->assertSee('Pengujian Log');
 
         $responseCari = $this->actingAs($this->admin)->get('/admin/log?cari=Pengujian');

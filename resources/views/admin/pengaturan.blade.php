@@ -1,10 +1,10 @@
-@extends('layouts.admin', ['title' => 'K. Pengaturan Sekolah - Admin SMKN 13 Bandung'])
+@extends('layouts.admin', ['title' => 'Pengaturan Sekolah - Admin SMKN 13 Bandung'])
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">K. Pengaturan Sekolah</h1>
+            <h1 class="text-2xl font-black text-slate-900">Pengaturan Sekolah</h1>
             <p class="text-sm text-slate-500 mt-1">Kelola identitas resmi sekolah, kontak, dan parameter lokasi absensi guru.</p>
         </div>
     </div>

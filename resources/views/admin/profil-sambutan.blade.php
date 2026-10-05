@@ -1,10 +1,10 @@
-@extends('layouts.admin', ['title' => 'L. Profil & Sambutan - Admin SMKN 13 Bandung'])
+@extends('layouts.admin', ['title' => 'Profil & Sambutan - Admin SMKN 13 Bandung'])
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">L. Profil & Sambutan Pimpinan</h1>
+            <h1 class="text-2xl font-black text-slate-900">Profil & Sambutan Pimpinan</h1>
             <p class="text-sm text-slate-500 mt-1">Kelola konten narasi beranda, visi misi, sejarah, dan sambutan kepala sekolah.</p>
         </div>
     </div>

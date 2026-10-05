@@ -1,10 +1,10 @@
-@extends('layouts.admin', ['title' => 'F. Jadwal Pelajaran - Admin SMKN 13 Bandung'])
+@extends('layouts.admin', ['title' => 'Jadwal Pelajaran - Admin SMKN 13 Bandung'])
 
 @section('content')
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">F. Jadwal Pelajaran Sekolah</h1>
+            <h1 class="text-2xl font-black text-slate-900">Jadwal Pelajaran Sekolah</h1>
             <p class="text-sm text-slate-500 mt-1">Matriks jadwal harian (Kelas di kiri, Jam Ke & Waktu di atas)</p>
         </div>
         <button type="button" onclick="openTambahModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
