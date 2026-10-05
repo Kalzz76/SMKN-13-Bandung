@@ -129,18 +129,10 @@
         <h3 class="text-xl font-bold text-slate-900 mb-4">Tambah Akun Pengguna Baru</h3>
         <form method="POST" action="{{ route('admin.user.store') }}" class="space-y-4">
             @csrf
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-                <input type="text" name="name" placeholder="Nama pengguna" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Username (Huruf Kecil Tanpa Spasi)</label>
-                <input type="text" name="username" placeholder="Contoh: refky, admin, staf1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
-            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Role / Peran</label>
-                    <select name="role" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <select id="tambahRole" name="role" onchange="toggleRoleForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="guru">Guru</option>
                         <option value="admin">Administrator</option>
                         <option value="sekretaris">Sekretaris</option>
@@ -154,6 +146,31 @@
                     </select>
                 </div>
             </div>
+
+            <div id="containerNamaGuru">
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru (Belum Punya Akun)</label>
+                <select id="tambahGuruSelect" name="guru_id" onchange="pilihGuruOtomatis(this)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    @if($guruBelumPunyaAkun->isEmpty())
+                        <option value="">Semua guru sudah memiliki akun</option>
+                    @else
+                        <option value="">-- Pilih Guru --</option>
+                        @foreach($guruBelumPunyaAkun as $g)
+                            <option value="{{ $g->id }}" data-nama="{{ $g->nama }}">{{ $g->nama }} (NIP: {{ $g->nip ?? '-' }})</option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <div id="containerNamaBiasa" class="hidden">
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                <input type="text" id="tambahNamaInput" name="name" placeholder="Nama pengguna" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Username (Huruf Kecil Tanpa Spasi)</label>
+                <input type="text" id="tambahUsername" name="username" placeholder="Contoh: refky, admin, staf1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+            </div>
+
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
                 <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
@@ -215,9 +232,45 @@
 <script>
 function openTambahModal() {
     document.getElementById('tambahModal').classList.remove('hidden');
+    toggleRoleForm();
 }
 function closeTambahModal() {
     document.getElementById('tambahModal').classList.add('hidden');
+}
+function toggleRoleForm() {
+    const role = document.getElementById('tambahRole').value;
+    const containerGuru = document.getElementById('containerNamaGuru');
+    const selectGuru = document.getElementById('tambahGuruSelect');
+    const containerBiasa = document.getElementById('containerNamaBiasa');
+    const inputBiasa = document.getElementById('tambahNamaInput');
+
+    if (role === 'guru') {
+        containerGuru.classList.remove('hidden');
+        selectGuru.required = true;
+        selectGuru.disabled = false;
+
+        containerBiasa.classList.add('hidden');
+        inputBiasa.required = false;
+        inputBiasa.disabled = true;
+    } else {
+        containerGuru.classList.add('hidden');
+        selectGuru.required = false;
+        selectGuru.disabled = true;
+
+        containerBiasa.classList.remove('hidden');
+        inputBiasa.required = true;
+        inputBiasa.disabled = false;
+    }
+}
+function pilihGuruOtomatis(select) {
+    const option = select.options[select.selectedIndex];
+    if (!option) return;
+    const nama = option.getAttribute('data-nama');
+    const usernameInput = document.getElementById('tambahUsername');
+    if (nama && !usernameInput.value) {
+        const clean = nama.split(',')[0].trim().split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+        usernameInput.value = clean;
+    }
 }
 function openEditModal(button) {
     const id = button.getAttribute('data-id');

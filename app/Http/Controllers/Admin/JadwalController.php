@@ -39,6 +39,7 @@ class JadwalController extends Controller
         $daftarJadwal = Jadwal::with(['kelas', 'mapel', 'guru', 'ruangan'])
             ->where('hari', $hariTerpilih)
             ->get();
+        $semuaJadwal = Jadwal::with(['kelas', 'mapel', 'guru', 'ruangan'])->get();
 
         $daftarJamPelajaran = JamPelajaran::orderBy('urutan')->get();
         $daftarMapel = Mapel::orderBy('nama')->get();
@@ -50,6 +51,7 @@ class JadwalController extends Controller
             'hariTerpilih',
             'daftarKelas',
             'daftarJadwal',
+            'semuaJadwal',
             'daftarJamPelajaran',
             'daftarMapel',
             'daftarGuru',
