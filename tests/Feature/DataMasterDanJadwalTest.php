@@ -50,7 +50,6 @@ class DataMasterDanJadwalTest extends TestCase
         $responseTambah = $this->actingAs($this->admin)->post('/admin/ruangan', [
             'kode' => 'LAB-IOT',
             'nama' => 'Laboratorium IoT dan Robotika',
-            'kapasitas' => 32,
         ]);
         $responseTambah->assertRedirect('/admin/ruangan');
         $this->assertDatabaseHas('ruangan', [
@@ -62,7 +61,6 @@ class DataMasterDanJadwalTest extends TestCase
         $responseEdit = $this->actingAs($this->admin)->put('/admin/ruangan/' . $ruangan->id, [
             'kode' => 'LAB-IOT-1',
             'nama' => 'Laboratorium IoT dan Robotika Modern',
-            'kapasitas' => 36,
         ]);
         $responseEdit->assertRedirect('/admin/ruangan');
         $this->assertDatabaseHas('ruangan', [
@@ -86,7 +84,7 @@ class DataMasterDanJadwalTest extends TestCase
         $responseTambah = $this->actingAs($this->admin)->post('/admin/mapel', [
             'kode' => 'PWPB',
             'nama' => 'Pemrograman Web dan Perangkat Bergerak',
-            'kelompok' => 'Produktif',
+            'jenis' => 'Produktif',
         ]);
         $responseTambah->assertRedirect('/admin/mapel');
         $this->assertDatabaseHas('mapel', [
@@ -98,7 +96,7 @@ class DataMasterDanJadwalTest extends TestCase
         $responseEdit = $this->actingAs($this->admin)->put('/admin/mapel/' . $mapel->id, [
             'kode' => 'PWPB-1',
             'nama' => 'Pemrograman Web & Mobile Apps',
-            'kelompok' => 'Produktif',
+            'jenis' => 'Produktif',
         ]);
         $responseEdit->assertRedirect('/admin/mapel');
         $this->assertDatabaseHas('mapel', [
@@ -192,6 +190,18 @@ class DataMasterDanJadwalTest extends TestCase
         ]);
         $responseEdit->assertRedirect('/admin/kelas');
         $this->assertDatabaseHas('kelas', ['id' => $kelas->id, 'nama' => 'XI RPL 2 Unggulan']);
+
+        $responseShow = $this->actingAs($this->admin)->get('/admin/kelas/' . $kelas->id);
+        $responseShow->assertStatus(200);
+        $responseShow->assertSee('XI RPL 2 Unggulan');
+
+        $responseStruktur = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id . '/struktur', [
+            'km' => 'Siswa Ketua',
+            'wakil_km' => 'Siswa Wakil',
+            'bendahara_1' => 'Siswa Bendahara 1',
+        ]);
+        $responseStruktur->assertRedirect('/admin/kelas/' . $kelas->id);
+        $this->assertDatabaseHas('kelas', ['id' => $kelas->id]);
 
         $kelasTerpakai = Kelas::where('nama', 'XII RPL 1')->first();
         $responseHapusTerpakai = $this->actingAs($this->admin)->delete('/admin/kelas/' . $kelasTerpakai->id);

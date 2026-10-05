@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\LogAktivitasController;
 use App\Http\Controllers\Admin\MapelController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PrestasiController;
+use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Admin\ProfilSekolahController;
 use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\Admin\SiswaController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Guru\AbsensiGuruController;
 use App\Http\Controllers\Guru\AbsensiSiswaController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfilController as UserProfilController;
 use App\Http\Controllers\PublikController;
 use App\Http\Controllers\Sekretaris\DashboardController as SekretarisDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +38,16 @@ Route::get('/kontak', [PublikController::class, 'kontak'])->name('publik.kontak'
 Route::get('/ekstrakurikuler', [PublikController::class, 'ekstrakurikuler'])->name('publik.ekstrakurikuler');
 Route::get('/prestasi', [PublikController::class, 'prestasi'])->name('publik.prestasi');
 
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/register', [LoginController::class, 'register'])->name('register');
+Route::get('/api/check-username', [LoginController::class, 'checkUsername'])->name('api.check-username');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/akun/profil', [UserProfilController::class, 'index'])->name('profil.index');
+    Route::put('/akun/profil', [UserProfilController::class, 'update'])->name('profil.update');
+});
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -59,7 +69,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+    Route::get('/kelas/{id}', [KelasController::class, 'show'])->name('kelas.show');
     Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
+    Route::put('/kelas/{id}/struktur', [KelasController::class, 'updateStruktur'])->name('kelas.update-struktur');
     Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
@@ -120,6 +132,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/laporan/siswa/cetak', [LaporanController::class, 'cetakSiswa'])->name('laporan.siswa.cetak');
 
     Route::get('/log', [LogAktivitasController::class, 'index'])->name('log.index');
+
+    Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+    Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
 });
 
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {

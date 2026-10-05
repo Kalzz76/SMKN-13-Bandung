@@ -31,13 +31,11 @@ class RuanganController extends Controller
         $request->validate([
             'kode' => 'required|string|max:50|unique:ruangan,kode',
             'nama' => 'required|string|max:255',
-            'kapasitas' => 'required|integer|min:1',
         ]);
 
         $ruangan = Ruangan::create([
             'kode' => strtoupper($request->kode),
             'nama' => $request->nama,
-            'kapasitas' => $request->kapasitas,
         ]);
 
         LogAktivitas::catat('Tambah Ruangan', "Menambahkan ruangan '{$ruangan->nama}' ({$ruangan->kode})");
@@ -52,13 +50,11 @@ class RuanganController extends Controller
         $request->validate([
             'kode' => 'required|string|max:50|unique:ruangan,kode,' . $id,
             'nama' => 'required|string|max:255',
-            'kapasitas' => 'required|integer|min:1',
         ]);
 
         $ruangan->update([
             'kode' => strtoupper($request->kode),
             'nama' => $request->nama,
-            'kapasitas' => $request->kapasitas,
         ]);
 
         LogAktivitas::catat('Ubah Ruangan', "Memperbarui ruangan '{$ruangan->nama}' ({$ruangan->kode})");

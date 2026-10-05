@@ -18,7 +18,7 @@ class MapelController extends Controller
             $query->where(function ($q) use ($cari) {
                 $q->where('kode', 'like', "%{$cari}%")
                   ->orWhere('nama', 'like', "%{$cari}%")
-                  ->orWhere('kelompok', 'like', "%{$cari}%");
+                  ->orWhere('jenis', 'like', "%{$cari}%");
             });
         }
 
@@ -32,13 +32,13 @@ class MapelController extends Controller
         $request->validate([
             'kode' => 'required|string|max:50|unique:mapel,kode',
             'nama' => 'required|string|max:255',
-            'kelompok' => 'required|in:Produktif,Normatif,Adaptif',
+            'jenis' => 'required|in:Umum,Produktif',
         ]);
 
         $mapel = Mapel::create([
             'kode' => strtoupper($request->kode),
             'nama' => $request->nama,
-            'kelompok' => $request->kelompok,
+            'jenis' => $request->jenis,
         ]);
 
         LogAktivitas::catat('Tambah Mapel', "Menambahkan mata pelajaran '{$mapel->nama}' ({$mapel->kode})");
@@ -53,13 +53,13 @@ class MapelController extends Controller
         $request->validate([
             'kode' => 'required|string|max:50|unique:mapel,kode,' . $id,
             'nama' => 'required|string|max:255',
-            'kelompok' => 'required|in:Produktif,Normatif,Adaptif',
+            'jenis' => 'required|in:Umum,Produktif',
         ]);
 
         $mapel->update([
             'kode' => strtoupper($request->kode),
             'nama' => $request->nama,
-            'kelompok' => $request->kelompok,
+            'jenis' => $request->jenis,
         ]);
 
         LogAktivitas::catat('Ubah Mapel', "Memperbarui mata pelajaran '{$mapel->nama}' ({$mapel->kode})");

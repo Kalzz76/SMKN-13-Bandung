@@ -7,6 +7,7 @@ use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\LogAktivitas;
 use App\Models\Ruangan;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 
 class KelasController extends Controller
@@ -74,6 +75,65 @@ class KelasController extends Controller
         LogAktivitas::catat('Ubah Kelas', "Memperbarui kelas '{$kelas->nama}'");
 
         return redirect()->route('admin.kelas.index')->with('sukses', 'Data kelas berhasil diperbarui.');
+    }
+
+    public function show(Request $request, $id)
+    {
+        $kelas = Kelas::with(['ruangan', 'waliKelas', 'siswa' => function ($q) {
+            $q->orderBy('nama');
+        }])->findOrFail($id);
+
+        $daftarRuangan = Ruangan::orderBy('kode')->get();
+        $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+
+        return view('admin.kelas.show', compact('kelas', 'daftarRuangan', 'daftarGuru'));
+    }
+
+    public function updateStruktur(Request $request, $id)
+    {
+        $kelas = Kelas::with('siswa')->findOrFail($id);
+
+        $validated = $request->validate([
+            'km' => 'nullable|string|max:255',
+            'wakil_km' => 'nullable|string|max:255',
+            'bendahara_1' => 'nullable|string|max:255',
+            'bendahara_2' => 'nullable|string|max:255',
+            'sekretaris_1' => 'nullable|string|max:255',
+            'sekretaris_2' => 'nullable|string|max:255',
+            'pj_keagamaan' => 'nullable|string|max:255',
+            'pj_keamanan' => 'nullable|string|max:255',
+        ]);
+
+        $kelas->struktur = $validated;
+        $kelas->save();
+
+        Siswa::where('id_kelas', $kelas->id)->update(['jabatan' => 'Anggota']);
+
+        $mapping = [
+            'Ketua Murid' => $validated['km'] ?? null,
+            'Wakil Ketua Murid' => $validated['wakil_km'] ?? null,
+            'Bendahara 1' => $validated['bendahara_1'] ?? null,
+            'Bendahara 2' => $validated['bendahara_2'] ?? null,
+            'Sekretaris 1' => $validated['sekretaris_1'] ?? null,
+            'Sekretaris 2' => $validated['sekretaris_2'] ?? null,
+            'PJ Keagamaan' => $validated['pj_keagamaan'] ?? null,
+            'PJ Keamanan' => $validated['pj_keamanan'] ?? null,
+        ];
+
+        foreach ($mapping as $jabatan => $nama) {
+            if (!empty($nama)) {
+                Siswa::where('id_kelas', $kelas->id)
+                    ->where(function ($q) use ($nama) {
+                        $q->where('nama', $nama)
+                          ->orWhere('id', $nama);
+                    })
+                    ->update(['jabatan' => $jabatan]);
+            }
+        }
+
+        LogAktivitas::catat('Kelola Struktur Kelas', "Memperbarui struktur organisasi kelas '{$kelas->nama}'");
+
+        return redirect()->route('admin.kelas.show', $kelas->id)->with('sukses', 'Struktur organisasi kelas berhasil diperbarui.');
     }
 
     public function destroy($id)

@@ -61,9 +61,9 @@
                             </a>
                         @endif
                     @else
-                        <button type="button" onclick="openLoginModal()" class="bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-xl text-sm font-semibold transition shadow border border-emerald-600">
+                        <a href="{{ route('login') }}" class="bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-xl text-sm font-semibold transition shadow border border-emerald-600 inline-flex items-center">
                             <i class="fa-solid fa-user-shield mr-2"></i> Login Portal
-                        </button>
+                        </a>
                     @endauth
                 </div>
 
@@ -94,9 +94,9 @@
                         <a href="{{ route('sekretaris.dashboard') }}" class="block w-full text-center bg-amber-600 py-2.5 rounded-xl font-bold">Portal Sekretaris</a>
                     @endif
                 @else
-                    <button type="button" onclick="openLoginModal()" class="w-full text-center bg-emerald-700 py-2.5 rounded-xl font-bold">
+                    <a href="{{ route('login') }}" class="block w-full text-center bg-emerald-700 py-2.5 rounded-xl font-bold">
                         <i class="fa-solid fa-user-shield mr-2"></i> Login Portal
-                    </button>
+                    </a>
                 @endauth
             </div>
         </div>

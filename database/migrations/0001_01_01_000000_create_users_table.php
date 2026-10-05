@@ -13,8 +13,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
+            $table->text('alamat')->nullable();
             $table->string('role');
             $table->string('status')->default('Aktif');
+            $table->string('tema')->default('light');
             $table->rememberToken();
             $table->timestamps();
         });

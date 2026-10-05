@@ -5,7 +5,7 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <h1 class="text-2xl font-black text-slate-900">Mata Pelajaran</h1>
-            <p class="text-sm text-slate-500 mt-1">Struktur kurikulum mata pelajaran produktif, normatif, dan adaptif.</p>
+            <p class="text-sm text-slate-500 mt-1">Struktur kurikulum mata pelajaran umum dan produktif.</p>
         </div>
         <button type="button" onclick="openTambahModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
             <i class="fa-solid fa-plus"></i>
@@ -17,7 +17,7 @@
         <form method="GET" action="{{ route('admin.mapel.index') }}" class="flex flex-col sm:flex-row gap-4 mb-6">
             <div class="relative flex-grow">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari kode, nama, atau kelompok mapel..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari kode, nama, atau jenis mapel..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
             </div>
             <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm">
                 Cari
@@ -42,7 +42,7 @@
                             <th class="p-3.5 rounded-l-xl">No</th>
                             <th class="p-3.5">Kode Mapel</th>
                             <th class="p-3.5">Nama Mata Pelajaran</th>
-                            <th class="p-3.5">Kelompok</th>
+                            <th class="p-3.5">Jenis</th>
                             <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -53,8 +53,8 @@
                                 <td class="p-3.5 font-bold text-emerald-700">{{ $m->kode }}</td>
                                 <td class="p-3.5 font-bold text-slate-900">{{ $m->nama }}</td>
                                 <td class="p-3.5">
-                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase">
-                                        {{ $m->kelompok }}
+                                    <span class="{{ $m->jenis === 'Produktif' ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800' }} text-xs font-bold px-2.5 py-1 rounded-full uppercase">
+                                        {{ $m->jenis }}
                                     </span>
                                 </td>
                                 <td class="p-3.5 text-right whitespace-nowrap">
@@ -63,7 +63,7 @@
                                             data-id="{{ $m->id }}"
                                             data-kode="{{ $m->kode }}"
                                             data-nama="{{ $m->nama }}"
-                                            data-kelompok="{{ $m->kelompok }}"
+                                            data-jenis="{{ $m->jenis }}"
                                             onclick="openEditModal(this)"
                                             class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
@@ -107,11 +107,10 @@
                 <input type="text" name="nama" placeholder="Contoh: Dasar Program Keahlian" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelompok Mata Pelajaran</label>
-                <select name="kelompok" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Mata Pelajaran</label>
+                <select name="jenis" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <option value="Umum">Umum</option>
                     <option value="Produktif">Produktif</option>
-                    <option value="Normatif">Normatif</option>
-                    <option value="Adaptif">Adaptif</option>
                 </select>
             </div>
             <div class="flex justify-end space-x-3 pt-3">
@@ -140,11 +139,10 @@
                 <input type="text" id="editNama" name="nama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelompok Mata Pelajaran</label>
-                <select id="editKelompok" name="kelompok" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Mata Pelajaran</label>
+                <select id="editJenis" name="jenis" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <option value="Umum">Umum</option>
                     <option value="Produktif">Produktif</option>
-                    <option value="Normatif">Normatif</option>
-                    <option value="Adaptif">Adaptif</option>
                 </select>
             </div>
             <div class="flex justify-end space-x-3 pt-3">
@@ -166,12 +164,12 @@ function openEditModal(button) {
     const id = button.getAttribute('data-id');
     const kode = button.getAttribute('data-kode');
     const nama = button.getAttribute('data-nama');
-    const kelompok = button.getAttribute('data-kelompok');
+    const jenis = button.getAttribute('data-jenis');
 
     document.getElementById('editForm').action = '/admin/mapel/' + id;
     document.getElementById('editKode').value = kode;
     document.getElementById('editNama').value = nama;
-    document.getElementById('editKelompok').value = kelompok;
+    document.getElementById('editJenis').value = jenis;
 
     document.getElementById('editModal').classList.remove('hidden');
 }

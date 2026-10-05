@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nip')->nullable();
             $table->string('jenis')->default('Guru');
+            $table->foreignId('id_mapel')->nullable()->constrained('mapel')->nullOnDelete();
             $table->string('jabatan')->nullable();
             $table->string('mapel_utama')->nullable();
             $table->string('foto')->nullable();

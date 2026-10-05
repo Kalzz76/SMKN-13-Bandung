@@ -13,6 +13,10 @@ class Kelas extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'struktur' => 'array',
+    ];
+
     public function ruangan()
     {
         return $this->belongsTo(Ruangan::class, 'id_ruangan');

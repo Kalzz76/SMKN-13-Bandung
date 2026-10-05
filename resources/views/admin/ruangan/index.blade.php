@@ -42,7 +42,6 @@
                             <th class="p-3.5 rounded-l-xl">No</th>
                             <th class="p-3.5">Kode Ruang</th>
                             <th class="p-3.5">Nama Ruangan</th>
-                            <th class="p-3.5">Kapasitas</th>
                             <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -52,18 +51,12 @@
                                 <td class="p-3.5 font-medium text-slate-400">{{ $daftarRuangan->firstItem() + $index }}</td>
                                 <td class="p-3.5 font-bold text-emerald-700">{{ $r->kode }}</td>
                                 <td class="p-3.5 font-bold text-slate-900">{{ $r->nama }}</td>
-                                <td class="p-3.5 text-slate-600 text-xs">
-                                    <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-semibold">
-                                        {{ $r->kapasitas }} siswa
-                                    </span>
-                                </td>
                                 <td class="p-3.5 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end space-x-2">
                                         <button type="button"
                                             data-id="{{ $r->id }}"
                                             data-kode="{{ $r->kode }}"
                                             data-nama="{{ $r->nama }}"
-                                            data-kapasitas="{{ $r->kapasitas }}"
                                             onclick="openEditModal(this)"
                                             class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
@@ -106,10 +99,6 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Ruangan</label>
                 <input type="text" name="nama" placeholder="Contoh: Laboratorium Komputer RPL" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kapasitas Siswa</label>
-                <input type="number" name="kapasitas" placeholder="36" min="1" max="1000" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-            </div>
             <div class="flex justify-end space-x-3 pt-3">
                 <button type="button" onclick="closeTambahModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Batal</button>
                 <button type="submit" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-sm">Simpan Ruangan</button>
@@ -135,10 +124,6 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Ruangan</label>
                 <input type="text" id="editNama" name="nama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kapasitas Siswa</label>
-                <input type="number" id="editKapasitas" name="kapasitas" min="1" max="1000" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-            </div>
             <div class="flex justify-end space-x-3 pt-3">
                 <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Batal</button>
                 <button type="submit" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-sm">Simpan Perubahan</button>
@@ -158,12 +143,10 @@ function openEditModal(button) {
     const id = button.getAttribute('data-id');
     const kode = button.getAttribute('data-kode');
     const nama = button.getAttribute('data-nama');
-    const kapasitas = button.getAttribute('data-kapasitas');
 
     document.getElementById('editForm').action = '/admin/ruangan/' + id;
     document.getElementById('editKode').value = kode;
     document.getElementById('editNama').value = nama;
-    document.getElementById('editKapasitas').value = kapasitas;
 
     document.getElementById('editModal').classList.remove('hidden');
 }

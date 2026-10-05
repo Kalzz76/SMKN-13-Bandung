@@ -23,6 +23,14 @@ class AutentikasiDanRoleTest extends TestCase
         $response->assertSee('SMK Negeri 13 Bandung');
     }
 
+    public function test_halaman_login_tersendiri_dapat_diakses(): void
+    {
+        $response = $this->get('/login');
+        $response->assertStatus(200);
+        $response->assertSee('SMK Negeri 13 Bandung');
+        $response->assertSee('Masuk');
+    }
+
     public function test_tamu_tidak_dapat_mengakses_dashboard_admin(): void
     {
         $response = $this->get('/admin');

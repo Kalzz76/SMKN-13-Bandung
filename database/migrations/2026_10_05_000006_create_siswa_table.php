@@ -11,7 +11,9 @@ return new class extends Migration
         Schema::create('siswa', function (Blueprint $table) {
             $table->id();
             $table->string('nis')->unique();
+            $table->string('nisn')->nullable();
             $table->string('nama');
+            $table->string('jabatan')->nullable()->default('Anggota');
             $table->string('jenis_kelamin');
             $table->foreignId('id_kelas')->constrained('kelas')->restrictOnDelete();
             $table->string('tahun_ajaran');

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('nama')->unique();
             $table->foreignId('id_ruangan')->nullable()->constrained('ruangan')->nullOnDelete();
             $table->foreignId('id_wali_kelas')->nullable()->constrained('guru')->nullOnDelete();
+            $table->json('struktur')->nullable();
             $table->timestamps();
         });
     }

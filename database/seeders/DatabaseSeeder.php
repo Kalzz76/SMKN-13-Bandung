@@ -27,8 +27,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Administrator',
             'username' => 'admin',
             'password' => Hash::make('admin123'),
+            'alamat' => 'Jl. Soekarno-Hatta Km. 10, Kota Bandung',
             'role' => 'admin',
             'status' => 'Aktif',
+            'tema' => 'light',
         ]);
 
         $sekretaris = User::create([
@@ -112,10 +114,10 @@ class DatabaseSeeder extends Seeder
             JamPelajaran::create($jp);
         }
 
-        $ruang52 = Ruangan::create(['kode' => 'R.52', 'nama' => 'Ruang Teori 52', 'kapasitas' => 36]);
-        $ruang53 = Ruangan::create(['kode' => 'R.53', 'nama' => 'Ruang Teori 53', 'kapasitas' => 36]);
-        $ruangLab = Ruangan::create(['kode' => 'LAB-RPL', 'nama' => 'Laboratorium Komputer RPL', 'kapasitas' => 40]);
-        Ruangan::create(['kode' => 'LAP', 'nama' => 'Lapangan Olahraga', 'kapasitas' => 500]);
+        $ruang52 = Ruangan::create(['kode' => 'R.52', 'nama' => 'Ruang Teori 52']);
+        $ruang53 = Ruangan::create(['kode' => 'R.53', 'nama' => 'Ruang Teori 53']);
+        $ruangLab = Ruangan::create(['kode' => 'LAB-RPL', 'nama' => 'Laboratorium Komputer RPL']);
+        Ruangan::create(['kode' => 'LAP', 'nama' => 'Lapangan Olahraga']);
 
         $guruRefky = Guru::create([
             'user_id' => $userRefky->id,
@@ -181,6 +183,10 @@ class DatabaseSeeder extends Seeder
             'nama' => 'XII RPL 1',
             'id_ruangan' => $ruangLab->id,
             'id_wali_kelas' => $guruRefky->id,
+            'struktur' => [
+                'km' => 'Rizky Pratama',
+                'bendahara_1' => 'Siti Nurhaliza',
+            ],
         ]);
 
         Siswa::create([
@@ -190,6 +196,7 @@ class DatabaseSeeder extends Seeder
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelasXII->id,
             'tahun_ajaran' => '2026/2027',
+            'jabatan' => 'Ketua Murid',
         ]);
 
         Siswa::create([
@@ -199,6 +206,7 @@ class DatabaseSeeder extends Seeder
             'jenis_kelamin' => 'P',
             'id_kelas' => $kelasXII->id,
             'tahun_ajaran' => '2026/2027',
+            'jabatan' => 'Bendahara 1',
         ]);
 
         Siswa::create([
@@ -208,24 +216,25 @@ class DatabaseSeeder extends Seeder
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelasX1->id,
             'tahun_ajaran' => '2026/2027',
+            'jabatan' => 'Anggota',
         ]);
 
         $mapelDpk = Mapel::create([
             'kode' => 'DPK',
             'nama' => 'Dasar Program Keahlian',
-            'kelompok' => 'Produktif',
+            'jenis' => 'Produktif',
         ]);
 
         $mapelMath = Mapel::create([
             'kode' => 'MATH',
             'nama' => 'Matematika',
-            'kelompok' => 'Normatif',
+            'jenis' => 'Umum',
         ]);
 
         Mapel::create([
             'kode' => 'BING',
             'nama' => 'Bahasa Inggris',
-            'kelompok' => 'Adaptif',
+            'jenis' => 'Umum',
         ]);
 
         Jurusan::create([

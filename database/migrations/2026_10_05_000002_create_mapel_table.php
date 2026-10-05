@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode')->unique();
             $table->string('nama');
-            $table->string('kelompok');
+            $table->string('jenis');
             $table->timestamps();
         });
     }
