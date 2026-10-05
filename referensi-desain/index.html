@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMKN 13 Bandung - Portal & CMS Sekolah</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- HTML5 QR Code Scanner Library for Teacher Attendance -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .portal-view { display: none; }
+        .portal-view.active { display: flex; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- ================= VIEW 1: PUBLIC PORTAL (SEPARATE FROM LOGIN/DASHBOARD) ================= -->
+    <div id="viewPublicPortal" class="portal-view active flex-col min-h-screen flex-grow">
+        <!-- Navigation Bar for Public -->
+        <nav class="bg-emerald-900 text-white shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPublicPage('home')">
+                        <div class="bg-white p-2 rounded-xl text-emerald-900 font-black text-xl shadow">13</div>
+                        <div>
+                            <span class="text-lg font-bold tracking-tight block leading-tight">SMKN 13 BANDUNG</span>
+                            <span class="text-xs text-emerald-200 tracking-wider">Official Portal & CMS</span>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                        <button onclick="switchPublicPage('home')" class="hover:text-emerald-200 transition">Beranda</button>
+                        <button onclick="switchPublicPage('profil')" class="hover:text-emerald-200 transition">Profil & Sejarah</button>
+                        <button onclick="switchPublicPage('jurusan')" class="hover:text-emerald-200 transition">Jurusan</button>
+                        <button onclick="switchPublicPage('berita')" class="hover:text-emerald-200 transition">Berita & Informasi</button>
+                        <button onclick="switchPublicPage('galeri')" class="hover:text-emerald-200 transition">Galeri & Fasilitas</button>
+                        <button onclick="switchPublicPage('kontak')" class="hover:text-emerald-200 transition">Kontak</button>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="openLoginModal()" class="bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-xl text-sm font-semibold transition shadow border border-emerald-600">
+                            <i class="fa-solid fa-user-shield mr-2"></i> Login Portal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Public Pages Container -->
+        <div id="publicContentContainer" class="flex-grow flex flex-col">
+            <!-- 1. HOME PAGE -->
+            <div id="pubPage_home" class="page-section active flex-grow">
+                <div class="relative bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-900 text-white py-28 px-4 overflow-hidden">
+                    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    <div class="max-w-7xl mx-auto relative z-10 text-center">
+                        <span class="bg-emerald-800/80 text-emerald-200 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest border border-emerald-600/30">Unggul, Berkarakter & Berdaya Saing</span>
+                        <h1 class="text-4xl sm:text-6xl font-extrabold mt-4 mb-6 tracking-tight">SMK Negeri 13 Bandung</h1>
+                        <p class="text-lg sm:text-xl text-emerald-100 max-w-2xl mx-auto mb-8 font-light">Pusat pendidikan kejuruan unggulan yang mencetak generasi kompeten di bidang teknologi, siap kerja, mandiri, dan berakhlak mulia.</p>
+                        <div class="flex justify-center gap-4 flex-wrap">
+                            <button onclick="switchPublicPage('jurusan')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3.5 rounded-xl shadow-lg transition">Jelajahi Jurusan</button>
+                            <button onclick="switchPublicPage('profil')" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-xl backdrop-blur border border-white/20 transition">Tentang Kami</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sambutan Kepala Sekolah -->
+                <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                        <div class="md:col-span-1 text-center">
+                            <div class="relative inline-block">
+                                <img src="https://placehold.co/400x500/065f46/ffffff?text=Kepala+Sekolah" alt="Kepala Sekolah" class="rounded-2xl shadow-md w-full max-w-xs mx-auto object-cover h-80">
+                                <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-emerald-900 text-white text-xs px-4 py-1.5 rounded-full shadow font-bold whitespace-nowrap">Kepala SMKN 13 Bandung</div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 space-y-4">
+                            <h2 class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Sambutan Pimpinan</h2>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Mewujudkan Pendidikan Vokasi Berkualitas Tinggi</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                "Assalamualaikum Warahmatullahi Wabarakatuh. Selamat datang di portal resmi SMK Negeri 13 Bandung. Kami berkomitmen meningkatkan mutu pelayanan pendidikan, adaptif terhadap perkembangan teknologi industri terkini, serta menanamkan karakter luhur kepada seluruh peserta didik."
+                            </p>
+                            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Dr. H. Ahmad Supriyadi, M.Pd.</h4>
+                                    <p class="text-xs text-slate-500">Kepala SMK Negeri 13 Bandung</p>
+                                </div>
+                                <div class="text-emerald-800 font-serif italic text-2xl">Ahmad Supriyadi</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ringkasan Berita Terkini -->
+                <section class="py-16 bg-slate-100/50">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex justify-between items-center mb-10">
+                            <div>
+                                <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Warta Sekolah</h2>
+                                <h3 class="text-3xl font-bold text-slate-900 mt-1">Berita & Informasi Terbaru</h3>
+                            </div>
+                            <button onclick="switchPublicPage('berita')" class="text-emerald-700 hover:text-emerald-800 font-bold text-sm flex items-center space-x-1"><span>Lihat Semua</span><i class="fa-solid fa-arrow-right ml-1"></i></button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="homeBeritaGrid"></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 2. PROFIL & SEJARAH PAGE -->
+            <div id="pubPage_profil" class="page-section flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 w-full">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Profil Sekolah</h2>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">Sejarah, Visi & Misi SMKN 13 Bandung</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-landmark"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">Sejarah Singkat SMKN 13 Bandung</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Berdiri sejak tahun 2004 di Jalan Soekarno-Hatta Kota Bandung, SMK Negeri 13 Bandung konsisten menjadi rujukan pendidikan kejuruan bermutu tinggi. Dengan berfokus pada bidang teknologi informasi, rekayasa perangkat lunak, dan telekomunikasi, sekolah ini telah melahirkan ribuan alumni yang sukses berkarier di industri multinasional maupun wirausaha mandiri.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-bullseye"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">Visi & Misi</h4>
+                        <div class="space-y-3 text-sm text-slate-600">
+                            <div>
+                                <strong class="text-slate-900 block">Visi:</strong>
+                                <span>Menjadi pusat pendidikan kejuruan unggulan yang menghasilkan lulusan cerdas, kompetitif, berkarakter Pancasila, dan berwawasan global.</span>
+                            </div>
+                            <div>
+                                <strong class="text-slate-900 block">Misi:</strong>
+                                <ul class="list-disc pl-5 space-y-1 mt-1">
+                                    <li>Menyelenggarakan pembelajaran berbasis teknologi industri modern.</li>
+                                    <li>Menjalin kemitraan strategis dengan Dunia Usaha dan Dunia Industri (DUDI).</li>
+                                    <li>Membentuk karakter disiplin, berakhlak mulia, dan siap kerja.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Struktur Organisasi -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Struktur Organisasi Sekolah</h4>
+                    <p class="text-slate-500 text-sm mb-6">Bagan manajemen kepemimpinan SMKN 13 Bandung</p>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-dashed border-slate-300 inline-block w-full">
+                        <img src="https://placehold.co/900x400/e2e8f0/475569?text=Bagan+Struktur+Organisasi+SMKN+13+Bandung" alt="Struktur Organisasi" class="mx-auto rounded-lg max-h-80 object-contain">
+                    </div>
+                </div>
+
+                <!-- Guru & Staff Section -->
+                <div>
+                    <div class="text-center max-w-2xl mx-auto mb-8">
+                        <h3 class="text-2xl font-bold text-slate-900">Tenaga Pendidik & Staff Pengajar</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6" id="profilGuruGrid"></div>
+                </div>
+            </div>
+
+            <!-- 3. JURUSAN PAGE -->
+            <div id="pubPage_jurusan" class="page-section flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 w-full">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Program Keahlian</h2>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">Jurusan di SMKN 13 Bandung</h3>
+                    <p class="text-slate-500 text-sm mt-2">Pilihan kompetensi keahlian yang disesuaikan dengan kebutuhan dunia industri terkini.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="pubJurusanGrid"></div>
+            </div>
+
+            <!-- 4. BERITA & INFORMASI PAGE -->
+            <div id="pubPage_berita" class="page-section flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 w-full">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Warta & Informasi</h2>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">Berita, Kegiatan & Prestasi Sekolah</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="pubBeritaGrid"></div>
+            </div>
+
+            <!-- 5. GALERI & FASILITAS PAGE -->
+            <div id="pubPage_galeri" class="page-section flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 w-full">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Dokumentasi Visual</h2>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">Galeri Kegiatan & Fasilitas Sekolah</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" id="pubGaleriGrid"></div>
+            </div>
+
+            <!-- 6. KONTAK PAGE -->
+            <div id="pubPage_kontak" class="page-section flex-grow py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 w-full">
+                <div class="text-center max-w-2xl mx-auto">
+                    <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Hubungi Kami</h2>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">Informasi Kontak & Lokasi</h3>
+                </div>
+                <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl flex-shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Alamat Kampus</h4>
+                                <p class="text-sm text-slate-600 mt-1">Jl. Soekarno-Hatta Km. 10 Gedebage, Kota Bandung, Jawa Barat 40286</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl flex-shrink-0"><i class="fa-solid fa-envelope"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Email Resmi</h4>
+                                <p class="text-sm text-slate-600 mt-1">info@smkn13bandung.sch.id</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl flex-shrink-0"><i class="fa-solid fa-phone"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Nomor Telepon</h4>
+                                <p class="text-sm text-slate-600 mt-1">(022) 7801234 / 7805678</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-100 rounded-2xl p-6 flex flex-col justify-center text-center">
+                        <div class="text-emerald-800 font-bold text-lg mb-2">Jam Operasional Layanan</div>
+                        <p class="text-sm text-slate-600">Senin - Jumat: 07.00 - 16.00 WIB</p>
+                        <p class="text-sm text-slate-600 mt-1">Sabtu - Minggu: Libur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Public Footer -->
+        <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold">13</div>
+                        <span class="text-white font-bold text-lg">SMKN 13 Bandung</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung, Jawa Barat.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-3">Tautan Cepat</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><button onclick="switchPublicPage('profil')" class="hover:text-emerald-400">Profil Sekolah</button></li>
+                        <li><button onclick="switchPublicPage('jurusan')" class="hover:text-emerald-400">Jurusan Keahlian</button></li>
+                        <li><button onclick="switchPublicPage('berita')" class="hover:text-emerald-400">Berita Terkini</button></li>
+                        <li><button onclick="switchPublicPage('galeri')" class="hover:text-emerald-400">Galeri Fasilitas</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-3">Jam Operasional</h4>
+                    <p class="text-sm">Senin - Jumat: 07.00 - 16.00 WIB</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-3">Kontak</h4>
+                    <p class="text-sm">Email: info@smkn13bandung.sch.id</p>
+                    <p class="text-sm mt-1">Telp: (022) 7801234</p>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-slate-800 text-center text-xs">
+                &copy; 2026 SMK Negeri 13 Bandung. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- ================= VIEW 2: ADMIN DASHBOARD (SIDEBAR LAYOUT) ================= -->
+    <div id="viewAdmin" class="portal-view flex-col md:flex-row flex-grow min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0">
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold">13</div>
+                    <div>
+                        <span class="text-white font-bold block text-sm">ADMINISTRATOR</span>
+                        <span class="text-xs text-slate-400">CMS SMKN 13 Bandung</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-grow overflow-y-auto py-4 px-3 space-y-1 text-sm">
+                <button onclick="switchAdminTab('barcode')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition bg-emerald-700 text-white flex items-center space-x-3"><i class="fa-solid fa-qrcode w-5"></i><span>Barcode Absensi</span></button>
+                <button onclick="switchAdminTab('siswa')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-user-graduate w-5"></i><span>A. Data Siswa</span></button>
+                <button onclick="switchAdminTab('manajemenKelas')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-chalkboard w-5"></i><span>B. Manajemen Kelas</span></button>
+                <button onclick="switchAdminTab('guru')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-chalkboard-user w-5"></i><span>C. Data Guru</span></button>
+                <button onclick="switchAdminTab('ruangan')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-door-open w-5"></i><span>D. Data Ruangan</span></button>
+                <button onclick="switchAdminTab('mapel')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-book w-5"></i><span>E. Mata Pelajaran</span></button>
+                <button onclick="switchAdminTab('jadwal')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-calendar-days w-5"></i><span>F. Jadwal Pelajaran</span></button>
+                <button onclick="switchAdminTab('rekap')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-clipboard-user w-5"></i><span>G. Laporan Absensi</span></button>
+                <button onclick="switchAdminTab('berita')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-newspaper w-5"></i><span>H. Berita</span></button>
+                <button onclick="switchAdminTab('galeri')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-images w-5"></i><span>I. Galeri & Fasilitas</span></button>
+                <button onclick="switchAdminTab('akun')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-users-gear w-5"></i><span>J. Manajemen Akun</span></button>
+                <button onclick="switchAdminTab('pengaturan')" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid fa-gears w-5"></i><span>K. Pengaturan Sekolah</span></button>
+            </div>
+            <div class="p-4 border-t border-slate-800">
+                <button onclick="logout()" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Keluar ke Portal</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="flex-grow p-6 sm:p-10 overflow-y-auto">
+            <!-- 1. Barcode Menu -->
+            <div id="adminTab_barcode" class="admin-tab-content space-y-6">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Generator Barcode Absensi Guru</h3>
+                    <p class="text-sm text-slate-500 mb-6">Pilih guru untuk menghasilkan barcode absensi unik.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru</label>
+                                <select id="selectGuruForBarcode" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"></select>
+                            </div>
+                            <button onclick="generateTeacherBarcode()" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow transition">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Buat Barcode Absensi
+                            </button>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-center">
+                            <div id="qrcodeContainer" class="bg-white p-4 rounded-xl shadow-sm mb-4 inline-block min-h-[160px] min-w-[160px] flex items-center justify-center">
+                                <span class="text-xs text-slate-400">Barcode tampil di sini</span>
+                            </div>
+                            <p id="barcodeInfoLabel" class="text-sm font-bold text-slate-800"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- A. Siswa -->
+            <div id="adminTab_siswa" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">A. Data Siswa</h3>
+                        <button onclick="openSiswaModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-plus mr-2"></i>Tambah Siswa</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3 rounded-l-xl">No</th>
+                                    <th class="p-3">NIS/NISN</th>
+                                    <th class="p-3">Nama Lengkap</th>
+                                    <th class="p-3">L/P</th>
+                                    <th class="p-3">Kelas</th>
+                                    <th class="p-3">Tahun Ajaran</th>
+                                    <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminSiswaTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B. Manajemen Kelas -->
+            <div id="adminTab_manajemenKelas" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">B. Manajemen Kelas</h3>
+                        <button onclick="openKelasModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-plus mr-2"></i>Tambah Kelas</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3 rounded-l-xl">Nama Kelas</th>
+                                    <th class="p-3">Ruangan</th>
+                                    <th class="p-3">Wali Kelas</th>
+                                    <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminKelasTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- C. Data Guru -->
+            <div id="adminTab_guru" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">C. Data Guru & Staff</h3>
+                        <button onclick="openGuruModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-user-plus mr-2"></i>Tambah Guru</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="adminGuruGrid"></div>
+                </div>
+            </div>
+
+            <!-- D. Data Ruangan -->
+            <div id="adminTab_ruangan" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">D. Data Ruangan</h3>
+                        <button onclick="openRuanganModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-plus mr-2"></i>Tambah Ruangan</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3 rounded-l-xl">Kode Ruang</th>
+                                    <th class="p-3">Nama Ruangan</th>
+                                    <th class="p-3">Kapasitas</th>
+                                    <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminRuanganTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E. Mata Pelajaran -->
+            <div id="adminTab_mapel" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">E. Mata Pelajaran</h3>
+                        <button onclick="openMapelModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-plus mr-2"></i>Tambah Mapel</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3 rounded-l-xl">Kode Mapel</th>
+                                    <th class="p-3">Nama Mata Pelajaran</th>
+                                    <th class="p-3">Kelompok</th>
+                                    <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminMapelTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F. Jadwal Pelajaran (Matrix Layout matching image reference) -->
+            <div id="adminTab_jadwal" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">F. Jadwal Pelajaran Sekolah</h3>
+                            <p class="text-sm text-slate-500">Matriks jadwal harian (Kelas di kiri, Jam Ke & Waktu di atas)</p>
+                        </div>
+                        <button onclick="openJadwalModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-plus mr-2"></i>Tambah Jadwal</button>
+                    </div>
+                    
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-center text-xs border-collapse min-w-[900px]">
+                            <thead>
+                                <tr class="bg-slate-200 text-slate-800 font-bold">
+                                    <th rowspan="2" class="border border-slate-300 p-2 align-middle">KELAS</th>
+                                    <th rowspan="2" class="border border-slate-300 p-2 align-middle">JAM KE</th>
+                                    <th class="border border-slate-300 p-2 bg-yellow-300">CARABIKA</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">1</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">2</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">3</th>
+                                    <th class="border border-slate-300 p-2 bg-pink-400 text-white">ISTIRAHAT</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">4</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">5</th>
+                                    <th class="border border-slate-300 p-2 bg-pink-400 text-white">ISTIRAHAT</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">6</th>
+                                    <th class="border border-slate-300 p-2 bg-emerald-700 text-white">7</th>
+                                </tr>
+                                <tr class="bg-slate-100 text-slate-700 text-[10px]">
+                                    <th class="border border-slate-300 p-1 bg-yellow-200">06.30 - 07.30</th>
+                                    <th class="border border-slate-300 p-1">07.30 - 08.15</th>
+                                    <th class="border border-slate-300 p-1">08.15 - 09.00</th>
+                                    <th class="border border-slate-300 p-1">09.00 - 09.45</th>
+                                    <th class="border border-slate-300 p-1 bg-pink-200">09.45 - 10.00</th>
+                                    <th class="border border-slate-300 p-1">10.00 - 10.45</th>
+                                    <th class="border border-slate-300 p-1">10.45 - 11.30</th>
+                                    <th class="border border-slate-300 p-1 bg-pink-200">11.30 - 12.30</th>
+                                    <th class="border border-slate-300 p-1">12.30 - 13.15</th>
+                                    <th class="border border-slate-300 p-1">13.15 - 14.00</th>
+                                </tr>
+                            </thead>
+                            <tbody id="matrixJadwalTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- G. Laporan Absensi -->
+            <div id="adminTab_rekap" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">G. Laporan & Rekap Absensi</h3>
+                    <p class="text-sm text-slate-500 mb-6">Memantau catatan kehadiran guru dan siswa secara real-time.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                <tr>
+                                    <th class="p-3.5 rounded-l-xl">Waktu</th>
+                                    <th class="p-3.5">Nama Guru / Subjek</th>
+                                    <th class="p-3.5">Kelas</th>
+                                    <th class="p-3.5">Status</th>
+                                    <th class="p-3.5">Keterangan / Lokasi</th>
+                                    <th class="p-3.5 rounded-r-xl">Pencatat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAbsensiTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- H. Berita -->
+            <div id="adminTab_berita" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">H. Manajemen Berita</h3>
+                        <button onclick="openBeritaModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-pen-to-square mr-2"></i>Tulis Berita</button>
+                    </div>
+                    <div class="space-y-4" id="adminBeritaList"></div>
+                </div>
+            </div>
+
+            <!-- I. Galeri & Fasilitas -->
+            <div id="adminTab_galeri" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-900">I. Manajemen Galeri & Fasilitas</h3>
+                        <button onclick="openGaleriModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition"><i class="fa-solid fa-camera mr-2"></i>Tambah Foto</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="adminGaleriGrid"></div>
+                </div>
+            </div>
+
+            <!-- J. Manajemen Akun -->
+            <div id="adminTab_akun" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">J. Manajemen Akun Pengguna</h3>
+                    <p class="text-sm text-slate-500 mb-6">Kelola akses kredensial login Admin, Guru, dan Sekretaris</p>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-slate-900">Administrator</h4>
+                                <p class="text-xs text-slate-500">Full Akses CMS & Pengaturan Sekolah</p>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Aktif</span>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-slate-900">Guru Pengajar (Multi Akun)</h4>
+                                <p class="text-xs text-slate-500">Scan Barcode & Validasi Absensi Kelas</p>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">4 Akun Aktif</span>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-slate-900">Sekretaris Sekolah</h4>
+                                <p class="text-xs text-slate-500">Pengganti Absensi Guru Berhalangan</p>
+                            </div>
+                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Aktif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- K. Pengaturan -->
+            <div id="adminTab_pengaturan" class="admin-tab-content space-y-6 hidden">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">K. Pengaturan Identitas Sekolah & Logo</h3>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Instansi</label>
+                        <input type="text" value="SMK Negeri 13 Bandung" class="w-full px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Alamat Resmi</label>
+                        <input type="text" value="Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung" class="w-full px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Kontak Email & Telepon</label>
+                        <input type="text" value="info@smkn13bandung.sch.id | (022) 7801234" class="w-full px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Social Media (Instagram / YouTube)</label>
+                        <input type="text" value="@smkn13bandung" class="w-full px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm">
+                    </div>
+                    <button onclick="showModalMsg('Berhasil', 'Pengaturan sekolah berhasil diperbarui.')" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow">Simpan Perubahan</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- ================= VIEW 3: GURU DASHBOARD (TABLE FORMAT) ================= -->
+    <div id="viewGuru" class="portal-view flex-col flex-grow p-6 sm:p-10 max-w-7xl mx-auto w-full space-y-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100 gap-4">
+            <div>
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Portal Guru Pengajar</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-1" id="guruWelcomeTitle">Dashboard Guru</h1>
+            </div>
+            <button onclick="logout()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Keluar ke Portal</span>
+            </button>
+        </div>
+
+        <div class="flex space-x-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+            <button onclick="switchGuruTab('jadwal')" class="guru-tab-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition bg-emerald-700 text-white shadow"><i class="fa-solid fa-calendar-week mr-2"></i>A. Jadwal Mengajar</button>
+            <button onclick="switchGuruTab('validasi')" class="guru-tab-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition text-slate-600 hover:bg-slate-100"><i class="fa-solid fa-camera mr-2"></i>B. Validasi Absensi (Scan)</button>
+            <button onclick="switchGuruTab('rekap')" class="guru-tab-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition text-slate-600 hover:bg-slate-100"><i class="fa-solid fa-clipboard-list mr-2"></i>C. Rekap Absensi</button>
+        </div>
+
+        <!-- Tab A: Jadwal Mengajar -->
+        <div id="guruTab_jadwal" class="guru-tab-content space-y-6">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-900 mb-4">A. Jadwal Mengajar Anda</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Hari</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3">Mata Pelajaran</th>
+                                <th class="p-3">Ruangan</th>
+                                <th class="p-3 rounded-r-xl">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guruJadwalTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab B: Validasi Absensi -->
+        <div id="guruTab_validasi" class="guru-tab-content space-y-6 hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-camera mr-2 text-emerald-700"></i>B. Scan Barcode Kehadiran</h3>
+                    <p class="text-xs text-slate-500">Arahkan kamera ke barcode absensi Anda.</p>
+                    <div id="reader" class="w-full rounded-xl overflow-hidden bg-slate-900 min-h-[220px]"></div>
+                    <div id="scanResultCard" class="hidden p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-sm">
+                        <p class="font-bold text-emerald-800"><i class="fa-solid fa-check-circle mr-1"></i> Scan Berhasil!</p>
+                        <p id="scanResultDetails" class="text-slate-700 text-xs mt-1"></p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900">Form Absensi & Jurnal Kelas</h3>
+                    <form onsubmit="submitGuruAbsensi(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Kelas / Jadwal</label>
+                            <select id="guruSelectKelasMapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white" required></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Status Kehadiran</label>
+                            <select id="guruStatusKehadiran" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white">
+                                <option value="Hadir">Hadir</option>
+                                <option value="Sakit">Sakit</option>
+                                <option value="Izin">Izin</option>
+                                <option value="Alpa">Alpa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Catatan Materi Pembelajaran</label>
+                            <textarea id="guruCatatanMateri" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" placeholder="Tuliskan materi..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow transition">Kirim Absensi Kelas</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab C: Rekap Absensi -->
+        <div id="guruTab_rekap" class="guru-tab-content space-y-6 hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-900 mb-4">C. Riwayat Rekap Absensi Anda</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Waktu</th>
+                                <th class="p-3">Kelas / Keterangan</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 rounded-r-xl">Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guruRiwayatTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= VIEW 4: SEKRETARIS DASHBOARD ================= -->
+    <div id="viewSekretaris" class="portal-view flex-col flex-grow p-6 sm:p-10 max-w-4xl mx-auto w-full space-y-8">
+        <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div>
+                <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Portal Sekretaris Sekolah</span>
+                <h1 class="text-2xl font-black text-slate-900 mt-1">Dashboard Sekretaris (Proxy Absensi)</h1>
+            </div>
+            <button onclick="logout()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Keluar ke Portal</span>
+            </button>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <div class="text-center">
+                <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-3"><i class="fa-solid fa-user-pen"></i></div>
+                <h3 class="text-xl font-bold text-slate-900">A. Jadwal Kelas & Pengganti Absensi Guru</h3>
+                <p class="text-sm text-slate-500">Jika guru berhalangan hadir, sekretaris dapat menggantikan pencatatan absensi beserta alasannya.</p>
+            </div>
+
+            <form onsubmit="submitSekreAbsensi(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru Berhalangan</label>
+                    <select id="sekreSelectGuru" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white" required></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Jadwal Kelas</label>
+                    <select id="sekreSelectJadwal" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white" required></select>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Status Kehadiran</label>
+                        <select id="sekreStatus" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white">
+                            <option value="Sakit">Sakit</option>
+                            <option value="Izin">Izin</option>
+                            <option value="Alpa">Alpa / Tanpa Keterangan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Tanggal</label>
+                        <input type="text" id="sekreTanggal" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm" readonly>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Alasan Ketidakhadiran</label>
+                    <textarea id="sekreAlasan" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" placeholder="Masukkan alasan..." required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl shadow transition">Simpan Absensi Pengganti Sekretaris</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= MODALS ================= -->
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeLoginModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-xl font-bold mx-auto mb-3"><i class="fa-solid fa-lock"></i></div>
+                <h3 class="text-2xl font-bold text-slate-900">Login Portal SMKN 13</h3>
+                <p class="text-xs text-slate-500 mt-1">Pilih role akses ke dalam dashboard</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Role Akses</label>
+                    <select id="loginRoleSelect" onchange="toggleLoginUsername()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white">
+                        <option value="admin">Administrator Sekolah</option>
+                        <option value="guru">Guru / Pengajar</option>
+                        <option value="sekretaris">Sekretaris Sekolah</option>
+                    </select>
+                </div>
+                <div id="loginUsernameContainer">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Akun Guru</label>
+                    <select id="loginGuruSelect" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Password</label>
+                    <input type="password" value="123456" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                    <span class="text-[11px] text-slate-400 mt-1 block">Default password demo: 123456</span>
+                </div>
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow transition">Masuk Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL SISWA -->
+    <div id="siswaModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeSiswaModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Data Siswa</h3>
+            <form onsubmit="saveSiswa(event)" class="space-y-4">
+                <input type="text" id="siswaNis" placeholder="NIS / NISN" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="siswaNama" placeholder="Nama Lengkap" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <select id="siswaLp" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"><option value="L">Laki-laki (L)</option><option value="P">Perempuan (P)</option></select>
+                <input type="text" id="siswaKelas" placeholder="Kelas (Cth: XII RPL 1)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="siswaTahun" placeholder="Tahun Ajaran (Cth: 2026/2027)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Siswa</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL KELAS -->
+    <div id="kelasModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeKelasModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Manajemen Kelas</h3>
+            <form onsubmit="saveKelas(event)" class="space-y-4">
+                <input type="text" id="kelasNama" placeholder="Nama Kelas (Cth: XII RPL 1)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="kelasRuang" placeholder="Ruangan (Cth: R.52)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="kelasWali" placeholder="Wali Kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Kelas</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL RUANGAN -->
+    <div id="ruanganModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeRuanganModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Data Ruangan</h3>
+            <form onsubmit="saveRuangan(event)" class="space-y-4">
+                <input type="text" id="ruangKode" placeholder="Kode Ruang (Cth: LAB-RPL)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="ruangNama" placeholder="Nama Ruangan" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="number" id="ruangKapasitas" placeholder="Kapasitas Siswa" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Ruangan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL MAPEL -->
+    <div id="mapelModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeMapelModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Mata Pelajaran</h3>
+            <form onsubmit="saveMapel(event)" class="space-y-4">
+                <input type="text" id="mapelKode" placeholder="Kode Mapel (Cth: BING)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="mapelNama" placeholder="Nama Mata Pelajaran" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="mapelKelompok" placeholder="Kelompok (Cth: Produktif / Normatif)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Mapel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL GURU -->
+    <div id="guruModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeGuruModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Data Guru</h3>
+            <form onsubmit="saveGuru(event)" class="space-y-4">
+                <input type="text" id="guruNamaInput" placeholder="Nama Lengkap & Gelar" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="guruMapelInput" placeholder="Mata Pelajaran Utama" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="url" id="guruFotoInput" placeholder="URL Foto Profil" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none">
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Guru</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL JADWAL -->
+    <div id="jadwalModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeJadwalModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Jadwal Pelajaran</h3>
+            <form onsubmit="saveJadwal(event)" class="space-y-4">
+                <select id="jadwalHari" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"><option value="Senin">Senin</option><option value="Selasa">Selasa</option><option value="Rabu">Rabu</option><option value="Kamis">Kamis</option><option value="Jumat">Jumat</option></select>
+                <input type="text" id="jadwalKelas" placeholder="Kelas (Cth: X KA 1)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="jadwalMapel" placeholder="Mata Pelajaran" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="jadwalRuang" placeholder="Ruang (Cth: R.DPK)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <select id="jadwalGuru" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"></select>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Jadwal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL BERITA -->
+    <div id="beritaModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeBeritaModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tulis Berita</h3>
+            <form onsubmit="saveBerita(event)" class="space-y-4">
+                <input type="text" id="beritaJudul" placeholder="Judul Berita" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="text" id="beritaKategori" placeholder="Kategori (Cth: Prestasi)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <input type="url" id="beritaGambar" placeholder="URL Gambar Header" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <textarea id="beritaIsi" placeholder="Isi berita..." rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required></textarea>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Publikasikan Berita</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL GALERI -->
+    <div id="galeriModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onclick="closeGaleriModal()" class="absolute top-6 right-6 text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-2xl font-bold text-slate-900 mb-4">Tambah Foto Galeri & Fasilitas</h3>
+            <form onsubmit="saveGaleri(event)" class="space-y-4">
+                <input type="text" id="galeriJudul" placeholder="Keterangan / Nama Fasilitas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <select id="galeriKategori" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"><option value="Fasilitas">Fasilitas Sekolah</option><option value="Kegiatan">Kegiatan Siswa</option></select>
+                <input type="url" id="galeriUrl" placeholder="URL Gambar Foto" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Foto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CUSTOM MESSAGE MODAL -->
+    <div id="customModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4">
+            <div id="customModalIcon" class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center text-xl font-bold mx-auto"><i class="fa-solid fa-check"></i></div>
+            <h4 id="customModalTitle" class="text-lg font-bold text-slate-900">Informasi</h4>
+            <p id="customModalMessage" class="text-sm text-slate-600"></p>
+            <button onclick="closeCustomModal()" class="w-full bg-emerald-700 text-white font-bold py-2.5 rounded-xl">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        let dbData = {
+            siswa: [
+                { id: 's1', nis: '100123', nama: 'Rizky Pratama', lp: 'L', kelas: 'XII RPL 1', tahun: '2026/2027' },
+                { id: 's2', nis: '100124', nama: 'Siti Nurhaliza', lp: 'P', kelas: 'XII RPL 1', tahun: '2026/2027' },
+                { id: 's3', nis: '100125', nama: 'Ahmad Fauzi', lp: 'L', kelas: 'X KA 1', tahun: '2026/2027' }
+            ],
+            kelas: [
+                { nama: 'X KA 1', ruang: 'R.52', wali: 'Uli, S.Pd.' },
+                { nama: 'X KA 2', ruang: 'R.53', wali: 'Nofa, S.Pd.' },
+                { nama: 'XII RPL 1', ruang: 'LAB-RPL', wali: 'Refky, M.Kom.' }
+            ],
+            guru: [
+                { id: 'g1', nama: 'Refky, M.Kom.', mapel: 'Produktif RPL', foto: 'https://placehold.co/300x300/065f46/ffffff?text=Refky' },
+                { id: 'g2', nama: 'Uli, S.Pd.', mapel: 'DPK / Matematika', foto: 'https://placehold.co/300x300/047857/ffffff?text=Uli' },
+                { id: 'g3', nama: 'Kiki, S.T.', mapel: 'Jaringan Komputer', foto: 'https://placehold.co/300x300/0f766e/ffffff?text=Kiki' },
+                { id: 'g4', nama: 'Nofa, S.Pd.', mapel: 'Matematika', foto: 'https://placehold.co/300x300/115e59/ffffff?text=Nofa' }
+            ],
+            ruangan: [
+                { kode: 'R.52', nama: 'Ruang Teori 52', kapasitas: 36 },
+                { kode: 'LAB-RPL', nama: 'Laboratorium Komputer RPL', kapasitas: 40 },
+                { kode: 'LAP', nama: 'Lapangan Olahraga', kapasitas: 500 }
+            ],
+            mapel: [
+                { kode: 'DPK', nama: 'Dasar Program Keahlian', kelompok: 'Produktif' },
+                { kode: 'MATH', nama: 'Matematika', kelompok: 'Normatif' },
+                { kode: 'BING', nama: 'Bahasa Inggris', kelompok: 'Adaptif' }
+            ],
+            jurusan: [
+                { kode: 'RPL', nama: 'Rekayasa Perangkat Lunak', desc: 'Pemrograman Web, Mobile Apps, dan Software Engineering.', icon: 'fa-code' },
+                { kode: 'TKJ', nama: 'Teknik Komputer & Jaringan', desc: 'Administrasi Server, Mikrotik, dan Cloud Computing.', icon: 'fa-network-wired' },
+                { kode: 'TJA', nama: 'Teknik Jaringan Akses', desc: 'Infrastruktur Telekomunikasi Modern dan Fiber Optic.', icon: 'fa-satellite-dish' }
+            ],
+            berita: [
+                { id: 'b1', judul: 'SMKN 13 Bandung Juara 1 LKS Web Technologies', kategori: 'Prestasi', tanggal: '2 Oktober 2026', gambar: 'https://placehold.co/600x400/065f46/ffffff?text=Juara+LKS', isi: 'Tim siswa RPL berhasil menyabet juara pertama dalam ajang LKS Web Technologies.' },
+                { id: 'b2', judul: 'Workshop Industri Bersama Tech Giants', kategori: 'Kegiatan', tanggal: '28 September 2026', gambar: 'https://placehold.co/600x400/047857/ffffff?text=Workshop', isi: 'Pelatihan kurikulum industri untuk mempersiapkan siswa magang.' },
+                { id: 'b3', judul: 'Penerimaan Tamu Ambalan Pramuka', kategori: 'Ekstrakurikuler', tanggal: '20 September 2026', gambar: 'https://placehold.co/600x400/0f766e/ffffff?text=Pramuka', isi: 'Kegiatan perkemahan pelantikan untuk melatih kedisiplinan siswa.' }
+            ],
+            galeri: [
+                { id: 'gal1', judul: 'Laboratorium Komputer RPL', kategori: 'Fasilitas', url: 'https://placehold.co/600x400/065f46/ffffff?text=Lab+RPL' },
+                { id: 'gal2', judul: 'Praktik Jaringan Komputer', kategori: 'Kegiatan', url: 'https://placehold.co/600x400/047857/ffffff?text=Praktik' },
+                { id: 'gal3', judul: 'Perpustakaan Digital', kategori: 'Fasilitas', url: 'https://placehold.co/600x400/0f766e/ffffff?text=Perpustakaan' },
+                { id: 'gal4', judul: 'Upacara Bendera Senin', kategori: 'Kegiatan', url: 'https://placehold.co/600x400/115e59/ffffff?text=Upacara' }
+            ],
+            jadwal: [
+                { hari: 'Senin', kelas: 'X KA 1', mapel: 'DPK', ruang: 'R.DPK', guruId: 'g2' },
+                { hari: 'Senin', kelas: 'X KA 2', mapel: 'MATH', ruang: 'R.52', guruId: 'g4' },
+                { hari: 'Senin', kelas: 'XII RPL 1', mapel: 'Produktif RPL', ruang: 'LAB-RPL', guruId: 'g1' }
+            ],
+            absensi: []
+        };
+
+        let currentUser = null;
+        let html5QrCodeScanner = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPublicHome();
+            setupSelectOptions();
+            const todayStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            if(document.getElementById('sekreTanggal')) document.getElementById('sekreTanggal').value = todayStr;
+        });
+
+        function switchPortalView(viewId) {
+            document.querySelectorAll('.portal-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function switchPublicPage(pageName) {
+            document.querySelectorAll('#publicContentContainer > div').forEach(el => el.classList.remove('active'));
+            document.getElementById('pubPage_' + pageName).classList.add('active');
+
+            if(pageName === 'home') renderPublicHome();
+            if(pageName === 'profil') renderProfilPage();
+            if(pageName === 'jurusan') renderJurusanPage();
+            if(pageName === 'berita') renderBeritaPage();
+            if(pageName === 'galeri') renderGaleriPage();
+            window.scrollTo(0,0);
+        }
+
+        function renderPublicHome() {
+            document.getElementById('homeBeritaGrid').innerHTML = dbData.berita.slice(0,3).map(b => `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col">
+                    <img src="${b.gambar}" class="h-48 w-full object-cover">
+                    <div class="p-6 flex flex-col flex-grow space-y-3">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full w-max">${b.kategori}</span>
+                        <h4 class="text-lg font-bold text-slate-900">${b.judul}</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">${b.isi}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProfilPage() {
+            document.getElementById('profilGuruGrid').innerHTML = dbData.guru.map(g => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center space-y-3">
+                    <img src="${g.foto}" class="w-24 h-24 rounded-full mx-auto object-cover shadow">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">${g.nama}</h4>
+                        <p class="text-xs text-emerald-700 font-medium">${g.mapel}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderJurusanPage() {
+            document.getElementById('pubJurusanGrid').innerHTML = dbData.jurusan.map(j => `
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-2xl font-bold"><i class="fa-solid ${j.icon}"></i></div>
+                    <h4 class="text-xl font-bold text-slate-900">${j.nama}</h4>
+                    <p class="text-slate-600 text-sm">${j.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderBeritaPage() {
+            document.getElementById('pubBeritaGrid').innerHTML = dbData.berita.map(b => `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col">
+                    <img src="${b.gambar}" class="h-48 w-full object-cover">
+                    <div class="p-6 flex flex-col flex-grow space-y-3">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full w-max">${b.kategori}</span>
+                        <h4 class="text-lg font-bold text-slate-900">${b.judul}</h4>
+                        <p class="text-slate-600 text-sm">${b.isi}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderGaleriPage() {
+            document.getElementById('pubGaleriGrid').innerHTML = dbData.galeri.map(ga => `
+                <div class="relative rounded-2xl overflow-hidden shadow group">
+                    <img src="${ga.url}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent flex flex-col justify-end p-4">
+                        <span class="text-emerald-400 text-xs font-bold uppercase">${ga.kategori}</span>
+                        <h4 class="text-white font-bold text-sm">${ga.judul}</h4>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); toggleLoginUsername(); }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        function toggleLoginUsername() {
+            const role = document.getElementById('loginRoleSelect').value;
+            document.getElementById('loginUsernameContainer').style.display = role === 'guru' ? 'block' : 'none';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('loginRoleSelect').value;
+            closeLoginModal();
+
+            if(role === 'admin') {
+                currentUser = { role: 'admin', nama: 'Administrator' };
+                switchPortalView('viewAdmin');
+                renderAdminAllTables();
+            } else if(role === 'sekretaris') {
+                currentUser = { role: 'sekretaris', nama: 'Sekretaris Sekolah' };
+                switchPortalView('viewSekretaris');
+            } else if(role === 'guru') {
+                const guruId = document.getElementById('loginGuruSelect').value;
+                const gObj = dbData.guru.find(x => x.id === guruId);
+                currentUser = { role: 'guru', ...gObj };
+                switchPortalView('viewGuru');
+                initTeacherDashboard();
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            if(html5QrCodeScanner) html5QrCodeScanner.clear().catch(e => console.log(e));
+            switchPortalView('viewPublicPortal');
+            switchPublicPage('home');
+        }
+
+        function showModalMsg(title, msg) {
+            document.getElementById('customModalTitle').innerText = title;
+            document.getElementById('customModalMessage').innerText = msg;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+        function closeCustomModal() { document.getElementById('customModal').classList.add('hidden'); }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('adminTab_' + tabName).classList.remove('hidden');
+            document.querySelectorAll('.admin-sidebar-btn').forEach(btn => {
+                btn.className = "admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3";
+            });
+            event.currentTarget.className = "admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition bg-emerald-700 text-white flex items-center space-x-3";
+        }
+
+        function switchGuruTab(tabName) {
+            document.querySelectorAll('.guru-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('guruTab_' + tabName).classList.remove('hidden');
+            document.querySelectorAll('.guru-tab-btn').forEach(btn => {
+                btn.className = "guru-tab-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition text-slate-600 hover:bg-slate-100";
+            });
+            event.currentTarget.className = "guru-tab-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition bg-emerald-700 text-white shadow";
+            if(tabName === 'validasi') initBarcodeScanner();
+        }
+
+        function setupSelectOptions() {
+            const guruOpts = dbData.guru.map(g => `<option value="${g.id}">${g.nama} (${g.mapel})</option>`).join('');
+            if(document.getElementById('selectGuruForBarcode')) document.getElementById('selectGuruForBarcode').innerHTML = guruOpts;
+            if(document.getElementById('loginGuruSelect')) document.getElementById('loginGuruSelect').innerHTML = guruOpts;
+            if(document.getElementById('jadwalGuru')) document.getElementById('jadwalGuru').innerHTML = guruOpts;
+            if(document.getElementById('sekreSelectGuru')) document.getElementById('sekreSelectGuru').innerHTML = dbData.guru.map(g => `<option value="${g.nama}">${g.nama}</option>`).join('');
+            
+            const jadwalOpts = dbData.jadwal.map(j => {
+                const g = dbData.guru.find(x => x.id === j.guruId);
+                return `<option value="${j.kelas} - ${j.mapel} (${j.hari})">${j.kelas} - ${j.mapel} (${g ? g.nama : ''})</option>`;
+            }).join('');
+            if(document.getElementById('sekreSelectJadwal')) document.getElementById('sekreSelectJadwal').innerHTML = jadwalOpts;
+        }
+
+        function renderAdminAllTables() {
+            setupSelectOptions();
+            // A. Siswa
+            document.getElementById('adminSiswaTableBody').innerHTML = dbData.siswa.map((s, idx) => `
+                <tr>
+                    <td class="p-3">${idx + 1}</td>
+                    <td class="p-3 font-bold">${s.nis}</td>
+                    <td class="p-3">${s.nama}</td>
+                    <td class="p-3">${s.lp}</td>
+                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full">${s.kelas}</span></td>
+                    <td class="p-3">${s.tahun}</td>
+                    <td class="p-3 text-right"><button onclick="deleteSiswa('${s.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            // B. Manajemen Kelas
+            document.getElementById('adminKelasTableBody').innerHTML = dbData.kelas.map(k => `
+                <tr>
+                    <td class="p-3 font-bold">${k.nama}</td>
+                    <td class="p-3">${k.ruang}</td>
+                    <td class="p-3">${k.wali}</td>
+                    <td class="p-3 text-right"><button onclick="deleteKelas('${k.nama}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            // C. Guru
+            document.getElementById('adminGuruGrid').innerHTML = dbData.guru.map(g => `
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center space-x-4">
+                    <img src="${g.foto}" class="w-14 h-14 rounded-full object-cover">
+                    <div class="flex-grow"><h4 class="font-bold text-sm">${g.nama}</h4><p class="text-xs text-slate-500">${g.mapel}</p></div>
+                    <button onclick="deleteGuru('${g.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+
+            // D. Ruangan
+            document.getElementById('adminRuanganTableBody').innerHTML = dbData.ruangan.map(r => `
+                <tr>
+                    <td class="p-3 font-bold">${r.kode}</td>
+                    <td class="p-3">${r.nama}</td>
+                    <td class="p-3">${r.kapasitas} siswa</td>
+                    <td class="p-3 text-right"><button onclick="deleteRuangan('${r.kode}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            // E. Mapel
+            document.getElementById('adminMapelTableBody').innerHTML = dbData.mapel.map(m => `
+                <tr>
+                    <td class="p-3 font-bold">${m.kode}</td>
+                    <td class="p-3">${m.nama}</td>
+                    <td class="p-3"><span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-0.5 rounded-full">${m.kelompok}</span></td>
+                    <td class="p-3 text-right"><button onclick="deleteMapel('${m.kode}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            // F. Matrix Jadwal (matching reference image structure)
+            const matrixBody = document.getElementById('matrixJadwalTableBody');
+            matrixBody.innerHTML = dbData.kelas.map(kls => {
+                const jMatch = dbData.jadwal.filter(j => j.kelas === kls.nama);
+                const first = jMatch[0] || { mapel: '-', ruang: kls.ruang, guruId: null };
+                const gObj = dbData.guru.find(x => x.id === first.guruId);
+                return `
+                    <tr>
+                        <td rowspan="3" class="border border-slate-300 font-bold bg-slate-50 align-middle">${kls.nama}</td>
+                        <td class="border border-slate-300 p-1 font-semibold bg-slate-50">MAPEL</td>
+                        <td class="border border-slate-300 bg-yellow-200">UPACARA</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                        <td rowspan="3" class="border border-slate-300 bg-pink-300 font-bold align-middle">ISTIRAHAT</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                        <td rowspan="3" class="border border-slate-300 bg-pink-300 font-bold align-middle">ISTIRAHAT</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                        <td class="border border-slate-300 bg-emerald-100">${first.mapel}</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-slate-300 p-1 font-semibold bg-slate-50">RUANG</td>
+                        <td class="border border-slate-300 bg-yellow-200">PERWALIAN</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                        <td class="border border-slate-300">${first.ruang}</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-slate-300 p-1 font-semibold bg-slate-50">GURU</td>
+                        <td class="border border-slate-300 bg-yellow-200">-</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                        <td class="border border-slate-300 font-bold">${gObj ? gObj.nama.split(',')[0] : '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // G. Laporan Absensi
+            const absBody = document.getElementById('adminAbsensiTableBody');
+            absBody.innerHTML = dbData.absensi.length === 0 ? `<tr><td colspan="6" class="p-6 text-center text-slate-400">Belum ada data absensi tercatat</td></tr>` : dbData.absensi.map(a => `
+                <tr>
+                    <td class="p-3 text-xs text-slate-500">${a.waktu}</td>
+                    <td class="p-3 font-bold">${a.namaGuru}</td>
+                    <td class="p-3">${a.kelasMapel}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs font-bold ${a.status === 'Hadir' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${a.status}</span></td>
+                    <td class="p-3 text-xs text-slate-600">${a.keterangan}</td>
+                    <td class="p-3 text-xs font-semibold">${a.pencatat}</td>
+                </tr>
+            `).join('');
+
+            // H. Berita
+            document.getElementById('adminBeritaList').innerHTML = dbData.berita.map(b => `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div class="flex items-center space-x-3"><img src="${b.gambar}" class="w-12 h-12 rounded object-cover"><div><h4 class="font-bold text-sm">${b.judul}</h4><p class="text-xs text-slate-500">${b.kategori}</p></div></div>
+                    <button onclick="deleteBerita('${b.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+
+            // I. Galeri
+            document.getElementById('adminGaleriGrid').innerHTML = dbData.galeri.map(ga => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 relative">
+                    <img src="${ga.url}" class="w-full h-28 object-cover rounded mb-2">
+                    <h4 class="font-bold text-xs truncate">${ga.judul}</h4>
+                    <button onclick="deleteGaleri('${ga.id}')" class="absolute top-4 right-4 bg-rose-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function initTeacherDashboard() {
+            document.getElementById('guruWelcomeTitle').innerText = `Dashboard Guru: ${currentUser.nama}`;
+            const myJadwal = dbData.jadwal;
+            
+            document.getElementById('guruJadwalTableBody').innerHTML = myJadwal.map(j => `
+                <tr>
+                    <td class="p-3 font-bold">${j.hari}</td>
+                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full">${j.kelas}</span></td>
+                    <td class="p-3">${j.mapel}</td>
+                    <td class="p-3">${j.ruang}</td>
+                    <td class="p-3"><span class="text-xs bg-slate-100 px-2 py-1 rounded">Aktif</span></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('guruSelectKelasMapel').innerHTML = myJadwal.map(j => `<option value="${j.kelas} - ${j.mapel}">${j.kelas} (${j.mapel})</option>`).join('');
+            renderGuruRiwayat();
+        }
+
+        function initBarcodeScanner() {
+            if(html5QrCodeScanner) html5QrCodeScanner.clear().catch(e => console.log(e));
+            html5QrCodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
+            html5QrCodeScanner.render((decodedText) => {
+                const timeStr = new Date().toLocaleString('id-ID');
+                document.getElementById('scanResultCard').classList.remove('hidden');
+                document.getElementById('scanResultDetails').innerText = `Guru: ${currentUser.nama}\nBarcode: ${decodedText}\nWaktu: ${timeStr}`;
+                dbData.absensi.unshift({ waktu: timeStr, namaGuru: currentUser.nama, kelasMapel: 'Scan Barcode Mandiri', status: 'Hadir', keterangan: 'Verifikasi Kamera Berhasil', pencatat: 'Scan Barcode' });
+                showModalMsg('Berhasil', 'Kehadiran berhasil diverifikasi lewat kamera.');
+                renderGuruRiwayat();
+            }, () => {});
+        }
+
+        function submitGuruAbsensi(e) {
+            e.preventDefault();
+            dbData.absensi.unshift({
+                waktu: new Date().toLocaleString('id-ID'),
+                namaGuru: currentUser.nama,
+                kelasMapel: document.getElementById('guruSelectKelasMapel').value,
+                status: document.getElementById('guruStatusKehadiran').value,
+                keterangan: document.getElementById('guruCatatanMateri').value || 'Hadir mengajar',
+                pencatat: 'Mandiri (Guru)'
+            });
+            showModalMsg('Berhasil', 'Absensi dan jurnal kelas berhasil dikirim.');
+            renderGuruRiwayat();
+        }
+
+        function renderGuruRiwayat() {
+            const myAbsen = dbData.absensi.filter(a => a.namaGuru === currentUser.nama);
+            document.getElementById('guruRiwayatTableBody').innerHTML = myAbsen.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-slate-400 text-xs">Belum ada riwayat absensi.</td></tr>` : myAbsen.map(a => `
+                <tr>
+                    <td class="p-3 text-xs text-slate-500">${a.waktu}</td>
+                    <td class="p-3 font-semibold">${a.kelasMapel}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs font-bold ${a.status === 'Hadir' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${a.status}</span></td>
+                    <td class="p-3 text-xs text-slate-600">${a.keterangan}</td>
+                </tr>
+            `).join('');
+        }
+
+        function submitSekreAbsensi(e) {
+            e.preventDefault();
+            dbData.absensi.unshift({
+                waktu: new Date().toLocaleString('id-ID'),
+                namaGuru: document.getElementById('sekreSelectGuru').value,
+                kelasMapel: document.getElementById('sekreSelectJadwal').value,
+                status: document.getElementById('sekreStatus').value,
+                keterangan: `Alasan: ${document.getElementById('sekreAlasan').value}`,
+                pencatat: 'Sekretaris Sekolah'
+            });
+            showModalMsg('Berhasil', 'Absensi pengganti guru berhasil dicatat oleh sekretaris.');
+            document.getElementById('sekreAlasan').value = '';
+        }
+
+        // CRUD Modal handlers
+        function generateTeacherBarcode() {
+            const gId = document.getElementById('selectGuruForBarcode').value;
+            const gObj = dbData.guru.find(x => x.id === gId);
+            const container = document.getElementById('qrcodeContainer');
+            container.innerHTML = "";
+            new QRCode(container, { text: `SMKN13_ATTENDANCE_${gObj.id}_${Date.now()}`, width: 140, height: 140 });
+            document.getElementById('barcodeInfoLabel').innerText = `Barcode: ${gObj.nama}`;
+            showModalMsg('Berhasil', `Barcode absensi ${gObj.nama} berhasil digenerate.`);
+        }
+
+        function openSiswaModal() { document.getElementById('siswaModal').classList.remove('hidden'); }
+        function closeSiswaModal() { document.getElementById('siswaModal').classList.add('hidden'); }
+        function saveSiswa(e) {
+            e.preventDefault();
+            dbData.siswa.push({ id: 's_'+Date.now(), nis: document.getElementById('siswaNis').value, nama: document.getElementById('siswaNama').value, lp: document.getElementById('siswaLp').value, kelas: document.getElementById('siswaKelas').value, tahun: document.getElementById('siswaTahun').value });
+            closeSiswaModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Data siswa berhasil disimpan.');
+        }
+        function deleteSiswa(id) { dbData.siswa = dbData.siswa.filter(x => x.id !== id); renderAdminAllTables(); }
+
+        function openKelasModal() { document.getElementById('kelasModal').classList.remove('hidden'); }
+        function closeKelasModal() { document.getElementById('kelasModal').classList.add('hidden'); }
+        function saveKelas(e) {
+            e.preventDefault();
+            dbData.kelas.push({ nama: document.getElementById('kelasNama').value, ruang: document.getElementById('kelasRuang').value, wali: document.getElementById('kelasWali').value });
+            closeKelasModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Kelas berhasil ditambah.');
+        }
+        function deleteKelas(nama) { dbData.kelas = dbData.kelas.filter(x => x.nama !== nama); renderAdminAllTables(); }
+
+        function openRuanganModal() { document.getElementById('ruanganModal').classList.remove('hidden'); }
+        function closeRuanganModal() { document.getElementById('ruanganModal').classList.add('hidden'); }
+        function saveRuangan(e) {
+            e.preventDefault();
+            dbData.ruangan.push({ kode: document.getElementById('ruangKode').value, nama: document.getElementById('ruangNama').value, kapasitas: document.getElementById('ruangKapasitas').value });
+            closeRuanganModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Ruangan disimpan.');
+        }
+        function deleteRuangan(kode) { dbData.ruangan = dbData.ruangan.filter(x => x.kode !== kode); renderAdminAllTables(); }
+
+        function openMapelModal() { document.getElementById('mapelModal').classList.remove('hidden'); }
+        function closeMapelModal() { document.getElementById('mapelModal').classList.add('hidden'); }
+        function saveMapel(e) {
+            e.preventDefault();
+            dbData.mapel.push({ kode: document.getElementById('mapelKode').value, nama: document.getElementById('mapelNama').value, kelompok: document.getElementById('mapelKelompok').value });
+            closeMapelModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Mata pelajaran disimpan.');
+        }
+        function deleteMapel(kode) { dbData.mapel = dbData.mapel.filter(x => x.kode !== kode); renderAdminAllTables(); }
+
+        function openGuruModal() { document.getElementById('guruModal').classList.remove('hidden'); }
+        function closeGuruModal() { document.getElementById('guruModal').classList.add('hidden'); }
+        function saveGuru(e) {
+            e.preventDefault();
+            dbData.guru.push({ id: 'g_'+Date.now(), nama: document.getElementById('guruNamaInput').value, mapel: document.getElementById('guruMapelInput').value, foto: document.getElementById('guruFotoInput').value || 'https://placehold.co/300x300/065f46/ffffff?text=Guru' });
+            closeGuruModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Guru disimpan.');
+        }
+        function deleteGuru(id) { dbData.guru = dbData.guru.filter(x => x.id !== id); renderAdminAllTables(); }
+
+        function openJadwalModal() { document.getElementById('jadwalModal').classList.remove('hidden'); }
+        function closeJadwalModal() { document.getElementById('jadwalModal').classList.add('hidden'); }
+        function saveJadwal(e) {
+            e.preventDefault();
+            dbData.jadwal.push({ hari: document.getElementById('jadwalHari').value, kelas: document.getElementById('jadwalKelas').value, mapel: document.getElementById('jadwalMapel').value, ruang: document.getElementById('jadwalRuang').value, guruId: document.getElementById('jadwalGuru').value });
+            closeJadwalModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Jadwal disimpan.');
+        }
+
+        function openBeritaModal() { document.getElementById('beritaModal').classList.remove('hidden'); }
+        function closeBeritaModal() { document.getElementById('beritaModal').classList.add('hidden'); }
+        function saveBerita(e) {
+            e.preventDefault();
+            dbData.berita.unshift({ id: 'b_'+Date.now(), judul: document.getElementById('beritaJudul').value, kategori: document.getElementById('beritaKategori').value, tanggal: '5 Oktober 2026', gambar: document.getElementById('beritaGambar').value, isi: document.getElementById('beritaIsi').value });
+            closeBeritaModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Berita dipublikasikan.');
+        }
+        function deleteBerita(id) { dbData.berita = dbData.berita.filter(x => x.id !== id); renderAdminAllTables(); }
+
+        function openGaleriModal() { document.getElementById('galeriModal').classList.remove('hidden'); }
+        function closeGaleriModal() { document.getElementById('galeriModal').classList.add('hidden'); }
+        function saveGaleri(e) {
+            e.preventDefault();
+            dbData.galeri.push({ id: 'gal_'+Date.now(), judul: document.getElementById('galeriJudul').value, kategori: document.getElementById('galeriKategori').value, url: document.getElementById('galeriUrl').value });
+            closeGaleriModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Foto galeri disimpan.');
+        }
+        function deleteGaleri(id) { dbData.galeri = dbData.galeri.filter(x => x.id !== id); renderAdminAllTables(); }
+    </script>
+</body>
+</html>
