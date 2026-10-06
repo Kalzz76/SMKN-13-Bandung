@@ -101,8 +101,8 @@
         <!-- Kolom Kanan: Google Maps Embed -->
         <div class="w-full lg:w-1/2 flex flex-col">
             <div class="w-full bg-teal-tint rounded-3xl overflow-hidden min-h-[380px] lg:h-full border-2 border-teal-tint/60 shadow-inner">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.672685950157!2d107.6974151152865!3d-6.9388317698889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68c2f1f5e8f495%3A0x7d6f5f9f6e6931!2sSMK%20Negeri%2013%20Bandung!5e0!3m2!1sid!2sid!4v1680000000000!5m2!1sid!2sid"
-                    width="100%" height="100%" style="border:0; min-height: 420px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.5979934865886!2d107.65442027499668!3d-6.938554693061444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e8109c2647c7%3A0xe47eec0775b8d648!2sSMKN%2013%20Bandung!5e0!3m2!1sid!2sid!4v1791270201512!5m2!1sid!2sid"
+                    width="100%" height="100%" style="border:0; min-height: 420px;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
                 </iframe>
             </div>
         </div>
