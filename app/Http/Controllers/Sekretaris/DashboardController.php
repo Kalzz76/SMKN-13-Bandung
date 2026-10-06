@@ -88,7 +88,7 @@ class DashboardController extends Controller
 
         $hariMatriks = $request->get('hari', in_array($namaHariIni, ['Sabtu', 'Minggu']) ? 'Senin' : $namaHariIni);
         $daftarHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-        $slotJam = JamPelajaran::orderBy('urutan')->get();
+        $slotJam = JamPelajaran::slotHari($hariMatriks);
         $jadwalMatriks = Jadwal::with(['mapel', 'guru', 'ruangan', 'kelas'])
             ->where('hari', $hariMatriks)
             ->get();

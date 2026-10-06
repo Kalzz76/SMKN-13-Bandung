@@ -358,8 +358,8 @@ class DataMasterDanJadwalTest extends TestCase
             'id_mapel' => $mapel->id,
             'id_guru' => $guru->id,
             'id_ruangan' => $ruang->id,
-            'jam_ke_mulai' => 2,
-            'jam_ke_selesai' => 4,
+            'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 5,
         ]);
         $responseLewatIstirahat->assertSessionHas('error');
 

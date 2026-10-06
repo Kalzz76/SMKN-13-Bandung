@@ -1,6 +1,13 @@
 @extends('layouts.admin', ['title' => 'Jadwal Pelajaran - Admin SMKN 13 Bandung'])
 
 @section('content')
+@php
+    $formatWaktu = fn ($waktu) => str_replace(':', '.', (string) $waktu);
+    $slotPelajaran = $slotHari->where('jenis', 'Pelajaran');
+    $jumlahKolom = $slotHari->count();
+    $kelompokLabel = ['A' => 'Tingkat XII & XIII', 'B' => 'Tingkat X & XI'];
+    $aturanSesiAktif = $aturanRotasi->where('sesi', $sesiTerpilih)->sortBy('kelompok');
+@endphp
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -15,11 +22,59 @@
 
     <div class="flex items-center space-x-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
         @foreach($daftarHari as $h)
-            <a href="{{ route('admin.jadwal.index', ['hari' => $h]) }}" class="px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center space-x-2 whitespace-nowrap {{ $hariTerpilih === $h ? 'bg-emerald-700 text-white shadow' : 'text-slate-600 hover:bg-slate-100' }}">
+            <a href="{{ route('admin.jadwal.index', array_merge(['hari' => $h], $parameterSesi)) }}" class="px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center space-x-2 whitespace-nowrap {{ $hariTerpilih === $h ? 'bg-emerald-700 text-white shadow' : 'text-slate-600 hover:bg-slate-100' }}">
                 <i class="fa-solid fa-calendar-day"></i>
                 <span>{{ $h }}</span>
             </a>
         @endforeach
+    </div>
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 space-y-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div class="flex items-start space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-yellow-300 text-slate-900 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-sun"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Pembiasaan Pagi Hari {{ $hariTerpilih }}</p>
+                    @if($ringkasanHari['pembiasaan'])
+                        <p class="font-black text-slate-900">
+                            {{ strtoupper($ringkasanHari['pembiasaan']['nama']) }}
+                            <span class="font-semibold text-slate-500 text-xs ml-1">({{ $formatWaktu($ringkasanHari['pembiasaan']['mulai']) }} - {{ $formatWaktu($ringkasanHari['pembiasaan']['selesai']) }})</span>
+                        </p>
+                        <p class="text-xs text-slate-600">{{ $ringkasanHari['pembiasaan']['keterangan'] }}</p>
+                    @else
+                        <p class="text-xs text-slate-500">Belum ada pembiasaan pagi yang diatur untuk hari ini.</p>
+                    @endif
+                </div>
+            </div>
+
+            @if($adaRotasi)
+                <div class="flex items-center space-x-1.5 bg-white p-1.5 rounded-xl border border-yellow-200 self-start lg:self-auto">
+                    @foreach([1 => 'Sesi 1 (Minggu Ganjil)', 2 => 'Sesi 2 (Minggu Genap)'] as $nomorSesi => $namaSesi)
+                        <a href="{{ route('admin.jadwal.index', ['hari' => $hariTerpilih, 'sesi' => $nomorSesi]) }}" class="px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $sesiTerpilih === $nomorSesi ? 'bg-amber-500 text-white shadow' : 'text-slate-600 hover:bg-yellow-100' }}">
+                            {{ $namaSesi }}
+                            @if($sesiMingguIni === $nomorSesi)
+                                <span class="ml-1 text-[9px] uppercase">Minggu Ini</span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
+        @if($adaRotasi)
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                @foreach($aturanSesiAktif as $aturan)
+                    <div class="flex items-center space-x-2 bg-white border border-yellow-200 rounded-xl px-3 py-2 text-xs">
+                        <i class="fa-solid {{ stripos($aturan->kegiatan, 'upacara') !== false ? 'fa-flag text-sky-600' : 'fa-people-roof text-amber-600' }}"></i>
+                        <span class="font-bold text-slate-800">{{ $kelompokLabel[$aturan->kelompok] ?? 'Kelompok ' . $aturan->kelompok }}</span>
+                        <span class="text-slate-500">&rarr;</span>
+                        <span class="font-semibold text-slate-700">{{ $aturan->kegiatan }}{{ $aturan->lokasi ? ' di ' . $aturan->lokasi : '' }}</span>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
@@ -28,6 +83,7 @@
                 <h3 class="font-bold text-slate-900 flex items-center space-x-2">
                     <i class="fa-solid fa-table-cells text-emerald-700"></i>
                     <span>Matriks Jadwal Pelajaran - Hari {{ $hariTerpilih }}</span>
+                    <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">{{ $ringkasanHari['maks_jam'] }} Jam Pelajaran</span>
                 </h3>
                 <span class="text-xs text-slate-400">Klik sel jadwal untuk mengedit, atau klik sel kosong di matriks ruangan untuk menjadwalkan</span>
             </div>
@@ -44,272 +100,118 @@
         </div>
 
         <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl">
-            <table class="w-full text-center text-xs border-collapse min-w-[950px]">
+            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 230 + $jumlahKolom * 95 }}px">
                 <thead>
                     <tr>
                         <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-28">KELAS</th>
                         <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-20">JAM KE</th>
-                        <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 w-28">CARABIKA</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 1</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 2</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 3</th>
-                        <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24">ISTIRAHAT</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 4</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 5</th>
-                        <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24">ISTIRAHAT</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 6</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 7</th>
+                        @foreach($slotHari as $slot)
+                            @if($slot->jenis === 'Pembiasaan')
+                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 w-28" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
+                            @elseif($slot->jenis === 'Istirahat')
+                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24" title="{{ $slot->nama }}">ISTIRAHAT</th>
+                            @else
+                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM {{ $slot->jam_ke }}</th>
+                            @endif
+                        @endforeach
                     </tr>
                     <tr class="text-[11px] text-slate-600 bg-slate-50">
-                        <th class="p-1 border border-slate-200 font-medium">06.30 - 07.30</th>
-                        <th class="p-1 border border-slate-200 font-medium">07.30 - 08.15</th>
-                        <th class="p-1 border border-slate-200 font-medium">08.15 - 09.00</th>
-                        <th class="p-1 border border-slate-200 font-medium">09.00 - 09.45</th>
-                        <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">09.45 - 10.00</th>
-                        <th class="p-1 border border-slate-200 font-medium">10.00 - 10.45</th>
-                        <th class="p-1 border border-slate-200 font-medium">10.45 - 11.30</th>
-                        <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">11.30 - 12.30</th>
-                        <th class="p-1 border border-slate-200 font-medium">12.30 - 13.15</th>
-                        <th class="p-1 border border-slate-200 font-medium">13.15 - 14.00</th>
+                        @foreach($slotHari as $slot)
+                            @if($slot->jenis === 'Istirahat')
+                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                            @else
+                                <th class="p-1 border border-slate-200 font-medium">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                            @endif
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($daftarKelas as $k)
-                        <tr>
-                            <td rowspan="3" class="p-3 font-black text-slate-900 bg-slate-50 border border-slate-200 whitespace-nowrap">
-                                {{ $k->nama }}
-                            </td>
-                            <td class="p-2 font-bold text-slate-500 bg-slate-100/70 border border-slate-200 text-[10px]">
-                                MAPEL
-                            </td>
-                            <td rowspan="3" class="p-2 bg-yellow-100/70 text-amber-900 font-bold border border-slate-200 text-xs">
-                                {{ $hariTerpilih == 'Senin' ? 'UPACARA' : 'PERWALIAN' }}
-                            </td>
-
-                            @php $skip1_1 = 0; @endphp
-                            @foreach([1, 2, 3] as $jam)
-                                @if($jam <= $skip1_1) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip1_1 = $jdw->jam_ke_selesai;
-                                    @endphp
-                                    <td colspan="{{ $span }}" onclick="openEditModalFromCell(this)"
-                                        data-id="{{ $jdw->id }}"
-                                        data-hari="{{ $jdw->hari }}"
-                                        data-kelas="{{ $jdw->id_kelas }}"
-                                        data-mapel="{{ $jdw->id_mapel }}"
-                                        data-ruang="{{ $jdw->id_ruangan }}"
-                                        data-guru="{{ $jdw->id_guru }}"
-                                        data-mulai="{{ $jdw->jam_ke_mulai }}"
-                                        data-selesai="{{ $jdw->jam_ke_selesai }}"
-                                        class="p-2 font-bold bg-emerald-100 text-emerald-900 border border-emerald-200 hover:bg-emerald-200 cursor-pointer transition text-xs" title="Klik untuk edit">
-                                        {{ $jdw->mapel ? $jdw->mapel->nama : '-' }}
+                        @php
+                            $jadwalKelas = $daftarJadwal->where('id_kelas', $k->id);
+                            $label = $labelPembiasaan[$k->id];
+                            $kelasWarnaPembiasaan = $label['rotasi'] && stripos($label['kegiatan'], 'upacara') !== false
+                                ? 'bg-sky-100 text-sky-900'
+                                : 'bg-yellow-100/70 text-amber-900';
+                        @endphp
+                        @foreach(['mapel', 'ruang', 'guru'] as $indeksBaris => $baris)
+                            <tr>
+                                @if($indeksBaris === 0)
+                                    <td rowspan="3" class="p-3 font-black text-slate-900 bg-slate-50 border border-slate-200 whitespace-nowrap">
+                                        {{ $k->nama }}
                                     </td>
-                                @else
-                                    <td class="p-2 text-slate-400 border border-slate-200">-</td>
                                 @endif
-                            @endforeach
+                                <td class="p-2 font-bold text-slate-500 bg-slate-100/70 border border-slate-200 text-[10px]">
+                                    {{ strtoupper($baris) }}
+                                </td>
 
-                            <td rowspan="3" class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]">
-                                ISTIRAHAT
-                            </td>
+                                @php $lewatiSampai = 0; @endphp
+                                @foreach($slotHari as $slot)
+                                    @if($slot->jenis === 'Pembiasaan')
+                                        @if($indeksBaris === 0)
+                                            <td rowspan="3" class="p-2 {{ $kelasWarnaPembiasaan }} font-bold border border-slate-200 text-xs">
+                                                {{ strtoupper($label['kegiatan']) }}
+                                                @if($label['lokasi'])
+                                                    <span class="block text-[9px] font-medium opacity-80 mt-0.5">{{ $label['lokasi'] }}</span>
+                                                @endif
+                                            </td>
+                                        @endif
+                                        @continue
+                                    @endif
 
-                            @php $skip1_2 = 0; @endphp
-                            @foreach([4, 5] as $jam)
-                                @if($jam <= $skip1_2) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
+                                    @if($slot->jenis === 'Istirahat')
+                                        @if($indeksBaris === 0)
+                                            <td rowspan="3" class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]" title="{{ $slot->nama }}">
+                                                ISTIRAHAT
+                                            </td>
+                                        @endif
+                                        @continue
+                                    @endif
+
+                                    @if($slot->jam_ke <= $lewatiSampai)
+                                        @continue
+                                    @endif
+
                                     @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip1_2 = $jdw->jam_ke_selesai;
+                                        $jdw = $jadwalKelas->first(fn ($i) => $i->jam_ke_mulai == $slot->jam_ke);
                                     @endphp
-                                    <td colspan="{{ $span }}" onclick="openEditModalFromCell(this)"
-                                        data-id="{{ $jdw->id }}"
-                                        data-hari="{{ $jdw->hari }}"
-                                        data-kelas="{{ $jdw->id_kelas }}"
-                                        data-mapel="{{ $jdw->id_mapel }}"
-                                        data-ruang="{{ $jdw->id_ruangan }}"
-                                        data-guru="{{ $jdw->id_guru }}"
-                                        data-mulai="{{ $jdw->jam_ke_mulai }}"
-                                        data-selesai="{{ $jdw->jam_ke_selesai }}"
-                                        class="p-2 font-bold bg-emerald-100 text-emerald-900 border border-emerald-200 hover:bg-emerald-200 cursor-pointer transition text-xs" title="Klik untuk edit">
-                                        {{ $jdw->mapel ? $jdw->mapel->nama : '-' }}
-                                    </td>
-                                @else
-                                    <td class="p-2 text-slate-400 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-
-                            <td rowspan="3" class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]">
-                                ISTIRAHAT
-                            </td>
-
-                            @php $skip1_3 = 0; @endphp
-                            @foreach([6, 7] as $jam)
-                                @if($jam <= $skip1_3) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip1_3 = $jdw->jam_ke_selesai;
-                                    @endphp
-                                    <td colspan="{{ $span }}" onclick="openEditModalFromCell(this)"
-                                        data-id="{{ $jdw->id }}"
-                                        data-hari="{{ $jdw->hari }}"
-                                        data-kelas="{{ $jdw->id_kelas }}"
-                                        data-mapel="{{ $jdw->id_mapel }}"
-                                        data-ruang="{{ $jdw->id_ruangan }}"
-                                        data-guru="{{ $jdw->id_guru }}"
-                                        data-mulai="{{ $jdw->jam_ke_mulai }}"
-                                        data-selesai="{{ $jdw->jam_ke_selesai }}"
-                                        class="p-2 font-bold bg-emerald-100 text-emerald-900 border border-emerald-200 hover:bg-emerald-200 cursor-pointer transition text-xs" title="Klik untuk edit">
-                                        {{ $jdw->mapel ? $jdw->mapel->nama : '-' }}
-                                    </td>
-                                @else
-                                    <td class="p-2 text-slate-400 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-                        </tr>
-
-                        <tr>
-                            <td class="p-2 font-bold text-slate-500 bg-slate-100/70 border border-slate-200 text-[10px]">
-                                RUANG
-                            </td>
-
-                            @php $skip2_1 = 0; @endphp
-                            @foreach([1, 2, 3] as $jam)
-                                @if($jam <= $skip2_1) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip2_1 = $jdw->jam_ke_selesai;
-                                    @endphp
-                                    <td colspan="{{ $span }}" class="p-1 font-semibold text-slate-600 bg-slate-50 border border-slate-200 text-[11px]">
-                                        {{ $jdw->ruangan ? $jdw->ruangan->kode : '-' }}
-                                    </td>
-                                @else
-                                    <td class="p-1 text-slate-300 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-
-                            @php $skip2_2 = 0; @endphp
-                            @foreach([4, 5] as $jam)
-                                @if($jam <= $skip2_2) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip2_2 = $jdw->jam_ke_selesai;
-                                    @endphp
-                                    <td colspan="{{ $span }}" class="p-1 font-semibold text-slate-600 bg-slate-50 border border-slate-200 text-[11px]">
-                                        {{ $jdw->ruangan ? $jdw->ruangan->kode : '-' }}
-                                    </td>
-                                @else
-                                    <td class="p-1 text-slate-300 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-
-                            @php $skip2_3 = 0; @endphp
-                            @foreach([6, 7] as $jam)
-                                @if($jam <= $skip2_3) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip2_3 = $jdw->jam_ke_selesai;
-                                    @endphp
-                                    <td colspan="{{ $span }}" class="p-1 font-semibold text-slate-600 bg-slate-50 border border-slate-200 text-[11px]">
-                                        {{ $jdw->ruangan ? $jdw->ruangan->kode : '-' }}
-                                    </td>
-                                @else
-                                    <td class="p-1 text-slate-300 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-                        </tr>
-
-                        <tr>
-                            <td class="p-2 font-bold text-slate-500 bg-slate-100/70 border border-slate-200 text-[10px]">
-                                GURU
-                            </td>
-
-                            @php $skip3_1 = 0; @endphp
-                            @foreach([1, 2, 3] as $jam)
-                                @if($jam <= $skip3_1) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip3_1 = $jdw->jam_ke_selesai;
-                                        $namaGuru = $jdw->guru ? explode(',', $jdw->guru->nama)[0] : '-';
-                                    @endphp
-                                    <td colspan="{{ $span }}" class="p-1 text-slate-700 bg-slate-50 border border-slate-200 text-[11px]">
-                                        {{ $namaGuru }}
-                                    </td>
-                                @else
-                                    <td class="p-1 text-slate-300 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-
-                            @php $skip3_2 = 0; @endphp
-                            @foreach([4, 5] as $jam)
-                                @if($jam <= $skip3_2) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip3_2 = $jdw->jam_ke_selesai;
-                                        $namaGuru = $jdw->guru ? explode(',', $jdw->guru->nama)[0] : '-';
-                                    @endphp
-                                    <td colspan="{{ $span }}" class="p-1 text-slate-700 bg-slate-50 border border-slate-200 text-[11px]">
-                                        {{ $namaGuru }}
-                                    </td>
-                                @else
-                                    <td class="p-1 text-slate-300 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-
-                            @php $skip3_3 = 0; @endphp
-                            @foreach([6, 7] as $jam)
-                                @if($jam <= $skip3_3) @continue @endif
-                                @php
-                                    $jdw = $daftarJadwal->first(fn($i) => $i->id_kelas == $k->id && $i->jam_ke_mulai == $jam);
-                                @endphp
-                                @if($jdw)
-                                    @php
-                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                        $skip3_3 = $jdw->jam_ke_selesai;
-                                        $namaGuru = $jdw->guru ? explode(',', $jdw->guru->nama)[0] : '-';
-                                    @endphp
-                                    <td colspan="{{ $span }}" class="p-1 text-slate-700 bg-slate-50 border border-slate-200 text-[11px]">
-                                        {{ $namaGuru }}
-                                    </td>
-                                @else
-                                    <td class="p-1 text-slate-300 border border-slate-200">-</td>
-                                @endif
-                            @endforeach
-                        </tr>
+                                    @if($jdw)
+                                        @php
+                                            $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
+                                            $lewatiSampai = $jdw->jam_ke_selesai;
+                                            $namaGuru = $jdw->guru ? explode(',', $jdw->guru->nama)[0] : '-';
+                                        @endphp
+                                        @if($baris === 'mapel')
+                                            <td colspan="{{ $span }}" onclick="openEditModalFromCell(this)"
+                                                data-id="{{ $jdw->id }}"
+                                                data-hari="{{ $jdw->hari }}"
+                                                data-kelas="{{ $jdw->id_kelas }}"
+                                                data-mapel="{{ $jdw->id_mapel }}"
+                                                data-ruang="{{ $jdw->id_ruangan }}"
+                                                data-guru="{{ $jdw->id_guru }}"
+                                                data-mulai="{{ $jdw->jam_ke_mulai }}"
+                                                data-selesai="{{ $jdw->jam_ke_selesai }}"
+                                                class="p-2 font-bold bg-emerald-100 text-emerald-900 border border-emerald-200 hover:bg-emerald-200 cursor-pointer transition text-xs" title="Klik untuk edit">
+                                                {{ $jdw->mapel ? $jdw->mapel->nama : '-' }}
+                                            </td>
+                                        @elseif($baris === 'ruang')
+                                            <td colspan="{{ $span }}" class="p-1 font-semibold text-slate-600 bg-slate-50 border border-slate-200 text-[11px]">
+                                                {{ $jdw->ruangan ? $jdw->ruangan->kode : '-' }}
+                                            </td>
+                                        @else
+                                            <td colspan="{{ $span }}" class="p-1 text-slate-700 bg-slate-50 border border-slate-200 text-[11px]">
+                                                {{ $namaGuru }}
+                                            </td>
+                                        @endif
+                                    @else
+                                        <td class="p-{{ $baris === 'mapel' ? '2' : '1' }} {{ $baris === 'mapel' ? 'text-slate-400' : 'text-slate-300' }} border border-slate-200">-</td>
+                                    @endif
+                                @endforeach
+                            </tr>
+                        @endforeach
                     @empty
                         <tr>
-                            <td colspan="12" class="p-8 text-center text-slate-400">Belum ada data kelas yang terdaftar.</td>
+                            <td colspan="{{ $jumlahKolom + 2 }}" class="p-8 text-center text-slate-400">Belum ada data kelas yang terdaftar.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -317,121 +219,57 @@
         </div>
 
         <div id="viewMatriksRuangan" class="hidden overflow-x-auto border border-slate-200 rounded-2xl">
-            <table class="w-full text-center text-xs border-collapse min-w-[1050px]">
+            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 290 + $jumlahKolom * 95 }}px">
                 <thead>
                     <tr>
                         <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-12">NO</th>
                         <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-48 text-left">NAMA RUANG</th>
                         <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-24">KODE</th>
-                        <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 w-28">CARABIKA</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 1</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 2</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 3</th>
-                        <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24">ISTIRAHAT</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 4</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 5</th>
-                        <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24">ISTIRAHAT</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 6</th>
-                        <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM 7</th>
+                        @foreach($slotHari as $slot)
+                            @if($slot->jenis === 'Pembiasaan')
+                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 w-28" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
+                            @elseif($slot->jenis === 'Istirahat')
+                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24" title="{{ $slot->nama }}">ISTIRAHAT</th>
+                            @else
+                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM {{ $slot->jam_ke }}</th>
+                            @endif
+                        @endforeach
                     </tr>
                     <tr class="text-[11px] text-slate-600 bg-slate-50">
-                        <th class="p-1 border border-slate-200 font-medium">06.30 - 07.30</th>
-                        <th class="p-1 border border-slate-200 font-medium">07.30 - 08.15</th>
-                        <th class="p-1 border border-slate-200 font-medium">08.15 - 09.00</th>
-                        <th class="p-1 border border-slate-200 font-medium">09.00 - 09.45</th>
-                        <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">09.45 - 10.00</th>
-                        <th class="p-1 border border-slate-200 font-medium">10.00 - 10.45</th>
-                        <th class="p-1 border border-slate-200 font-medium">10.45 - 11.30</th>
-                        <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">11.30 - 12.30</th>
-                        <th class="p-1 border border-slate-200 font-medium">12.30 - 13.15</th>
-                        <th class="p-1 border border-slate-200 font-medium">13.15 - 14.00</th>
+                        @foreach($slotHari as $slot)
+                            @if($slot->jenis === 'Istirahat')
+                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                            @else
+                                <th class="p-1 border border-slate-200 font-medium">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                            @endif
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     @php
-                        $rekapTerpakai = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0];
-                        $rekapKosong = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0];
+                        $rekapTerpakai = array_fill_keys($slotPelajaran->pluck('jam_ke')->all(), 0);
+                        $rekapKosong = $rekapTerpakai;
                     @endphp
                     @forelse($daftarRuangan as $index => $r)
                         <tr class="hover:bg-slate-50/70 transition">
                             <td class="p-2.5 font-bold text-slate-500 border border-slate-200 bg-slate-50/50">{{ $index + 1 }}</td>
                             <td class="p-2.5 font-bold text-slate-900 border border-slate-200 text-left whitespace-nowrap">{{ $r->nama }}</td>
                             <td class="p-2.5 font-mono font-bold text-slate-600 border border-slate-200 bg-slate-50/30">{{ $r->kode }}</td>
-                            <td class="p-2 bg-yellow-50 text-amber-900 font-medium border border-slate-200 text-[11px]">-</td>
-                            
-                            @foreach([1, 2, 3] as $jam)
-                                @php
-                                    $pakai = $daftarJadwal->first(fn($j) => $j->id_ruangan == $r->id && $jam >= $j->jam_ke_mulai && $jam <= $j->jam_ke_selesai);
-                                    if ($pakai) {
-                                        $rekapTerpakai[$jam]++;
-                                    } else {
-                                        $rekapKosong[$jam]++;
-                                    }
-                                @endphp
-                                @if($pakai)
-                                    <td class="p-2 bg-rose-100 text-rose-900 font-bold border border-rose-200 text-xs cursor-pointer hover:bg-rose-200 transition" onclick="openEditModalFromCell(this)"
-                                        data-id="{{ $pakai->id }}"
-                                        data-hari="{{ $pakai->hari }}"
-                                        data-kelas="{{ $pakai->id_kelas }}"
-                                        data-mapel="{{ $pakai->id_mapel }}"
-                                        data-ruang="{{ $pakai->id_ruangan }}"
-                                        data-guru="{{ $pakai->id_guru }}"
-                                        data-mulai="{{ $pakai->jam_ke_mulai }}"
-                                        data-selesai="{{ $pakai->jam_ke_selesai }}"
-                                        title="Terpakai oleh {{ $pakai->kelas ? $pakai->kelas->nama : 'Kelas' }} - Klik untuk edit">
-                                        <span class="block font-black text-rose-700">1</span>
-                                        <span class="text-[10px] leading-tight block truncate max-w-[85px] mx-auto">{{ $pakai->kelas ? $pakai->kelas->nama : '-' }}</span>
-                                    </td>
-                                @else
-                                    <td class="p-2 bg-emerald-50/60 text-emerald-700 font-bold border border-slate-200 text-xs hover:bg-emerald-100 cursor-pointer transition"
-                                        onclick="tambahJadwalUntukRuangan('{{ $hariTerpilih }}', {{ $r->id }}, {{ $jam }})"
-                                        title="Ruangan Kosong - Klik untuk jadwalkan">
-                                        <span class="block font-extrabold text-emerald-600">0</span>
-                                        <span class="text-[9px] text-emerald-500 font-medium">Kosong</span>
-                                    </td>
+
+                            @foreach($slotHari as $slot)
+                                @if($slot->jenis === 'Pembiasaan')
+                                    <td class="p-2 bg-yellow-50 text-amber-900 font-medium border border-slate-200 text-[11px]">-</td>
+                                    @continue
                                 @endif
-                            @endforeach
 
-                            <td class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]">ISTIRAHAT</td>
-
-                            @foreach([4, 5] as $jam)
-                                @php
-                                    $pakai = $daftarJadwal->first(fn($j) => $j->id_ruangan == $r->id && $jam >= $j->jam_ke_mulai && $jam <= $j->jam_ke_selesai);
-                                    if ($pakai) {
-                                        $rekapTerpakai[$jam]++;
-                                    } else {
-                                        $rekapKosong[$jam]++;
-                                    }
-                                @endphp
-                                @if($pakai)
-                                    <td class="p-2 bg-rose-100 text-rose-900 font-bold border border-rose-200 text-xs cursor-pointer hover:bg-rose-200 transition" onclick="openEditModalFromCell(this)"
-                                        data-id="{{ $pakai->id }}"
-                                        data-hari="{{ $pakai->hari }}"
-                                        data-kelas="{{ $pakai->id_kelas }}"
-                                        data-mapel="{{ $pakai->id_mapel }}"
-                                        data-ruang="{{ $pakai->id_ruangan }}"
-                                        data-guru="{{ $pakai->id_guru }}"
-                                        data-mulai="{{ $pakai->jam_ke_mulai }}"
-                                        data-selesai="{{ $pakai->jam_ke_selesai }}"
-                                        title="Terpakai oleh {{ $pakai->kelas ? $pakai->kelas->nama : 'Kelas' }} - Klik untuk edit">
-                                        <span class="block font-black text-rose-700">1</span>
-                                        <span class="text-[10px] leading-tight block truncate max-w-[85px] mx-auto">{{ $pakai->kelas ? $pakai->kelas->nama : '-' }}</span>
-                                    </td>
-                                @else
-                                    <td class="p-2 bg-emerald-50/60 text-emerald-700 font-bold border border-slate-200 text-xs hover:bg-emerald-100 cursor-pointer transition"
-                                        onclick="tambahJadwalUntukRuangan('{{ $hariTerpilih }}', {{ $r->id }}, {{ $jam }})"
-                                        title="Ruangan Kosong - Klik untuk jadwalkan">
-                                        <span class="block font-extrabold text-emerald-600">0</span>
-                                        <span class="text-[9px] text-emerald-500 font-medium">Kosong</span>
-                                    </td>
+                                @if($slot->jenis === 'Istirahat')
+                                    <td class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]">ISTIRAHAT</td>
+                                    @continue
                                 @endif
-                            @endforeach
 
-                            <td class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]">ISTIRAHAT</td>
-
-                            @foreach([6, 7] as $jam)
                                 @php
-                                    $pakai = $daftarJadwal->first(fn($j) => $j->id_ruangan == $r->id && $jam >= $j->jam_ke_mulai && $jam <= $j->jam_ke_selesai);
+                                    $jam = $slot->jam_ke;
+                                    $pakai = $daftarJadwal->first(fn ($j) => $j->id_ruangan == $r->id && $jam >= $j->jam_ke_mulai && $jam <= $j->jam_ke_selesai);
                                     if ($pakai) {
                                         $rekapTerpakai[$jam]++;
                                     } else {
@@ -464,36 +302,34 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="13" class="p-8 text-center text-slate-400">Belum ada data ruangan.</td>
+                            <td colspan="{{ $jumlahKolom + 3 }}" class="p-8 text-center text-slate-400">Belum ada data ruangan.</td>
                         </tr>
                     @endforelse
                 </tbody>
                 <tfoot class="font-extrabold text-xs">
                     <tr class="bg-rose-50 text-rose-800 border-t-2 border-rose-300">
                         <td colspan="3" class="p-2.5 text-left font-black tracking-wider border border-slate-200">JUMLAH RUANGAN TERPAKAI</td>
-                        <td class="p-2 border border-slate-200">-</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[1] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[2] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[3] }}</td>
-                        <td class="p-2 bg-pink-100 border border-slate-200">-</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[4] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[5] }}</td>
-                        <td class="p-2 bg-pink-100 border border-slate-200">-</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[6] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[7] }}</td>
+                        @foreach($slotHari as $slot)
+                            @if($slot->jenis === 'Pelajaran')
+                                <td class="p-2 border border-slate-200 font-mono">{{ $rekapTerpakai[$slot->jam_ke] }}</td>
+                            @elseif($slot->jenis === 'Istirahat')
+                                <td class="p-2 bg-pink-100 border border-slate-200">-</td>
+                            @else
+                                <td class="p-2 border border-slate-200">-</td>
+                            @endif
+                        @endforeach
                     </tr>
                     <tr class="bg-emerald-50 text-emerald-800 border-b-2 border-emerald-300">
                         <td colspan="3" class="p-2.5 text-left font-black tracking-wider border border-slate-200">JUMLAH RUANGAN KOSONG</td>
-                        <td class="p-2 border border-slate-200">-</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[1] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[2] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[3] }}</td>
-                        <td class="p-2 bg-pink-100 border border-slate-200">-</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[4] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[5] }}</td>
-                        <td class="p-2 bg-pink-100 border border-slate-200">-</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[6] }}</td>
-                        <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[7] }}</td>
+                        @foreach($slotHari as $slot)
+                            @if($slot->jenis === 'Pelajaran')
+                                <td class="p-2 border border-slate-200 font-mono">{{ $rekapKosong[$slot->jam_ke] }}</td>
+                            @elseif($slot->jenis === 'Istirahat')
+                                <td class="p-2 bg-pink-100 border border-slate-200">-</td>
+                            @else
+                                <td class="p-2 border border-slate-200">-</td>
+                            @endif
+                        @endforeach
                     </tr>
                 </tfoot>
             </table>
@@ -524,7 +360,11 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach($daftarJadwal as $j)
+                        @foreach($daftarJadwal->sortBy('jam_ke_mulai') as $j)
+                            @php
+                                $waktuMulai = $jamKeMap[$j->jam_ke_mulai]->jam_mulai ?? null;
+                                $waktuSelesai = $jamKeMap[$j->jam_ke_selesai]->jam_selesai ?? null;
+                            @endphp
                             <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-3.5 font-bold text-slate-900">
                                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">
@@ -536,6 +376,9 @@
                                 <td class="p-3.5 text-slate-600 text-xs">{{ $j->ruangan ? $j->ruangan->nama : '-' }}</td>
                                 <td class="p-3.5 font-mono text-emerald-700 font-bold text-xs">
                                     Jam {{ $j->jam_ke_mulai }} s/d {{ $j->jam_ke_selesai }}
+                                    @if($waktuMulai && $waktuSelesai)
+                                        <span class="block text-[10px] text-slate-400 font-medium">{{ $formatWaktu($waktuMulai) }} - {{ $formatWaktu($waktuSelesai) }}</span>
+                                    @endif
                                 </td>
                                 <td class="p-3.5 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end space-x-2">
@@ -585,12 +428,12 @@
 
         <form method="POST" action="{{ route('admin.jadwal.store') }}" class="space-y-4">
             @csrf
-            
+
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Hari</label>
-                        <select name="hari" id="tambahHari" onchange="evaluasiFormJadwal()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
+                        <select name="hari" id="tambahHari" onchange="onTambahHariChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
                             @foreach($daftarHari as $h)
                                 <option value="{{ $h }}" {{ $hariTerpilih === $h ? 'selected' : '' }}>{{ $h }}</option>
                             @endforeach
@@ -599,23 +442,23 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jam Ke Mulai</label>
                         <select name="jam_ke_mulai" id="tambahMulai" onchange="onJamMulaiChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
-                            @for($i = 1; $i <= 7; $i++)
-                                <option value="{{ $i }}">Jam {{ $i }}</option>
-                            @endfor
+                            @foreach($ringkasanHari['jam'] as $slot)
+                                <option value="{{ $slot['jam_ke'] }}">Jam {{ $slot['jam_ke'] }} ({{ $formatWaktu($slot['jam_mulai']) }} - {{ $formatWaktu($slot['jam_selesai']) }})</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jam Ke Selesai</label>
                         <select name="jam_ke_selesai" id="tambahSelesai" onchange="evaluasiFormJadwal()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
-                            @for($i = 1; $i <= 7; $i++)
-                                <option value="{{ $i }}">Jam {{ $i }}</option>
-                            @endfor
+                            @foreach($ringkasanHari['jam'] as $slot)
+                                <option value="{{ $slot['jam_ke'] }}">Jam {{ $slot['jam_ke'] }} ({{ $formatWaktu($slot['jam_mulai']) }} - {{ $formatWaktu($slot['jam_selesai']) }})</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
-                <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
-                    <span><i class="fa-solid fa-clock mr-1 text-slate-400"></i>Pagi: Jam 1-3 | Siang: Jam 4-5 | Sore: Jam 6-7</span>
-                    <span class="text-amber-700 font-medium"><i class="fa-solid fa-mug-hot mr-1"></i>Istirahat setelah Jam 3 & Jam 5</span>
+                <div class="text-[11px] text-slate-500 pt-0.5 space-y-1">
+                    <div id="keteranganBagianTambah" class="flex flex-wrap items-center gap-x-3 gap-y-0.5"></div>
+                    <div id="keteranganIstirahatTambah" class="text-amber-700 font-medium"></div>
                 </div>
             </div>
 
@@ -694,12 +537,12 @@
         <form id="editForm" method="POST" action="" class="space-y-4">
             @csrf
             @method('PUT')
-            
+
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Hari</label>
-                        <select id="editHari" name="hari" onchange="evaluasiEditForm()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
+                        <select id="editHari" name="hari" onchange="onEditHariChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
                             @foreach($daftarHari as $h)
                                 <option value="{{ $h }}">{{ $h }}</option>
                             @endforeach
@@ -708,19 +551,23 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jam Ke Mulai</label>
                         <select id="editMulai" name="jam_ke_mulai" onchange="onEditJamMulaiChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
-                            @for($i = 1; $i <= 7; $i++)
-                                <option value="{{ $i }}">Jam {{ $i }}</option>
-                            @endfor
+                            @foreach($ringkasanHari['jam'] as $slot)
+                                <option value="{{ $slot['jam_ke'] }}">Jam {{ $slot['jam_ke'] }} ({{ $formatWaktu($slot['jam_mulai']) }} - {{ $formatWaktu($slot['jam_selesai']) }})</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jam Ke Selesai</label>
                         <select id="editSelesai" name="jam_ke_selesai" onchange="evaluasiEditForm()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
-                            @for($i = 1; $i <= 7; $i++)
-                                <option value="{{ $i }}">Jam {{ $i }}</option>
-                            @endfor
+                            @foreach($ringkasanHari['jam'] as $slot)
+                                <option value="{{ $slot['jam_ke'] }}">Jam {{ $slot['jam_ke'] }} ({{ $formatWaktu($slot['jam_mulai']) }} - {{ $formatWaktu($slot['jam_selesai']) }})</option>
+                            @endforeach
                         </select>
                     </div>
+                </div>
+                <div class="text-[11px] text-slate-500 pt-0.5 space-y-1">
+                    <div id="keteranganBagianEdit" class="flex flex-wrap items-center gap-x-3 gap-y-0.5"></div>
+                    <div id="keteranganIstirahatEdit" class="text-amber-700 font-medium"></div>
                 </div>
             </div>
 
@@ -787,13 +634,105 @@ const SEMUA_JADWAL = @json($semuaJadwal);
 const DAFTAR_RUANGAN = @json($daftarRuangan);
 const DAFTAR_GURU = @json($daftarGuru);
 const DAFTAR_KELAS = @json($daftarKelas);
+const URL_JAM_HARI = @json(route('admin.jadwal.jam', ['hari' => '__HARI__']));
+const CACHE_JAM = {};
+CACHE_JAM[@json($hariTerpilih)] = @json($ringkasanHari);
 let currentEditId = null;
 
+function byId(id) {
+    return document.getElementById(id);
+}
+
+function formatWaktu(waktu) {
+    return waktu ? String(waktu).replace(':', '.') : '';
+}
+
+async function ambilJamHari(hari) {
+    if (CACHE_JAM[hari]) {
+        return CACHE_JAM[hari];
+    }
+
+    const respons = await fetch(URL_JAM_HARI.replace('__HARI__', encodeURIComponent(hari)), {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    });
+
+    if (!respons.ok) {
+        throw new Error('Gagal memuat daftar jam pelajaran');
+    }
+
+    CACHE_JAM[hari] = await respons.json();
+    return CACHE_JAM[hari];
+}
+
+function isiOpsiJam(idSelect, data, nilai) {
+    const select = byId(idSelect);
+    select.innerHTML = '';
+
+    data.jam.forEach(j => {
+        const opt = document.createElement('option');
+        opt.value = j.jam_ke;
+        opt.textContent = `Jam ${j.jam_ke} (${formatWaktu(j.jam_mulai)} - ${formatWaktu(j.jam_selesai)})`;
+        select.appendChild(opt);
+    });
+
+    const pilihan = parseInt(nilai);
+    const tersedia = data.jam.some(j => j.jam_ke === pilihan);
+    select.value = String(tersedia ? pilihan : data.jam[0].jam_ke);
+}
+
+function rentangJam(dari, sampai) {
+    return dari === sampai ? `${dari}` : `${dari}-${sampai}`;
+}
+
+function renderKeterangan(sufiks, data) {
+    const pembiasaan = data.pembiasaan
+        ? `<span class="text-amber-700 font-semibold"><i class="fa-solid fa-sun mr-1"></i>${data.pembiasaan.nama} ${formatWaktu(data.pembiasaan.mulai)}-${formatWaktu(data.pembiasaan.selesai)}</span>`
+        : '';
+
+    const bagian = data.bagian.map(b =>
+        `<span><i class="fa-solid fa-clock mr-1 text-slate-400"></i>${b.label}: Jam ${rentangJam(b.dari, b.sampai)}</span>`
+    ).join('');
+
+    byId('keteranganBagian' + sufiks).innerHTML = pembiasaan + bagian;
+
+    const istirahat = data.istirahat.map(i =>
+        `Jam ${i.setelah_jam} (${formatWaktu(i.mulai)}-${formatWaktu(i.selesai)})`
+    ).join(' &amp; ');
+
+    byId('keteranganIstirahat' + sufiks).innerHTML = istirahat
+        ? `<i class="fa-solid fa-mug-hot mr-1"></i>Istirahat setelah ${istirahat}`
+        : '';
+}
+
+function melewatiIstirahat(data, mulai, selesai) {
+    return data.istirahat.some(i => i.setelah_jam >= mulai && i.setelah_jam < selesai);
+}
+
+function kumpulkanKesalahanJam(data, hari, mulai, selesai) {
+    const errors = [];
+
+    if (selesai < mulai) {
+        errors.push('Jam selesai tidak boleh lebih awal dari jam mulai.');
+    }
+
+    if (data) {
+        if (mulai > data.maks_jam || selesai > data.maks_jam) {
+            errors.push(`Hari ${hari} hanya memiliki Jam 1 sampai Jam ${data.maks_jam}.`);
+        }
+
+        if (melewatiIstirahat(data, mulai, selesai)) {
+            errors.push('Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.');
+        }
+    }
+
+    return errors;
+}
+
 function switchMatriksView(view) {
-    const vKelas = document.getElementById('viewMatriksKelas');
-    const vRuang = document.getElementById('viewMatriksRuangan');
-    const btnKelas = document.getElementById('tabBtnKelas');
-    const btnRuang = document.getElementById('tabBtnRuang');
+    const vKelas = byId('viewMatriksKelas');
+    const vRuang = byId('viewMatriksRuangan');
+    const btnKelas = byId('tabBtnKelas');
+    const btnRuang = byId('tabBtnRuang');
 
     if (view === 'ruang') {
         vKelas.classList.add('hidden');
@@ -809,17 +748,35 @@ function switchMatriksView(view) {
 }
 
 function openTambahModal() {
-    document.getElementById('tambahModal').classList.remove('hidden');
-    evaluasiFormJadwal();
+    byId('tambahModal').classList.remove('hidden');
+    onTambahHariChange();
 }
 
 function closeTambahModal() {
-    document.getElementById('tambahModal').classList.add('hidden');
+    byId('tambahModal').classList.add('hidden');
+}
+
+async function onTambahHariChange() {
+    const hari = byId('tambahHari').value;
+
+    try {
+        const data = await ambilJamHari(hari);
+        if (byId('tambahHari').value !== hari) {
+            return;
+        }
+
+        isiOpsiJam('tambahMulai', data, byId('tambahMulai').value);
+        isiOpsiJam('tambahSelesai', data, byId('tambahSelesai').value);
+        renderKeterangan('Tambah', data);
+        onJamMulaiChange();
+    } catch (e) {
+        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+    }
 }
 
 function onJamMulaiChange() {
-    const mulai = parseInt(document.getElementById('tambahMulai').value) || 1;
-    const selesaiSelect = document.getElementById('tambahSelesai');
+    const mulai = parseInt(byId('tambahMulai').value) || 1;
+    const selesaiSelect = byId('tambahSelesai');
     if (parseInt(selesaiSelect.value) < mulai) {
         selesaiSelect.value = mulai;
     }
@@ -827,38 +784,47 @@ function onJamMulaiChange() {
 }
 
 function onKelasChange() {
-    const kSelect = document.getElementById('tambahKelas');
+    const kSelect = byId('tambahKelas');
     const opt = kSelect.options[kSelect.selectedIndex];
     const ruangId = opt ? opt.getAttribute('data-ruangan') : null;
     if (ruangId) {
-        document.getElementById('tambahRuangan').value = ruangId;
+        byId('tambahRuangan').value = ruangId;
     }
     evaluasiFormJadwal();
 }
 
-function tambahJadwalUntukRuangan(hari, idRuangan, jam) {
-    document.getElementById('tambahHari').value = hari;
-    document.getElementById('tambahMulai').value = jam;
-    document.getElementById('tambahSelesai').value = jam;
-    document.getElementById('tambahModal').classList.remove('hidden');
+async function tambahJadwalUntukRuangan(hari, idRuangan, jam) {
+    byId('tambahHari').value = hari;
+
+    try {
+        const data = await ambilJamHari(hari);
+        isiOpsiJam('tambahMulai', data, jam);
+        isiOpsiJam('tambahSelesai', data, jam);
+        renderKeterangan('Tambah', data);
+    } catch (e) {
+        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+        return;
+    }
+
+    byId('tambahModal').classList.remove('hidden');
     renderDropdownRuangan();
-    document.getElementById('tambahRuangan').value = idRuangan;
+    byId('tambahRuangan').value = idRuangan;
     evaluasiFormJadwal();
 }
 
 function renderDropdownRuangan() {
-    const hari = document.getElementById('tambahHari').value;
-    const mulai = parseInt(document.getElementById('tambahMulai').value) || 1;
-    const selesai = parseInt(document.getElementById('tambahSelesai').value) || mulai;
-    const filterKosong = document.getElementById('checkFilterRuangKosong').checked;
-    const selectRuangan = document.getElementById('tambahRuangan');
+    const hari = byId('tambahHari').value;
+    const mulai = parseInt(byId('tambahMulai').value) || 1;
+    const selesai = parseInt(byId('tambahSelesai').value) || mulai;
+    const filterKosong = byId('checkFilterRuangKosong').checked;
+    const selectRuangan = byId('tambahRuangan');
     const nilaiLama = selectRuangan.value;
 
     let ruanganKosong = [];
     let ruanganTerpakai = [];
 
     DAFTAR_RUANGAN.forEach(r => {
-        const bentrok = SEMUA_JADWAL.find(j => 
+        const bentrok = SEMUA_JADWAL.find(j =>
             j.hari === hari &&
             j.id_ruangan === r.id &&
             j.jam_ke_mulai <= selesai &&
@@ -908,7 +874,7 @@ function renderDropdownRuangan() {
         selectRuangan.appendChild(groupTerpakai);
     }
 
-    const statusEl = document.getElementById('statusRuangText');
+    const statusEl = byId('statusRuangText');
     if (statusEl) {
         statusEl.innerHTML = `
             <div class="flex items-center space-x-3 text-xs font-semibold mt-1">
@@ -924,17 +890,17 @@ function renderDropdownRuangan() {
 }
 
 function renderDropdownGuru() {
-    const hari = document.getElementById('tambahHari').value;
-    const mulai = parseInt(document.getElementById('tambahMulai').value) || 1;
-    const selesai = parseInt(document.getElementById('tambahSelesai').value) || mulai;
-    const selectGuru = document.getElementById('tambahGuru');
+    const hari = byId('tambahHari').value;
+    const mulai = parseInt(byId('tambahMulai').value) || 1;
+    const selesai = parseInt(byId('tambahSelesai').value) || mulai;
+    const selectGuru = byId('tambahGuru');
     const nilaiLama = selectGuru.value;
 
     let guruTersedia = [];
     let guruMengajar = [];
 
     DAFTAR_GURU.forEach(g => {
-        const bentrok = SEMUA_JADWAL.find(j => 
+        const bentrok = SEMUA_JADWAL.find(j =>
             j.hari === hari &&
             j.id_guru === g.id &&
             j.jam_ke_mulai <= selesai &&
@@ -983,7 +949,7 @@ function renderDropdownGuru() {
         selectGuru.appendChild(groupSibuk);
     }
 
-    const statusGuruEl = document.getElementById('statusGuruText');
+    const statusGuruEl = byId('statusGuruText');
     if (statusGuruEl) {
         statusGuruEl.innerHTML = `
             <div class="flex items-center space-x-3 text-xs font-semibold mt-1">
@@ -998,68 +964,7 @@ function renderDropdownGuru() {
     }
 }
 
-function evaluasiFormJadwal() {
-    renderDropdownRuangan();
-    renderDropdownGuru();
-
-    const hari = document.getElementById('tambahHari').value;
-    const mulai = parseInt(document.getElementById('tambahMulai').value) || 1;
-    const selesai = parseInt(document.getElementById('tambahSelesai').value) || mulai;
-    const idKelas = parseInt(document.getElementById('tambahKelas').value);
-    const idRuang = parseInt(document.getElementById('tambahRuangan').value);
-    const idGuru = parseInt(document.getElementById('tambahGuru').value);
-    const btnSimpan = document.getElementById('btnSimpanJadwal');
-    const alertBox = document.getElementById('alertBentrokJadwal');
-
-    let errors = [];
-
-    if (selesai < mulai) {
-        errors.push('Jam selesai tidak boleh lebih awal dari jam mulai.');
-    }
-
-    if ((mulai <= 3 && selesai >= 4) || (mulai <= 5 && selesai >= 6)) {
-        errors.push('Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.');
-    }
-
-    if (idKelas) {
-        const bentrokKelas = SEMUA_JADWAL.find(j => 
-            j.hari === hari &&
-            j.id_kelas === idKelas &&
-            j.jam_ke_mulai <= selesai &&
-            j.jam_ke_selesai >= mulai
-        );
-        if (bentrokKelas) {
-            const namaMapel = bentrokKelas.mapel ? bentrokKelas.mapel.nama : 'Mapel Lain';
-            errors.push(`Kelas ini sudah memiliki jadwal '${namaMapel}' pada jam tersebut.`);
-        }
-    }
-
-    if (idRuang) {
-        const bentrokRuang = SEMUA_JADWAL.find(j => 
-            j.hari === hari &&
-            j.id_ruangan === idRuang &&
-            j.jam_ke_mulai <= selesai &&
-            j.jam_ke_selesai >= mulai
-        );
-        if (bentrokRuang) {
-            const namaKelas = bentrokRuang.kelas ? bentrokRuang.kelas.nama : 'Kelas Lain';
-            errors.push(`Ruangan sudah digunakan oleh kelas '${namaKelas}' pada jam tersebut.`);
-        }
-    }
-
-    if (idGuru) {
-        const bentrokGuru = SEMUA_JADWAL.find(j => 
-            j.hari === hari &&
-            j.id_guru === idGuru &&
-            j.jam_ke_mulai <= selesai &&
-            j.jam_ke_selesai >= mulai
-        );
-        if (bentrokGuru) {
-            const namaKelas = bentrokGuru.kelas ? bentrokGuru.kelas.nama : 'Kelas Lain';
-            errors.push(`Guru yang dipilih sudah memiliki jadwal mengajar di kelas '${namaKelas}' pada jam tersebut.`);
-        }
-    }
-
+function tampilkanHasilEvaluasi(alertBox, btnSimpan, errors) {
     if (errors.length > 0) {
         alertBox.className = 'p-3.5 rounded-2xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800 flex items-start space-x-2';
         alertBox.innerHTML = `
@@ -1086,37 +991,114 @@ function evaluasiFormJadwal() {
     }
 }
 
-function openEditModalFromCell(el) {
-    currentEditId = el.getAttribute('data-id');
-    const hari = el.getAttribute('data-hari');
-    const kelas = el.getAttribute('data-kelas');
-    const mapel = el.getAttribute('data-mapel');
-    const ruang = el.getAttribute('data-ruang');
-    const guru = el.getAttribute('data-guru');
-    const mulai = el.getAttribute('data-mulai');
-    const selesai = el.getAttribute('data-selesai');
+function kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, kecualiId) {
+    const errors = [];
+    const sama = j => (kecualiId === null || String(j.id) !== String(kecualiId)) &&
+        j.hari === hari &&
+        j.jam_ke_mulai <= selesai &&
+        j.jam_ke_selesai >= mulai;
 
-    document.getElementById('editForm').action = '/admin/jadwal/' + currentEditId;
-    document.getElementById('deleteForm').action = '/admin/jadwal/' + currentEditId;
-    document.getElementById('editHari').value = hari;
-    document.getElementById('editKelas').value = kelas;
-    document.getElementById('editMapel').value = mapel;
-    document.getElementById('editRuang').value = ruang;
-    document.getElementById('editGuru').value = guru;
-    document.getElementById('editMulai').value = mulai;
-    document.getElementById('editSelesai').value = selesai;
+    if (idKelas) {
+        const bentrokKelas = SEMUA_JADWAL.find(j => sama(j) && j.id_kelas === idKelas);
+        if (bentrokKelas) {
+            const namaMapel = bentrokKelas.mapel ? bentrokKelas.mapel.nama : 'Mapel Lain';
+            errors.push(`Kelas ini sudah memiliki jadwal '${namaMapel}' pada jam tersebut.`);
+        }
+    }
 
-    document.getElementById('editModal').classList.remove('hidden');
+    if (idRuang) {
+        const bentrokRuang = SEMUA_JADWAL.find(j => sama(j) && j.id_ruangan === idRuang);
+        if (bentrokRuang) {
+            const namaKelas = bentrokRuang.kelas ? bentrokRuang.kelas.nama : 'Kelas Lain';
+            errors.push(`Ruangan sudah digunakan oleh kelas '${namaKelas}' pada jam tersebut.`);
+        }
+    }
+
+    if (idGuru) {
+        const bentrokGuru = SEMUA_JADWAL.find(j => sama(j) && j.id_guru === idGuru);
+        if (bentrokGuru) {
+            const namaKelas = bentrokGuru.kelas ? bentrokGuru.kelas.nama : 'Kelas Lain';
+            errors.push(`Guru yang dipilih sudah memiliki jadwal mengajar di kelas '${namaKelas}' pada jam tersebut.`);
+        }
+    }
+
+    return errors;
+}
+
+function evaluasiFormJadwal() {
+    renderDropdownRuangan();
+    renderDropdownGuru();
+
+    const hari = byId('tambahHari').value;
+    const mulai = parseInt(byId('tambahMulai').value) || 1;
+    const selesai = parseInt(byId('tambahSelesai').value) || mulai;
+    const idKelas = parseInt(byId('tambahKelas').value);
+    const idRuang = parseInt(byId('tambahRuangan').value);
+    const idGuru = parseInt(byId('tambahGuru').value);
+
+    const errors = kumpulkanKesalahanJam(CACHE_JAM[hari], hari, mulai, selesai)
+        .concat(kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, null));
+
+    tampilkanHasilEvaluasi(byId('alertBentrokJadwal'), byId('btnSimpanJadwal'), errors);
+}
+
+async function openEditModalFromCell(sel) {
+    currentEditId = sel.getAttribute('data-id');
+    const hari = sel.getAttribute('data-hari');
+    const kelas = sel.getAttribute('data-kelas');
+    const mapel = sel.getAttribute('data-mapel');
+    const ruang = sel.getAttribute('data-ruang');
+    const guru = sel.getAttribute('data-guru');
+    const mulai = sel.getAttribute('data-mulai');
+    const selesai = sel.getAttribute('data-selesai');
+
+    try {
+        const data = await ambilJamHari(hari);
+        isiOpsiJam('editMulai', data, mulai);
+        isiOpsiJam('editSelesai', data, selesai);
+        renderKeterangan('Edit', data);
+    } catch (e) {
+        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+        return;
+    }
+
+    byId('editForm').action = '/admin/jadwal/' + currentEditId;
+    byId('deleteForm').action = '/admin/jadwal/' + currentEditId;
+    byId('editHari').value = hari;
+    byId('editKelas').value = kelas;
+    byId('editMapel').value = mapel;
+    byId('editRuang').value = ruang;
+    byId('editGuru').value = guru;
+
+    byId('editModal').classList.remove('hidden');
     evaluasiEditForm();
 }
 
 function closeEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
+    byId('editModal').classList.add('hidden');
+}
+
+async function onEditHariChange() {
+    const hari = byId('editHari').value;
+
+    try {
+        const data = await ambilJamHari(hari);
+        if (byId('editHari').value !== hari) {
+            return;
+        }
+
+        isiOpsiJam('editMulai', data, byId('editMulai').value);
+        isiOpsiJam('editSelesai', data, byId('editSelesai').value);
+        renderKeterangan('Edit', data);
+        onEditJamMulaiChange();
+    } catch (e) {
+        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+    }
 }
 
 function onEditJamMulaiChange() {
-    const mulai = parseInt(document.getElementById('editMulai').value) || 1;
-    const selesaiSelect = document.getElementById('editSelesai');
+    const mulai = parseInt(byId('editMulai').value) || 1;
+    const selesaiSelect = byId('editSelesai');
     if (parseInt(selesaiSelect.value) < mulai) {
         selesaiSelect.value = mulai;
     }
@@ -1124,96 +1106,22 @@ function onEditJamMulaiChange() {
 }
 
 function evaluasiEditForm() {
-    const hari = document.getElementById('editHari').value;
-    const mulai = parseInt(document.getElementById('editMulai').value) || 1;
-    const selesai = parseInt(document.getElementById('editSelesai').value) || mulai;
-    const idKelas = parseInt(document.getElementById('editKelas').value);
-    const idRuang = parseInt(document.getElementById('editRuang').value);
-    const idGuru = parseInt(document.getElementById('editGuru').value);
-    const btnSimpan = document.getElementById('btnSimpanEditJadwal');
-    const alertBox = document.getElementById('editAlertBentrok');
+    const hari = byId('editHari').value;
+    const mulai = parseInt(byId('editMulai').value) || 1;
+    const selesai = parseInt(byId('editSelesai').value) || mulai;
+    const idKelas = parseInt(byId('editKelas').value);
+    const idRuang = parseInt(byId('editRuang').value);
+    const idGuru = parseInt(byId('editGuru').value);
 
-    let errors = [];
+    const errors = kumpulkanKesalahanJam(CACHE_JAM[hari], hari, mulai, selesai)
+        .concat(kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, currentEditId));
 
-    if (selesai < mulai) {
-        errors.push('Jam selesai tidak boleh lebih awal dari jam mulai.');
-    }
-
-    if ((mulai <= 3 && selesai >= 4) || (mulai <= 5 && selesai >= 6)) {
-        errors.push('Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah.');
-    }
-
-    if (idKelas) {
-        const bentrokKelas = SEMUA_JADWAL.find(j => 
-            String(j.id) !== String(currentEditId) &&
-            j.hari === hari &&
-            j.id_kelas === idKelas &&
-            j.jam_ke_mulai <= selesai &&
-            j.jam_ke_selesai >= mulai
-        );
-        if (bentrokKelas) {
-            const namaMapel = bentrokKelas.mapel ? bentrokKelas.mapel.nama : 'Mapel Lain';
-            errors.push(`Kelas ini sudah memiliki jadwal '${namaMapel}' pada jam tersebut.`);
-        }
-    }
-
-    if (idRuang) {
-        const bentrokRuang = SEMUA_JADWAL.find(j => 
-            String(j.id) !== String(currentEditId) &&
-            j.hari === hari &&
-            j.id_ruangan === idRuang &&
-            j.jam_ke_mulai <= selesai &&
-            j.jam_ke_selesai >= mulai
-        );
-        if (bentrokRuang) {
-            const namaKelas = bentrokRuang.kelas ? bentrokRuang.kelas.nama : 'Kelas Lain';
-            errors.push(`Ruangan sudah digunakan oleh kelas '${namaKelas}' pada jam tersebut.`);
-        }
-    }
-
-    if (idGuru) {
-        const bentrokGuru = SEMUA_JADWAL.find(j => 
-            String(j.id) !== String(currentEditId) &&
-            j.hari === hari &&
-            j.id_guru === idGuru &&
-            j.jam_ke_mulai <= selesai &&
-            j.jam_ke_selesai >= mulai
-        );
-        if (bentrokGuru) {
-            const namaKelas = bentrokGuru.kelas ? bentrokGuru.kelas.nama : 'Kelas Lain';
-            errors.push(`Guru yang dipilih sudah memiliki jadwal mengajar di kelas '${namaKelas}' pada jam tersebut.`);
-        }
-    }
-
-    if (errors.length > 0) {
-        alertBox.className = 'p-3.5 rounded-2xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800 flex items-start space-x-2';
-        alertBox.innerHTML = `
-            <i class="fa-solid fa-triangle-exclamation text-rose-600 mt-0.5 text-sm"></i>
-            <div>
-                <p class="font-bold text-rose-900">Perhatian Bentrok Jadwal:</p>
-                <ul class="list-disc list-inside mt-1 space-y-0.5 text-rose-700">
-                    ${errors.map(e => `<li>${e}</li>`).join('')}
-                </ul>
-            </div>
-        `;
-        alertBox.classList.remove('hidden');
-        btnSimpan.disabled = true;
-        btnSimpan.classList.add('opacity-50', 'cursor-not-allowed');
-    } else {
-        alertBox.className = 'p-3.5 rounded-2xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center space-x-2';
-        alertBox.innerHTML = `
-            <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
-            <span>Jadwal aman! Tidak ada bentrok ruangan, guru, maupun kelas pada jam ini.</span>
-        `;
-        alertBox.classList.remove('hidden');
-        btnSimpan.disabled = false;
-        btnSimpan.classList.remove('opacity-50', 'cursor-not-allowed');
-    }
+    tampilkanHasilEvaluasi(byId('editAlertBentrok'), byId('btnSimpanEditJadwal'), errors);
 }
 
 function hapusJadwalAktif() {
     if (confirm('Apakah Anda yakin ingin menghapus jadwal ini?')) {
-        document.getElementById('deleteForm').submit();
+        byId('deleteForm').submit();
     }
 }
 </script>

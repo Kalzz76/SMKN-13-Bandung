@@ -7,7 +7,6 @@ use App\Models\Ekstrakurikuler;
 use App\Models\Galeri;
 use App\Models\Guru;
 use App\Models\Jadwal;
-use App\Models\JamPelajaran;
 use App\Models\Jurusan;
 use App\Models\Kelas;
 use App\Models\Mapel;
@@ -81,7 +80,7 @@ class DatabaseSeeder extends Seeder
             'telepon' => '(022) 7318960',
             'social_media' => 'Instagram: @smkn13bdg / @smkn13bandung | YouTube: SMKN 13 Bandung Official',
             'jam_operasional' => 'Senin – Jumat: 07.00 – 16.00 WIB | Sabtu – Minggu & Hari Libur Nasional: Tutup',
-            'logo' => 'logo-smkn13.png',
+            'logo' => 'pengaturan/u1uuRkFr8pwEBbiYShmpK5yMGVU1S7ywCSBifCi0.jpg',
             'slogan' => 'Terdepan dalam Karakter, Unggul dalam Kompetensi, Berdaya Saing Global.',
             'deskripsi_singkat' => 'SMK Negeri 13 Bandung merupakan sekolah kejuruan negeri unggulan di Kota Bandung yang berfokus pada pengembangan vokasi bidang Sains dan Teknologi Informasi. Kami berkomitmen mencetak lulusan berkarakter, kompeten, dan siap bersaing di dunia kerja maupun perguruan tinggi.',
             'visi' => 'Terwujudnya lulusan yang berakhlak mulia, kompeten, dan berdaya suai di tingkat internasional pada tahun 2030.',
@@ -99,21 +98,10 @@ class DatabaseSeeder extends Seeder
             'jam_masuk' => '07:00',
         ]);
 
-        $jamPelajaran = [
-            ['nama' => 'Carabika', 'jenis' => 'Carabika', 'jam_ke' => null, 'jam_mulai' => '06:30', 'jam_selesai' => '07:30', 'urutan' => 1],
-            ['nama' => 'Jam 1', 'jenis' => 'Pelajaran', 'jam_ke' => 1, 'jam_mulai' => '07:30', 'jam_selesai' => '08:15', 'urutan' => 2],
-            ['nama' => 'Jam 2', 'jenis' => 'Pelajaran', 'jam_ke' => 2, 'jam_mulai' => '08:15', 'jam_selesai' => '09:00', 'urutan' => 3],
-            ['nama' => 'Jam 3', 'jenis' => 'Pelajaran', 'jam_ke' => 3, 'jam_mulai' => '09:00', 'jam_selesai' => '09:45', 'urutan' => 4],
-            ['nama' => 'Istirahat', 'jenis' => 'Istirahat', 'jam_ke' => null, 'jam_mulai' => '09:45', 'jam_selesai' => '10:00', 'urutan' => 5],
-            ['nama' => 'Jam 4', 'jenis' => 'Pelajaran', 'jam_ke' => 4, 'jam_mulai' => '10:00', 'jam_selesai' => '10:45', 'urutan' => 6],
-            ['nama' => 'Jam 5', 'jenis' => 'Pelajaran', 'jam_ke' => 5, 'jam_mulai' => '10:45', 'jam_selesai' => '11:30', 'urutan' => 7],
-            ['nama' => 'Istirahat', 'jenis' => 'Istirahat', 'jam_ke' => null, 'jam_mulai' => '11:30', 'jam_selesai' => '12:30', 'urutan' => 8],
-            ['nama' => 'Jam 6', 'jenis' => 'Pelajaran', 'jam_ke' => 6, 'jam_mulai' => '12:30', 'jam_selesai' => '13:15', 'urutan' => 9],
-            ['nama' => 'Jam 7', 'jenis' => 'Pelajaran', 'jam_ke' => 7, 'jam_mulai' => '13:15', 'jam_selesai' => '14:00', 'urutan' => 10],
-        ];
-        foreach ($jamPelajaran as $jp) {
-            JamPelajaran::create($jp);
-        }
+        $this->call([
+            JamPelajaranSeeder::class,
+            JadwalPembiasaanSeeder::class,
+        ]);
 
         $ruang52 = Ruangan::create(['kode' => 'R.52', 'nama' => 'Ruang Teori 52']);
         $ruang53 = Ruangan::create(['kode' => 'R.53', 'nama' => 'Ruang Teori 53']);
