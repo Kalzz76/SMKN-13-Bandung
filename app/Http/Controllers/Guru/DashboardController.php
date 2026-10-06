@@ -32,10 +32,12 @@ class DashboardController extends Controller
 
         $daftarHariUrutan = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5];
 
-        $slotJam = JamPelajaran::orderBy('urutan')->get();
-        $jamKeMap = $slotJam->whereNotNull('jam_ke')->keyBy('jam_ke');
+        $jamKeMapPerHari = JamPelajaran::pelajaran()->urut()->get()
+            ->groupBy('hari')
+            ->map(fn ($slots) => $slots->keyBy('jam_ke'));
 
-        $formatRentangWaktu = function ($mulaiKe, $selesaiKe) use ($jamKeMap) {
+        $formatRentangWaktu = function ($hari, $mulaiKe, $selesaiKe) use ($jamKeMapPerHari) {
+            $jamKeMap = $jamKeMapPerHari->get($hari, collect());
             $mulai = $jamKeMap[$mulaiKe]->jam_mulai ?? sprintf('%02d:00', max(7, 7 + ($mulaiKe - 1)));
             $selesai = $jamKeMap[$selesaiKe]->jam_selesai ?? sprintf('%02d:45', max(7, 7 + ($selesaiKe - 1)));
             return [$mulai, $selesai, "{$mulai} - {$selesai}"];
@@ -60,7 +62,7 @@ class DashboardController extends Controller
                 });
 
             foreach ($semuaJadwal as $j) {
-                [$mulai, $selesai, $rentang] = $formatRentangWaktu($j->jam_ke_mulai, $j->jam_ke_selesai);
+                [$mulai, $selesai, $rentang] = $formatRentangWaktu($j->hari, $j->jam_ke_mulai, $j->jam_ke_selesai);
                 $j->jam_mulai_formatted = $mulai;
                 $j->jam_selesai_formatted = $selesai;
                 $j->rentang_waktu = $rentang;
@@ -73,7 +75,7 @@ class DashboardController extends Controller
                 ->get();
 
             foreach ($jadwalHariIni as $j) {
-                [$mulai, $selesai, $rentang] = $formatRentangWaktu($j->jam_ke_mulai, $j->jam_ke_selesai);
+                [$mulai, $selesai, $rentang] = $formatRentangWaktu($j->hari, $j->jam_ke_mulai, $j->jam_ke_selesai);
                 $j->jam_mulai_formatted = $mulai;
                 $j->jam_selesai_formatted = $selesai;
                 $j->rentang_waktu = $rentang;
