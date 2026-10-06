@@ -56,6 +56,13 @@ class LoginController extends Controller
             'status' => 'Aktif',
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Akun berhasil dibuat! Silakan masuk dengan akun Anda.',
+            ]);
+        }
+
         return redirect()->route('login')->with('sukses', 'Akun berhasil dibuat! Silakan masuk dengan akun Anda.');
     }
 
@@ -75,9 +82,10 @@ class LoginController extends Controller
         $exists = User::where('username', $username)->exists();
         return response()->json([
             'available' => !$exists,
-            'message' => $exists ? 'Username sudah digunakan, coba yang lain.' : 'Username tersedia'
+            'message' => $exists ? 'Username sudah digunakan, coba yang lain.' : 'Username tersedia!'
         ]);
     }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -95,24 +103,61 @@ class LoginController extends Controller
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Akun Anda dinonaktifkan. Silakan hubungi administrator.',
+                    ], 403);
+                }
+
                 return redirect()->back()->with('error', 'Akun Anda dinonaktifkan. Silakan hubungi administrator.');
             }
 
             $request->session()->regenerate();
 
+            $redirectUrl = url('/');
+            if ($user->role === 'admin') {
+                $redirectUrl = route('admin.dashboard');
+            } elseif ($user->role === 'guru') {
+                $redirectUrl = route('guru.dashboard');
+            } elseif ($user->role === 'sekretaris') {
+                $redirectUrl = route('sekretaris.dashboard');
+            }
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berhasil masuk! Mengalihkan ke dashboard...',
+                    'data' => [
+                        'user' => [
+                            'name' => $user->name,
+                            'username' => $user->username,
+                            'role' => $user->role,
+                        ],
+                        'redirect' => $redirectUrl,
+                    ],
+                ]);
+            }
+
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('sukses', 'Selamat datang, Administrator.');
             }
-
             if ($user->role === 'guru') {
                 return redirect()->route('guru.dashboard')->with('sukses', 'Selamat datang, ' . $user->name . '.');
             }
-
             if ($user->role === 'sekretaris') {
                 return redirect()->route('sekretaris.dashboard')->with('sukses', 'Selamat datang di Portal Sekretaris.');
             }
 
             return redirect('/');
+        }
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Username atau password salah.',
+            ], 422);
         }
 
         return redirect()->back()->with('error', 'Username atau password salah.');

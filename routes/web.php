@@ -139,6 +139,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/', [GuruDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/jadwal', [GuruDashboardController::class, 'jadwal'])->name('jadwal');
+    Route::get('/validasi', [GuruDashboardController::class, 'validasi'])->name('validasi');
+    Route::get('/rekap', [GuruDashboardController::class, 'rekap'])->name('rekap');
+    Route::get('/absensi-saya', [GuruDashboardController::class, 'absensiSaya'])->name('absensi-saya');
     Route::post('/absensi-scan', [AbsensiGuruController::class, 'simpan'])->name('absensi-scan');
     Route::get('/absensi-siswa/{id}', [AbsensiSiswaController::class, 'index'])->name('absensi-siswa');
     Route::post('/absensi-siswa/{id}', [AbsensiSiswaController::class, 'simpan'])->name('absensi-siswa.simpan');
@@ -146,6 +150,6 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
 
 Route::middleware(['auth', 'role:sekretaris'])->prefix('sekretaris')->name('sekretaris.')->group(function () {
     Route::get('/', [SekretarisDashboardController::class, 'index'])->name('dashboard');
-    Route::post('/absensi-pengganti', [SekretarisDashboardController::class, 'simpanAbsensiPengganti'])->name('absensi-pengganti');
+    Route::get('/absensi-siswa/{id}', [SekretarisDashboardController::class, 'absensiSiswa'])->name('absensi-siswa');
     Route::post('/absensi-siswa/{id}', [SekretarisDashboardController::class, 'simpanAbsensiSiswa'])->name('absensi-siswa.simpan');
 });

@@ -33,16 +33,9 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center space-x-3">
                     <h3 class="text-lg sm:text-xl font-bold text-slate-900">Jadwal Kelas Hari Ini ({{ $namaHariIni }})</h3>
-                    @if($daftarKelas->count() > 1)
-                        <form method="GET" action="{{ route('sekretaris.dashboard') }}" class="inline-block">
-                            <input type="hidden" name="tab" value="jadwal">
-                            <select name="kelas_id" onchange="this.form.submit()" class="text-xs font-semibold bg-white border border-slate-200 text-slate-700 rounded-xl px-3 py-1.5 outline-none shadow-2xs focus:ring-2 focus:ring-emerald-500">
-                                @foreach($daftarKelas as $k)
-                                    <option value="{{ $k->id }}" {{ ($kelasAktif->id ?? null) == $k->id ? 'selected' : '' }}>Kelas {{ $k->nama }}</option>
-                                @endforeach
-                            </select>
-                        </form>
-                    @endif
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Kelas {{ $kelasAktif->nama ?? '-' }}
+                    </span>
                 </div>
 
                 <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-bold self-start sm:self-auto">
@@ -113,10 +106,10 @@
                                 @endif
 
                                 <div class="pt-2">
-                                    <button type="button" onclick="bukaModalAbsensi({{ $j->id }})" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-2 shadow-xs">
+                                    <a href="{{ route('sekretaris.absensi-siswa', $j->id) }}" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-2 shadow-xs">
                                         <i class="fa-solid fa-clipboard-user"></i>
                                         <span>{{ ($statusAbsensiSiswa[$j->id] ?? false) ? 'Ubah Presensi Siswa' : 'Absen Siswa' }}</span>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         @endforeach
@@ -154,86 +147,6 @@
             </div>
         </div>
 
-        @foreach($jadwalKelasHariIni as $j)
-            <div id="modalAbsensi{{ $j->id }}" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-                <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 flex items-start justify-between bg-slate-50/50">
-                        <div>
-                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Presensi Siswa</span>
-                            <h3 class="text-lg font-bold text-slate-900 mt-1">{{ $j->mapel->nama }}</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">
-                                Kelas {{ $kelasAktif->nama }} • Jam Ke {{ $j->jam_ke_mulai }}-{{ $j->jam_ke_selesai }} • Pengajar: {{ $j->guru->nama }}
-                            </p>
-                        </div>
-                        <button type="button" onclick="tutupModalAbsensi({{ $j->id }})" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
-                            <i class="fa-solid fa-xmark text-sm"></i>
-                        </button>
-                    </div>
-
-                    <form method="POST" action="{{ route('sekretaris.absensi-siswa.simpan', $j->id) }}" class="flex-1 flex flex-col overflow-hidden">
-                        @csrf
-                        <div class="px-6 py-3 bg-emerald-50/40 border-b border-emerald-100 flex items-center justify-between text-xs">
-                            <span class="text-emerald-950 font-bold">Total: {{ $daftarSiswaKelas->count() }} Siswa</span>
-                            <button type="button" onclick="setSemuaHadir({{ $j->id }})" class="bg-white border border-emerald-300 text-emerald-800 hover:bg-emerald-100 font-bold px-3 py-1 rounded-lg transition shadow-2xs flex items-center space-x-1">
-                                <i class="fa-solid fa-check-double text-emerald-600"></i>
-                                <span>Pilih Semua Hadir</span>
-                            </button>
-                        </div>
-
-                        <div class="flex-1 overflow-y-auto p-6 divide-y divide-slate-100">
-                            @foreach($daftarSiswaKelas as $idx => $s)
-                                @php
-                                    $record = $detailAbsensiTersimpan[$j->id][$s->id] ?? null;
-                                    $currentStatus = $record ? $record->status : 'Hadir';
-                                    $currentKet = $record ? $record->keterangan : '';
-                                @endphp
-                                <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <div class="flex items-center space-x-2">
-                                            <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold flex items-center justify-center flex-shrink-0">{{ $idx + 1 }}</span>
-                                            <span class="font-bold text-sm text-slate-900 truncate">{{ $s->nama }}</span>
-                                        </div>
-                                        <span class="text-[11px] text-slate-400 ml-7 block">NIS: {{ $s->nis }}</span>
-                                    </div>
-
-                                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                                        <div class="inline-flex bg-slate-100 p-1 rounded-xl text-xs font-bold">
-                                            <label class="cursor-pointer">
-                                                <input type="radio" name="status[{{ $s->id }}]" value="Hadir" {{ $currentStatus === 'Hadir' ? 'checked' : '' }} class="sr-only peer status-radio-{{ $j->id }}">
-                                                <span class="px-2.5 py-1 rounded-lg block peer-checked:bg-emerald-600 peer-checked:text-white text-slate-600 transition">Hadir</span>
-                                            </label>
-                                            <label class="cursor-pointer">
-                                                <input type="radio" name="status[{{ $s->id }}]" value="Sakit" {{ $currentStatus === 'Sakit' ? 'checked' : '' }} class="sr-only peer">
-                                                <span class="px-2.5 py-1 rounded-lg block peer-checked:bg-sky-600 peer-checked:text-white text-slate-600 transition">Sakit</span>
-                                            </label>
-                                            <label class="cursor-pointer">
-                                                <input type="radio" name="status[{{ $s->id }}]" value="Izin" {{ $currentStatus === 'Izin' ? 'checked' : '' }} class="sr-only peer">
-                                                <span class="px-2.5 py-1 rounded-lg block peer-checked:bg-amber-600 peer-checked:text-white text-slate-600 transition">Izin</span>
-                                            </label>
-                                            <label class="cursor-pointer">
-                                                <input type="radio" name="status[{{ $s->id }}]" value="Alpa" {{ $currentStatus === 'Alpa' ? 'checked' : '' }} class="sr-only peer">
-                                                <span class="px-2.5 py-1 rounded-lg block peer-checked:bg-rose-600 peer-checked:text-white text-slate-600 transition">Alpa</span>
-                                            </label>
-                                        </div>
-
-                                        <input type="text" name="keterangan[{{ $s->id }}]" value="{{ $currentKet }}" placeholder="Keterangan..." class="w-full sm:w-32 px-2.5 py-1 text-xs border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-emerald-500">
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="p-4 border-t border-slate-100 flex items-center justify-end space-x-3 bg-slate-50/50">
-                            <button type="button" onclick="tutupModalAbsensi({{ $j->id }})" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition">Batal</button>
-                            <button type="submit" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-xs transition flex items-center space-x-1.5">
-                                <i class="fa-solid fa-floppy-disk"></i>
-                                <span>Simpan Presensi Siswa</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        @endforeach
-
     @elseif(($tabAktif ?? 'jadwal') === 'laporan')
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
@@ -244,13 +157,11 @@
 
                 <form method="GET" action="{{ route('sekretaris.dashboard') }}" class="flex flex-wrap items-center gap-2">
                     <input type="hidden" name="tab" value="laporan">
-                    <select name="kelas_id" onchange="this.form.submit()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600">
-                        @foreach($daftarKelas as $k)
-                            <option value="{{ $k->id }}" {{ ($kelasId ?? null) == $k->id ? 'selected' : '' }}>Kelas {{ $k->nama }}</option>
-                        @endforeach
-                    </select>
+                    <span class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+                        Kelas {{ $kelasAktif->nama ?? '-' }}
+                    </span>
 
-                    <select name="bulan" onchange="this.form.submit()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600">
+                    <select name="bulan" onchange="this.form.submit()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600 bg-white">
                         @foreach($daftarBulan as $bKey => $bVal)
                             <option value="{{ $bKey }}" {{ $bulan == $bKey ? 'selected' : '' }}>{{ $bVal }}</option>
                         @endforeach
@@ -299,48 +210,6 @@
                 </div>
             @endif
         </div>
-
-    @elseif(($tabAktif ?? 'jadwal') === 'pengganti')
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <div class="border-b border-slate-100 pb-4">
-                <h3 class="text-lg font-bold text-slate-900">Pencatatan Presensi Pengganti Guru</h3>
-                <p class="text-xs text-slate-500 mt-1">Gunakan formulir ini jika guru berhalangan scan barcode mandiri (izin, sakit, dinas luar).</p>
-            </div>
-
-            <form method="POST" action="{{ route('sekretaris.absensi-pengganti') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Guru</label>
-                    <select name="id_guru" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600">
-                        <option value="">-- Pilih Guru --</option>
-                        @foreach($daftarGuru as $g)
-                            <option value="{{ $g->id }}">{{ $g->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Status Kehadiran</label>
-                    <select name="status" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600">
-                        <option value="Hadir">Hadir</option>
-                        <option value="Sakit">Sakit</option>
-                        <option value="Izin">Izin</option>
-                        <option value="Alpa">Alpa</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Alasan / Keterangan</label>
-                    <input type="text" name="alasan" required placeholder="Contoh: Sakit, Surat dokter terlampir" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-emerald-600">
-                </div>
-
-                <div class="sm:col-span-3 flex justify-end">
-                    <button type="submit" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-xs transition">
-                        Simpan Presensi Pengganti
-                    </button>
-                </div>
-            </form>
-        </div>
     @endif
 </div>
 
@@ -371,25 +240,6 @@
             btnHarian.className = 'px-3.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition font-bold';
             btnMingguan.className = 'px-3.5 py-1.5 rounded-lg bg-white text-emerald-800 shadow-xs transition font-bold';
         }
-    }
-
-    function bukaModalAbsensi(id) {
-        const m = document.getElementById('modalAbsensi' + id);
-        if (m) m.classList.remove('hidden');
-    }
-
-    function tutupModalAbsensi(id) {
-        const m = document.getElementById('modalAbsensi' + id);
-        if (m) m.classList.add('hidden');
-    }
-
-    function setSemuaHadir(id) {
-        const radios = document.querySelectorAll('.status-radio-' + id);
-        radios.forEach(r => {
-            if (r.value === 'Hadir') {
-                r.checked = true;
-            }
-        });
     }
 </script>
 @endsection

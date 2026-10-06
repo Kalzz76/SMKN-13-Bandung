@@ -9,46 +9,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+            display: none;
+        }
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
-    <div class="flex-grow p-6 sm:p-10 max-w-7xl mx-auto w-full space-y-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100 gap-4">
-            <div>
-                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Portal Guru Pengajar</span>
-                <h1 class="text-2xl font-black text-slate-900 mt-1">Dashboard Guru: {{ auth()->user()->name }}</h1>
-            </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('profil.index') }}" class="flex items-center space-x-3 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 px-3 py-1.5 rounded-xl transition group cursor-pointer" title="Kelola Profil Saya">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-700 text-white font-bold flex items-center justify-center text-xs shadow">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'G', 0, 1)) }}
-                    </div>
-                    <div class="text-left hidden sm:block">
-                        <span class="text-xs font-bold text-slate-800 block leading-tight group-hover:text-emerald-700">{{ auth()->user()->name }}</span>
-                        <span class="text-[10px] text-slate-500 block">Profil Saya</span>
-                    </div>
-                </a>
-                <button type="button" onclick="openLogoutModal()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-3.5 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span class="hidden sm:inline">Keluar</span>
-                </button>
-            </div>
-        </div>
+<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col md:flex-row">
+    @include('partials.guru-sidebar')
 
-        @if($errors->any())
-            <div class="p-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-sm">
-                <ul class="list-disc pl-5 space-y-1">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        @include('partials.guru-header')
 
-        @yield('content')
+        <main class="flex-grow p-6 sm:p-10 overflow-y-auto">
+            @if($errors->any())
+                <div class="mb-6 p-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-sm">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @yield('content')
+        </main>
     </div>
 
     @include('partials.modal-pesan')
     @include('partials.modal-logout')
+
+    <script>
+    function toggleGuruSidebar() {
+        const sidebar = document.getElementById('guruSidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('flex');
+        }
+    }
+    </script>
 </body>
 </html>

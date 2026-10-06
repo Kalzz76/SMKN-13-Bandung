@@ -90,98 +90,11 @@ class SekretarisDanLaporanTest extends TestCase
 
     public function test_sekretaris_dapat_mengakses_dashboard_dan_tab_tabnya(): void
     {
-        $tabs = ['pengganti', 'jadwal', 'laporan'];
+        $tabs = ['jadwal', 'laporan'];
         foreach ($tabs as $tab) {
             $response = $this->actingAs($this->sekretaris)->get('/sekretaris?tab=' . $tab);
             $response->assertStatus(200);
         }
-    }
-
-    public function test_sekretaris_berhasil_mencatat_absensi_pengganti_guru(): void
-    {
-        $response = $this->actingAs($this->sekretaris)->post('/sekretaris/absensi-pengganti', [
-            'id_guru' => $this->guru->id,
-            'status' => 'Sakit',
-            'alasan' => 'Sakit demam, istirahat dokter',
-        ]);
-
-        $response->assertRedirect('/sekretaris?tab=pengganti');
-        $response->assertSessionHas('sukses');
-
-        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
-        $this->assertDatabaseHas('absensi_guru', [
-            'id_guru' => $this->guru->id,
-            'tanggal' => $tanggalHariIni,
-            'status' => 'Sakit',
-            'metode' => 'Sekretaris',
-            'alasan' => 'Sakit demam, istirahat dokter',
-        ]);
-
-        $this->assertDatabaseHas('log_aktivitas', [
-            'aksi' => 'Absensi Pengganti Sekretaris',
-        ]);
-    }
-
-    public function test_sekretaris_tidak_bisa_mengganti_jika_guru_sudah_scan_mandiri(): void
-    {
-        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
-
-        AbsensiGuru::create([
-            'id_guru' => $this->guru->id,
-            'tanggal' => $tanggalHariIni,
-            'jam_masuk' => '06:55:00',
-            'status' => 'Hadir',
-            'latitude' => -6.9458,
-            'longitude' => 107.6765,
-            'jarak_meter' => 15,
-            'metode' => 'Scan',
-        ]);
-
-        $response = $this->actingAs($this->sekretaris)->post('/sekretaris/absensi-pengganti', [
-            'id_guru' => $this->guru->id,
-            'status' => 'Izin',
-            'alasan' => 'Keperluan keluarga mendadak',
-        ]);
-
-        $response->assertRedirect('/sekretaris?tab=pengganti');
-        $response->assertSessionHas('error');
-
-        $this->assertDatabaseHas('absensi_guru', [
-            'id_guru' => $this->guru->id,
-            'tanggal' => $tanggalHariIni,
-            'status' => 'Hadir',
-            'metode' => 'Scan',
-        ]);
-    }
-
-    public function test_sekretaris_dapat_memperbarui_absensi_pengganti_sebelumnya(): void
-    {
-        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
-
-        AbsensiGuru::create([
-            'id_guru' => $this->guru->id,
-            'tanggal' => $tanggalHariIni,
-            'status' => 'Izin',
-            'metode' => 'Sekretaris',
-            'alasan' => 'Izin mengurus berkas dinas',
-            'id_user_input' => $this->sekretaris->id,
-        ]);
-
-        $response = $this->actingAs($this->sekretaris)->post('/sekretaris/absensi-pengganti', [
-            'id_guru' => $this->guru->id,
-            'status' => 'Sakit',
-            'alasan' => 'Kondisi kesehatan memburuk',
-        ]);
-
-        $response->assertRedirect('/sekretaris?tab=pengganti');
-        $response->assertSessionHas('sukses');
-
-        $this->assertDatabaseHas('absensi_guru', [
-            'id_guru' => $this->guru->id,
-            'tanggal' => $tanggalHariIni,
-            'status' => 'Sakit',
-            'alasan' => 'Kondisi kesehatan memburuk',
-        ]);
     }
 
     public function test_sekretaris_dapat_mengabsen_siswa_di_kelas(): void

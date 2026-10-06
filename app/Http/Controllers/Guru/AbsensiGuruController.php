@@ -32,12 +32,12 @@ class AbsensiGuruController extends Controller
 
         $guru = Guru::where('user_id', auth()->id())->first();
         if (!$guru) {
-            return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+            return redirect()->route('guru.dashboard', ['tab' => 'absensi-saya'])
                 ->with('error', 'Akun login Anda belum terhubung dengan data guru.');
         }
 
         if ($guru->kode_barcode !== $request->kode_barcode) {
-            return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+            return redirect()->route('guru.dashboard', ['tab' => 'absensi-saya'])
                 ->with('error', 'Kode barcode tidak valid atau bukan milik Anda.');
         }
 
@@ -49,7 +49,7 @@ class AbsensiGuruController extends Controller
             ->first();
 
         if ($sudahAbsen) {
-            return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+            return redirect()->route('guru.dashboard', ['tab' => 'absensi-saya'])
                 ->with('error', 'Anda sudah melakukan absensi kehadiran untuk hari ini.');
         }
 
@@ -63,7 +63,7 @@ class AbsensiGuruController extends Controller
 
         if ($jarak > $radiusMeter) {
             $jarakBulat = round($jarak);
-            return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+            return redirect()->route('guru.dashboard', ['tab' => 'absensi-saya'])
                 ->with('error', "Lokasi Anda berada di luar radius sekolah ({$jarakBulat} meter dari kampus, batas toleransi {$radiusMeter} meter).");
         }
 
@@ -87,7 +87,7 @@ class AbsensiGuruController extends Controller
 
         LogAktivitas::catat('Absensi Mandiri', "Guru {$guru->nama} melakukan scan absensi ({$status}, jarak " . round($jarak) . "m)");
 
-        return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+        return redirect()->route('guru.dashboard', ['tab' => 'absensi-saya'])
             ->with('sukses', "Scan absensi berhasil dicatat! Status kehadiran: {$status}.");
     }
 }

@@ -1,0 +1,48 @@
+<aside id="guruSidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex-col flex-shrink-0 h-screen hidden md:relative md:flex transition-all duration-300 shadow-xl md:shadow-none">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold shadow">13</div>
+            <div>
+                <span class="text-white font-bold block text-sm">Dashboard Guru</span>
+                <span class="text-xs text-slate-400">SMKN 13 Bandung</span>
+            </div>
+        </div>
+        <button type="button" onclick="toggleGuruSidebar()" class="md:hidden text-slate-400 hover:text-white p-1">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+    </div>
+
+    <div class="flex-grow overflow-y-auto py-4 px-3 space-y-4 text-sm">
+        <div>
+            <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Akademik</p>
+            <div class="space-y-1">
+                <a href="{{ route('guru.jadwal') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('guru.jadwal') || (request()->routeIs('guru.dashboard') && (!request()->has('tab') || request('tab') === 'jadwal')) ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-calendar-days w-5 text-center"></i>
+                    <span>Jadwal Mengajar</span>
+                </a>
+
+                <a href="{{ route('guru.validasi') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('guru.validasi') || (request()->routeIs('guru.dashboard') && request('tab') === 'validasi') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-clipboard-check w-5 text-center"></i>
+                    <span>Validasi Absensi</span>
+                </a>
+
+                <a href="{{ route('guru.rekap') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('guru.rekap') || (request()->routeIs('guru.dashboard') && request('tab') === 'rekap') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-clipboard-list w-5 text-center"></i>
+                    <span>Rekap Absensi</span>
+                </a>
+
+                <a href="{{ route('guru.absensi-saya') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('guru.absensi-saya') || (request()->routeIs('guru.dashboard') && request('tab') === 'absensi-saya') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-qrcode w-5 text-center"></i>
+                    <span>Absensi Saya</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4 border-t border-slate-800 flex-shrink-0">
+        <button type="button" onclick="openLogoutModal()" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Keluar ke Portal</span>
+        </button>
+    </div>
+</aside>

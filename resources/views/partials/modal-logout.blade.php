@@ -27,10 +27,13 @@
             <button type="button" onclick="tutupModalLogout()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition">
                 Batal
             </button>
-            <button type="button" onclick="kirimFormLogout()" class="w-full px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow transition flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-right-from-bracket text-xs"></i>
-                <span>Ya, Keluar</span>
-            </button>
+            <form id="formLogoutModalUtama" method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="w-full px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                    <span>Ya, Keluar</span>
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -38,11 +41,15 @@
 <script>
 let formLogoutAktif = null;
 
+function openLogoutModal(event, formId) {
+    konfirmasiLogout(event, formId);
+}
+
 function konfirmasiLogout(event, formId) {
     if (event) {
         event.preventDefault();
     }
-    const targetId = formId || 'formLogoutUtama';
+    const targetId = formId || 'formLogoutModalUtama';
     formLogoutAktif = document.getElementById(targetId);
 
     const modal = document.getElementById('modalKonfirmasiLogout');
@@ -74,7 +81,7 @@ function kirimFormLogout() {
     if (formLogoutAktif) {
         formLogoutAktif.submit();
     } else {
-        const defaultForm = document.getElementById('formLogoutUtama');
+        const defaultForm = document.getElementById('formLogoutModalUtama') || document.getElementById('formLogoutUtama');
         if (defaultForm) {
             defaultForm.submit();
         }

@@ -1,11 +1,11 @@
-@extends('layouts.guru', ['title' => 'Absensi Siswa ' . ($jadwal->kelas->nama ?? '') . ' - SMKN 13 Bandung'])
+@extends('layouts.sekretaris', ['title' => 'Absensi Siswa ' . ($jadwal->kelas->nama ?? '') . ' - SMKN 13 Bandung'])
 
 @section('content')
 <div class="space-y-6 max-w-6xl mx-auto">
     {{-- Header & Info Kelas --}}
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl shadow-xs border border-slate-200">
         <div>
-            <a href="{{ route('guru.jadwal') }}" class="inline-flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-emerald-700 mb-2 transition">
+            <a href="{{ route('sekretaris.dashboard', ['tab' => 'jadwal']) }}" class="inline-flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-emerald-700 mb-2 transition">
                 <i class="fa-solid fa-arrow-left"></i>
                 <span>Kembali ke Jadwal</span>
             </a>
@@ -14,6 +14,8 @@
             </h2>
             <p class="text-xs text-slate-500 mt-1 flex flex-wrap items-center gap-2">
                 <span>{{ $jadwal->mapel ? $jadwal->mapel->nama : 'Mata Pelajaran' }}</span>
+                <span>•</span>
+                <span><i class="fa-solid fa-chalkboard-user text-slate-400 mr-1"></i>{{ $jadwal->guru ? $jadwal->guru->nama : 'Pengajar' }}</span>
                 <span>•</span>
                 <span><i class="fa-solid fa-door-open text-slate-400 mr-1"></i>{{ $jadwal->ruangan ? $jadwal->ruangan->nama : 'Ruang Kelas' }}</span>
                 <span>•</span>
@@ -28,10 +30,10 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('guru.absensi-siswa.simpan', $jadwal->id) }}" id="formAbsensi" class="space-y-6">
+    <form method="POST" action="{{ route('sekretaris.absensi-siswa.simpan', $jadwal->id) }}" id="formAbsensi" class="space-y-6">
         @csrf
 
-        {{-- 1. Card Kehadiran Guru Pengajar (Persis sesuai referensi) --}}
+        {{-- 1. Card Kehadiran Guru Pengajar --}}
         @php
             $guruHadirDefault = !($absensiGuruHariIni && $absensiGuruHariIni->status === 'Tidak Hadir');
         @endphp
@@ -188,7 +190,7 @@
 
         {{-- Tombol Aksi Submit --}}
         <div class="flex flex-col sm:flex-row justify-end items-center gap-3 pt-2">
-            <a href="{{ route('guru.jadwal') }}" class="w-full sm:w-auto px-6 py-3 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-2xl text-xs transition text-center">
+            <a href="{{ route('sekretaris.dashboard', ['tab' => 'jadwal']) }}" class="w-full sm:w-auto px-6 py-3 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-2xl text-xs transition text-center">
                 Batal
             </a>
             <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-2xl text-xs transition shadow-md flex items-center justify-center space-x-2">
@@ -219,8 +221,6 @@ function setKehadiranGuru(status) {
         if (sectionDetail) sectionDetail.classList.remove('hidden');
     }
 }
-
-
 
 // Logic Status Tiap Siswa
 const activeClasses = {

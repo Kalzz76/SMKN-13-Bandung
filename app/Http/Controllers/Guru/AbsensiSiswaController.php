@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\AbsensiGuru;
 use App\Models\AbsensiSiswa;
 use App\Models\Guru;
 use App\Models\Jadwal;
@@ -38,7 +39,7 @@ class AbsensiSiswaController extends Controller
         $hariIni = $hariIniMap[Carbon::now('Asia/Jakarta')->format('l')] ?? 'Senin';
 
         if ($jadwal->hari !== $hariIni) {
-            return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+            return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
                 ->with('error', "Jadwal ini berlangsung pada hari {$jadwal->hari}. Absensi hanya dapat diisi pada hari jadwal mengajar berlangsung.");
         }
 
@@ -54,12 +55,20 @@ class AbsensiSiswaController extends Controller
             ->where('tanggal', $tanggalHariIni)
             ->first();
 
+        $absensiGuruHariIni = AbsensiGuru::where('id_guru', $guru->id)
+            ->where('tanggal', $tanggalHariIni)
+            ->first();
+
+        $daftarSlotJam = range($jadwal->jam_ke_mulai, $jadwal->jam_ke_selesai);
+
         return view('guru.absensi-siswa', compact(
             'jadwal',
             'daftarSiswa',
             'absensiTersimpan',
             'jurnalTersimpan',
-            'tanggalHariIni'
+            'tanggalHariIni',
+            'absensiGuruHariIni',
+            'daftarSlotJam'
         ));
     }
 
@@ -102,6 +111,27 @@ class AbsensiSiswaController extends Controller
             );
         }
 
+        if ($request->filled('kehadiran_guru')) {
+            $statusGuru = $request->kehadiran_guru === 'Hadir' ? 'Hadir' : 'Tidak Hadir';
+            $alasan = $request->alasan_guru;
+            if ($request->filled('keterangan_guru')) {
+                $alasan = ($alasan ? "{$alasan} - " : "") . $request->keterangan_guru;
+            }
+            AbsensiGuru::updateOrCreate(
+                [
+                    'id_guru' => $guru->id,
+                    'tanggal' => $tanggalHariIni,
+                ],
+                [
+                    'status' => $statusGuru,
+                    'metode' => 'Jadwal Kelas',
+                    'jam_masuk' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
+                    'alasan' => $alasan,
+                    'id_user_input' => auth()->id(),
+                ]
+            );
+        }
+
         if ($request->filled('materi')) {
             JurnalKelas::updateOrCreate(
                 [
@@ -117,7 +147,7 @@ class AbsensiSiswaController extends Controller
 
         LogAktivitas::catat('Absensi Siswa & Jurnal', "Mengisi absensi kelas {$jadwal->kelas->nama} ({$jadwal->mapel->nama})");
 
-        return redirect()->route('guru.dashboard', ['tab' => 'validasi'])
+        return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
             ->with('sukses', "Absensi siswa kelas {$jadwal->kelas->nama} dan jurnal materi berhasil disimpan.");
     }
 }

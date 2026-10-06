@@ -37,10 +37,9 @@ class DashboardController extends Controller
         $daftarKelas = Kelas::with(['ruangan', 'waliKelas'])->orderBy('nama')->get();
 
         $user = auth()->user();
-        $siswaUser = Siswa::where('nama', $user->name)->first();
-        $defaultKelas = $siswaUser ? $siswaUser->kelas : ($daftarKelas->where('nama', 'XI RPL 1')->first() ?? $daftarKelas->first());
-        $kelasId = $request->get('kelas_id', $defaultKelas->id ?? null);
-        $kelasAktif = $daftarKelas->firstWhere('id', $kelasId) ?? $defaultKelas;
+        $siswaUser = Siswa::with('kelas')->where('nama', $user->name)->first();
+        $kelasAktif = $siswaUser ? $siswaUser->kelas : ($daftarKelas->where('nama', 'XI RPL 1')->first() ?? $daftarKelas->first());
+        $kelasId = $kelasAktif->id ?? null;
 
         $daftarSiswaKelas = $kelasAktif ? Siswa::where('id_kelas', $kelasAktif->id)->orderBy('nama')->get() : collect();
 
@@ -208,6 +207,50 @@ class DashboardController extends Controller
         ));
     }
 
+    public function absensiSiswa($id)
+    {
+        $jadwal = Jadwal::with(['kelas.siswa', 'mapel', 'ruangan', 'guru'])->findOrFail($id);
+
+        $hariIniMap = [
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+            'Sunday' => 'Minggu',
+        ];
+        $hariIni = $hariIniMap[Carbon::now('Asia/Jakarta')->format('l')] ?? 'Senin';
+
+        if ($jadwal->hari !== $hariIni) {
+            return redirect()->route('sekretaris.dashboard', ['tab' => 'jadwal'])
+                ->with('error', "Jadwal ini berlangsung pada hari {$jadwal->hari}. Absensi hanya dapat diisi pada hari jadwal berlangsung.");
+        }
+
+        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        $daftarSiswa = $jadwal->kelas ? $jadwal->kelas->siswa()->orderBy('nama')->get() : collect();
+
+        $absensiTersimpan = AbsensiSiswa::where('id_jadwal', $jadwal->id)
+            ->where('tanggal', $tanggalHariIni)
+            ->get()
+            ->keyBy('id_siswa');
+
+        $absensiGuruHariIni = $jadwal->id_guru ? AbsensiGuru::where('id_guru', $jadwal->id_guru)
+            ->where('tanggal', $tanggalHariIni)
+            ->first() : null;
+
+        $daftarSlotJam = range($jadwal->jam_ke_mulai, $jadwal->jam_ke_selesai);
+
+        return view('sekretaris.absensi-siswa', compact(
+            'jadwal',
+            'daftarSiswa',
+            'absensiTersimpan',
+            'tanggalHariIni',
+            'absensiGuruHariIni',
+            'daftarSlotJam'
+        ));
+    }
+
     public function simpanAbsensiSiswa(Request $request, $id)
     {
         $jadwal = Jadwal::with(['kelas.siswa', 'mapel', 'guru'])->findOrFail($id);
@@ -237,55 +280,32 @@ class DashboardController extends Controller
             );
         }
 
+        if ($request->filled('kehadiran_guru') && $jadwal->id_guru) {
+            $statusGuru = $request->kehadiran_guru === 'Hadir' ? 'Hadir' : 'Tidak Hadir';
+            $alasan = $request->alasan_guru;
+            if ($request->filled('keterangan_guru')) {
+                $alasan = ($alasan ? "{$alasan} - " : "") . $request->keterangan_guru;
+            }
+            AbsensiGuru::updateOrCreate(
+                [
+                    'id_guru' => $jadwal->id_guru,
+                    'tanggal' => $tanggalHariIni,
+                ],
+                [
+                    'status' => $statusGuru,
+                    'metode' => 'Sekretaris',
+                    'jam_masuk' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
+                    'alasan' => $alasan,
+                    'id_user_input' => auth()->id(),
+                ]
+            );
+        }
+
         LogAktivitas::catat('Absensi Siswa oleh Sekretaris', "Mencatat absensi siswa kelas {$jadwal->kelas->nama} mapel {$jadwal->mapel->nama}");
 
         return redirect()->route('sekretaris.dashboard', [
             'tab' => 'jadwal',
             'kelas_id' => $jadwal->id_kelas,
         ])->with('sukses', "Presensi siswa kelas {$jadwal->kelas->nama} untuk mata pelajaran {$jadwal->mapel->nama} berhasil disimpan!");
-    }
-
-    public function simpanAbsensiPengganti(Request $request)
-    {
-        $request->validate([
-            'id_guru' => 'required|exists:guru,id',
-            'status' => 'required|in:Hadir,Sakit,Izin,Alpa',
-            'alasan' => 'required|string',
-        ]);
-
-        $guru = Guru::findOrFail($request->id_guru);
-        $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
-        $jamSekarang = Carbon::now('Asia/Jakarta')->format('H:i:s');
-
-        $absensiLama = AbsensiGuru::where('id_guru', $guru->id)
-            ->where('tanggal', $tanggalHariIni)
-            ->first();
-
-        if ($absensiLama && $absensiLama->metode === 'Scan') {
-            return redirect()->route('sekretaris.dashboard', ['tab' => 'pengganti'])
-                ->with('error', "Guru {$guru->nama} sudah melakukan absensi mandiri melalui scan barcode hari ini.");
-        }
-
-        AbsensiGuru::updateOrCreate(
-            [
-                'id_guru' => $guru->id,
-                'tanggal' => $tanggalHariIni,
-            ],
-            [
-                'jam_masuk' => $request->status === 'Hadir' ? $jamSekarang : null,
-                'status' => $request->status,
-                'metode' => 'Sekretaris',
-                'alasan' => $request->alasan,
-                'id_user_input' => auth()->id(),
-                'latitude' => null,
-                'longitude' => null,
-                'jarak_meter' => null,
-            ]
-        );
-
-        LogAktivitas::catat('Absensi Pengganti Sekretaris', "Mencatat absensi guru {$guru->nama} sebagai {$request->status} (Alasan: {$request->alasan})");
-
-        return redirect()->route('sekretaris.dashboard', ['tab' => 'pengganti'])
-            ->with('sukses', "Absensi pengganti untuk {$guru->nama} berhasil dicatat sebagai {$request->status}.");
     }
 }

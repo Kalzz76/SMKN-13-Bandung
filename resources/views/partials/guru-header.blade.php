@@ -1,10 +1,10 @@
 <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between flex-shrink-0 sticky top-0 z-30 shadow-xs">
     <div class="flex items-center space-x-3">
-        <button type="button" onclick="toggleAdminSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition">
+        <button type="button" onclick="toggleGuruSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition">
             <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <div class="flex items-center space-x-2">
-            <span class="text-sm font-semibold text-slate-800">{{ $title ?? 'CMS SMKN 13 Bandung' }}</span>
+            <span class="text-sm font-semibold text-slate-800">{{ $title ?? 'Portal Guru SMKN 13 Bandung' }}</span>
         </div>
     </div>
 
@@ -19,13 +19,13 @@
             <span>{{ now()->locale('id')->isoFormat('dddd, D MMM Y') }}</span>
         </div>
 
-        <a href="{{ route('admin.profil') }}" class="flex items-center space-x-3 pl-2 sm:pl-3 border-l border-slate-200 hover:opacity-80 transition group cursor-pointer" title="Lihat Profil Saya">
+        <a href="{{ route('profil.index') }}" class="flex items-center space-x-3 pl-2 sm:pl-3 border-l border-slate-200 hover:opacity-80 transition group cursor-pointer" title="Lihat Profil Saya">
             <div class="w-9 h-9 rounded-xl bg-emerald-700 text-white font-bold flex items-center justify-center text-sm shadow group-hover:ring-2 group-hover:ring-emerald-500/50 transition">
-                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+                {{ strtoupper(substr(auth()->user()->name ?? 'G', 0, 1)) }}
             </div>
             <div class="hidden sm:block text-left">
                 <span class="text-xs font-bold text-slate-900 block leading-tight group-hover:text-emerald-700 transition">{{ auth()->user()->name }}</span>
-                <span class="text-[11px] text-slate-500 block capitalize">{{ auth()->user()->role ?? 'Admin' }}</span>
+                <span class="text-[11px] text-slate-500 block capitalize">{{ auth()->user()->role ?? 'Guru' }}</span>
             </div>
         </a>
     </div>
