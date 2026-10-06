@@ -93,7 +93,32 @@ class BarcodeDanAbsensiGuruTest extends TestCase
         $response = $this->actingAs($this->admin)->get('/admin/barcode/cetak');
         $response->assertStatus(200);
         $response->assertSee($this->guru->nama);
+        $response->assertSee('KARTU TANDA GURU');
     }
+
+    public function test_admin_dapat_mencetak_guru_yang_belum_membuat_barcode(): void
+    {
+        $guruBaru = Guru::create([
+            'nama' => 'Guru Belum Barcode Test',
+            'nip' => '199001012020011009',
+            'jenis' => 'Guru',
+            'mapel_utama' => 'Bahasa Indonesia',
+            'kode_barcode' => null,
+        ]);
+
+        $this->assertNull($guruBaru->kode_barcode);
+
+        $response = $this->actingAs($this->admin)->get('/admin/barcode/cetak?id=' . $guruBaru->id);
+        $response->assertStatus(200);
+        $response->assertSee('Guru Belum Barcode Test');
+        $response->assertSee('199001012020011009');
+        $response->assertSee('Bahasa Indonesia');
+
+        $guruBaru->refresh();
+        $this->assertNotNull($guruBaru->kode_barcode);
+        $this->assertEquals(32, strlen($guruBaru->kode_barcode));
+    }
+
 
     public function test_guru_dapat_mengakses_dashboard_dan_tab_tabnya(): void
     {

@@ -13,16 +13,18 @@ class BarcodeController extends Controller
 {
     public function index(Request $request)
     {
-        $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $daftarGuru = Guru::with('mapel')->where('jenis', 'Guru')->orderBy('nama')->get();
 
         $guruTerpilih = null;
         if ($request->filled('guru_id')) {
-            $guruTerpilih = Guru::find($request->guru_id);
+            $guruTerpilih = Guru::with('mapel')->find($request->guru_id);
         } else {
             $guruTerpilih = $daftarGuru->firstWhere('kode_barcode', '!=', null) ?? $daftarGuru->first();
         }
 
-        return view('admin.barcode.index', compact('daftarGuru', 'guruTerpilih'));
+        $pengaturan = PengaturanSekolah::first();
+
+        return view('admin.barcode.index', compact('daftarGuru', 'guruTerpilih', 'pengaturan'));
     }
 
     public function generate(Request $request)
@@ -61,12 +63,37 @@ class BarcodeController extends Controller
         $pengaturan = PengaturanSekolah::first();
 
         if ($request->filled('id')) {
-            $guru = Guru::where('jenis', 'Guru')->findOrFail($request->id);
+            $guru = Guru::with('mapel')->where('jenis', 'Guru')->findOrFail($request->id);
+            if (empty($guru->kode_barcode)) {
+                $guru->kode_barcode = Str::random(32);
+                $guru->save();
+                LogAktivitas::catat('Generate Barcode', "Membuat kode barcode otomatis saat cetak untuk guru {$guru->nama}");
+            }
             $daftarGuru = collect([$guru]);
+        } elseif ($request->get('filter') === 'belum') {
+            $daftarGuru = Guru::with('mapel')->where('jenis', 'Guru')->where(function ($query) {
+                $query->whereNull('kode_barcode')->orWhere('kode_barcode', '');
+            })->orderBy('nama')->get();
+
+            foreach ($daftarGuru as $guru) {
+                if (empty($guru->kode_barcode)) {
+                    $guru->kode_barcode = Str::random(32);
+                    $guru->save();
+                }
+            }
+            LogAktivitas::catat('Generate Barcode Massal', 'Membuat barcode otomatis untuk guru yang belum memiliki barcode saat cetak');
         } else {
-            $daftarGuru = Guru::where('jenis', 'Guru')->whereNotNull('kode_barcode')->orderBy('nama')->get();
+            $daftarGuru = Guru::with('mapel')->where('jenis', 'Guru')->orderBy('nama')->get();
+
+            foreach ($daftarGuru as $guru) {
+                if (empty($guru->kode_barcode)) {
+                    $guru->kode_barcode = Str::random(32);
+                    $guru->save();
+                }
+            }
         }
 
         return view('admin.barcode.cetak', compact('daftarGuru', 'pengaturan'));
     }
 }
+
