@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-user-clock"></i>
                 <span>Cetak Guru Belum Barcode</span>
             </a>
-            <a href="{{ route('admin.barcode.cetak') }}" target="_blank" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
+            <a href="{{ route('admin.barcode.cetak') }}" target="_blank" class="bg-[#0b6534] hover:bg-[#09572c] text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
                 <i class="fa-solid fa-print"></i>
                 <span>Cetak Semua Guru</span>
             </a>
@@ -30,7 +30,7 @@
         <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between space-y-6">
             <div>
                 <h3 class="font-bold text-slate-900 text-lg mb-2 flex items-center space-x-2">
-                    <i class="fa-solid fa-qrcode text-emerald-700"></i>
+                    <i class="fa-solid fa-qrcode text-[#0b6534]"></i>
                     <span>Generator QR Code Guru</span>
                 </h3>
                 <p class="text-slate-500 text-xs leading-relaxed">
@@ -42,7 +42,7 @@
                 @csrf
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru Pengajar</label>
-                    <select name="id_guru" id="selectGuru" onchange="window.location.href='{{ route('admin.barcode.index') }}?guru_id=' + this.value" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <select name="id_guru" id="selectGuru" onchange="window.location.href='{{ route('admin.barcode.index') }}?guru_id=' + this.value" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-[#0b6534] text-sm" required>
                         <option value="">-- Pilih Guru --</option>
                         @foreach($daftarGuru as $g)
                             <option value="{{ $g->id }}" {{ $guruTerpilih && $guruTerpilih->id == $g->id ? 'selected' : '' }}>
@@ -51,7 +51,7 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 text-sm">
+                <button type="submit" class="w-full bg-[#0b6534] hover:bg-[#09572c] text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 text-sm">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                     <span>{{ $guruTerpilih && $guruTerpilih->kode_barcode ? 'Generate Ulang Barcode' : 'Buat Barcode Absensi' }}</span>
                 </button>
@@ -60,67 +60,41 @@
 
         <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
             @if($guruTerpilih)
-                <div class="w-full max-w-[480px] bg-[#0f783e] text-white rounded-[24px] p-5 pb-0 shadow-lg border-[3px] border-[#0c6233] flex flex-col justify-between relative overflow-hidden">
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="flex-1">
-                            <div class="inline-block bg-white text-[#0f783e] font-black text-xs sm:text-sm tracking-wider uppercase px-4 py-1 rounded-full shadow-sm">
-                                KARTU TANDA GURU
-                            </div>
-
-                            <div class="mt-4 space-y-2">
-                                <div>
-                                    <h4 class="text-white font-black text-base sm:text-lg uppercase tracking-wide leading-tight">
-                                        {{ $guruTerpilih->nama }}
-                                    </h4>
-                                    <p class="text-emerald-100 text-xs font-semibold tracking-wide font-mono mt-0.5">
-                                        NUPTK/NIP {{ $guruTerpilih->nip ?? '-' }}
-                                    </p>
-                                </div>
-
-                                <div class="pt-0.5">
-                                    <p class="text-emerald-100 text-[10px] font-bold tracking-widest uppercase">
-                                        GURU MATA PELAJARAN
-                                    </p>
-                                    <p class="text-white font-black text-xs sm:text-sm tracking-wide uppercase mt-0.5">
-                                        {{ $guruTerpilih->mapel->nama ?? $guruTerpilih->mapel_utama ?? ($guruTerpilih->jabatan ? $guruTerpilih->jabatan : 'GURU PENGAJAR') }}
-                                    </p>
-                                </div>
-                            </div>
+                <div class="w-full max-w-[420px] bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-[#0b6534] text-white font-black text-xs flex items-center justify-center flex-shrink-0">
+                            13
                         </div>
-
-                        <div class="w-28 flex flex-col items-center flex-shrink-0 space-y-1.5">
-                            <div class="w-full bg-white rounded-xl p-1.5 shadow flex flex-col items-center justify-center text-center">
-                                <img src="{{ asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13" class="h-9 w-auto object-contain">
-                                <span class="text-[8px] font-black text-slate-900 tracking-wider block mt-0.5 uppercase leading-none">SMKN 13</span>
-                                <span class="text-[8px] font-black text-slate-900 tracking-wider block uppercase leading-none mt-0.5">BANDUNG</span>
-                            </div>
-
-                            <div class="w-full bg-white rounded-xl p-1.5 shadow flex items-center justify-center min-h-[78px]">
-                                @if($guruTerpilih->kode_barcode)
-                                    <div id="qrcodePreview" class="flex items-center justify-center"></div>
-                                @else
-                                    <div class="text-center p-1">
-                                        <i class="fa-solid fa-qrcode text-slate-300 text-xl block"></i>
-                                        <span class="text-[8px] text-slate-400 block mt-0.5">Belum Dibuat</span>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="w-full text-[8px] text-emerald-100 space-y-0.5 font-medium text-right leading-tight pr-0.5">
-                                <div class="flex items-center justify-end space-x-1">
-                                    <i class="fa-solid fa-globe text-[8px]"></i>
-                                    <span class="truncate max-w-[85px]">{{ $pengaturan->social_media ?? 'smkn13bandung.sch.id' }}</span>
-                                </div>
-                                <div class="flex items-center justify-end space-x-1">
-                                    <i class="fa-regular fa-envelope text-[8px]"></i>
-                                    <span class="truncate max-w-[85px]">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
-                                </div>
-                            </div>
+                        <div>
+                            <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-800 leading-none">SMK NEGERI 13 BANDUNG</h2>
+                            <p class="text-[9px] text-[#0b6534] font-bold uppercase tracking-wider mt-0.5">KARTU BARCODE KEHADIRAN GURU</p>
                         </div>
                     </div>
 
-                    <div class="bg-[#09572c] text-emerald-100 text-[8px] font-normal px-3 py-1 -mx-5 mt-3 rounded-b-[20px] flex items-center justify-center text-center truncate">
-                        <span>Alamat: {{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta No.KM. 10, Kota Bandung' }}</span>
+                    <div class="flex items-center justify-between gap-4 py-1">
+                        <div class="space-y-1">
+                            <h3 class="font-bold text-slate-900 text-sm leading-tight">{{ $guruTerpilih->nama }}</h3>
+                            <p class="text-[10px] text-slate-400 font-mono">{{ $guruTerpilih->nip ?? '-' }}</p>
+                            <p class="text-[11px] text-slate-700 font-medium">{{ $guruTerpilih->mapel->nama ?? $guruTerpilih->mapel_utama ?? ($guruTerpilih->jabatan ?? 'Guru Pengajar') }}</p>
+                            <span class="inline-block text-[9px] bg-slate-50 text-slate-500 font-mono px-2 py-0.5 rounded border border-slate-200 mt-2">
+                                BARCODE-{{ strtoupper(\Illuminate\Support\Str::limit($guruTerpilih->kode_barcode ?? 'BELUM-DIBUAT', 10, '...')) }}
+                            </span>
+                        </div>
+                        <div class="flex-shrink-0 p-1.5 bg-white rounded-xl border border-slate-200">
+                            @if($guruTerpilih->kode_barcode)
+                                <div id="qrcodePreview" class="flex items-center justify-center"></div>
+                            @else
+                                <div class="w-[85px] h-[85px] flex flex-col items-center justify-center text-slate-300">
+                                    <i class="fa-solid fa-qrcode text-2xl"></i>
+                                    <span class="text-[9px] text-slate-400 mt-1">Belum Ada</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between text-[9px] text-slate-400">
+                        <span>Gunakan saat presensi di area kampus</span>
+                        <span>SMKN 13 Bandung</span>
                     </div>
                 </div>
 
@@ -142,7 +116,7 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <h3 class="font-bold text-slate-900 flex items-center space-x-2">
-                <i class="fa-solid fa-table-list text-emerald-700"></i>
+                <i class="fa-solid fa-table-list text-[#0b6534]"></i>
                 <span>Daftar Status Barcode Guru Pengajar</span>
             </h3>
             <span class="text-xs text-slate-500 font-medium">Total: {{ $daftarGuru->count() }} Guru</span>
@@ -187,7 +161,7 @@
                                     <form method="POST" action="{{ route('admin.barcode.generate') }}">
                                         @csrf
                                         <input type="hidden" name="id_guru" value="{{ $g->id }}">
-                                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-[#0b6534] px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-rotate mr-1"></i> {{ $g->kode_barcode ? 'Generate Ulang' : 'Buat Barcode' }}
                                         </button>
                                     </form>
@@ -202,16 +176,20 @@
 </div>
 
 @if($guruTerpilih && $guruTerpilih->kode_barcode)
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    new QRCode(document.getElementById("qrcodePreview"), {
-        text: "{{ $guruTerpilih->kode_barcode }}",
-        width: 70,
-        height: 70,
-        colorDark : "#052e16",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.M
-    });
+    const el = document.getElementById("qrcodePreview");
+    if (el) {
+        new QRCode(el, {
+            text: "{{ $guruTerpilih->kode_barcode }}",
+            width: 85,
+            height: 85,
+            colorDark : "#052e16",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.M
+        });
+    }
 });
 </script>
 @endif

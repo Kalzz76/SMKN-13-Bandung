@@ -62,9 +62,25 @@ class BarcodeController extends Controller
 
         if ($request->filled('id')) {
             $guru = Guru::where('jenis', 'Guru')->findOrFail($request->id);
+            if (empty($guru->kode_barcode)) {
+                $guru->kode_barcode = Str::random(32);
+                $guru->save();
+            }
             $daftarGuru = collect([$guru]);
+        } elseif ($request->filter === 'belum') {
+            $daftarGuru = Guru::where('jenis', 'Guru')->whereNull('kode_barcode')->orderBy('nama')->get();
+            foreach ($daftarGuru as $g) {
+                $g->kode_barcode = Str::random(32);
+                $g->save();
+            }
         } else {
-            $daftarGuru = Guru::where('jenis', 'Guru')->whereNotNull('kode_barcode')->orderBy('nama')->get();
+            $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+            foreach ($daftarGuru as $g) {
+                if (empty($g->kode_barcode)) {
+                    $g->kode_barcode = Str::random(32);
+                    $g->save();
+                }
+            }
         }
 
         return view('admin.barcode.cetak', compact('daftarGuru', 'pengaturan'));
