@@ -707,7 +707,14 @@
 
             <div class="brand-logo-wrap">
               <a href="{{ url('/') }}" class="brand-link">
-                <img src="{{ $sitePengaturan->logo_url ?? asset('images/logo-smkn13.png') }}" alt="Logo {{ $namaSekolah }}" class="brand-img">
+                @if(!empty($sitePengaturan->logo))
+                  <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo {{ $namaSekolah }}"
+                    class="brand-img">
+                @else
+                  <div class="brand-icon">
+                    <i class="bx bxs-graduation"></i>
+                  </div>
+                @endif
                 <span class="brand-text">{{ $namaSekolah }}<span>.</span></span>
               </a>
               <div class="form-subtitle">Silakan masuk ke akun Anda</div>

@@ -78,12 +78,22 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Logo Sekolah</label>
                     <div class="flex items-center space-x-6 mt-2">
-                        <div class="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-50 flex items-center justify-center p-1 shadow-sm">
-                            <img id="logoSekolahPreview" src="{{ $pengaturan->logo_url }}" alt="Logo Sekolah" class="max-h-full max-w-full object-contain">
-                        </div>
+                        @if($pengaturan->logo)
+                            <div
+                                class="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-50 flex items-center justify-center p-1">
+                                <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo"
+                                    class="max-h-full max-w-full object-contain">
+                            </div>
+                        @else
+                            <div
+                                class="w-16 h-16 rounded-xl bg-emerald-700 text-white font-black text-xl flex items-center justify-center flex-shrink-0 shadow">
+                                13
+                            </div>
+                        @endif
                         <div class="flex-grow">
-                            <input type="file" id="inputLogoSekolah" name="logo" accept="image/*" onchange="previewLogoSekolah(this)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                            <p class="text-xs text-slate-400 mt-1">Format: JPG, JPEG, PNG. Maksimal 2MB. Pratinjau akan langsung berubah saat Anda memilih file.</p>
+                            <input type="file" name="logo" accept="image/*"
+                                class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                            <p class="text-xs text-slate-400 mt-1">Format: JPG, JPEG, PNG. Maksimal 2MB.</p>
                         </div>
                     </div>
                 </div>
@@ -148,19 +158,4 @@
             </div>
         </form>
     </div>
-
-    <script>
-    function previewLogoSekolah(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('logoSekolahPreview');
-                if (preview) {
-                    preview.src = e.target.result;
-                }
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-    </script>
 @endsection

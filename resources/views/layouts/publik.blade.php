@@ -24,9 +24,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <a href="{{ url('/') }}" class="flex items-center space-x-3">
-                    <img src="{{ $sitePengaturan->logo_url ?? asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="h-12 w-12 object-contain flex-shrink-0">
+                    @if(!empty($sitePengaturan->logo))
+                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung"
+                            class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
+                    @else
+                        <div class="bg-white p-2 rounded-xl text-emerald-900 font-black text-xl shadow">13</div>
+                    @endif
                     <div>
-                        <span class="text-lg font-bold tracking-tight block leading-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
+                        <span
+                            class="text-lg font-bold tracking-tight block leading-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
                         <span class="text-xs text-emerald-200 tracking-wider">Official Portal & CMS</span>
                     </div>
                 </a>
@@ -152,8 +158,14 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <div class="flex items-center space-x-3 mb-4">
-                    <img src="{{ $sitePengaturan->logo_url ?? asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="h-10 w-10 object-contain flex-shrink-0">
-                    <span class="text-white font-bold text-lg">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
+                    @if(!empty($sitePengaturan->logo))
+                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung"
+                            class="h-10 w-10 object-contain bg-white rounded-xl p-1">
+                    @else
+                        <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold">13</div>
+                    @endif
+                    <span
+                        class="text-white font-bold text-lg">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
                 </div>
                 <p class="text-sm text-slate-400 leading-relaxed">
                     {{ $sitePengaturan->alamat ?? 'Jl. Soekarno-Hatta KM. 10, Kelurahan Jatisari, Kecamatan Buahbatu, Kota Bandung, Jawa Barat, Kode Pos 40286' }}
@@ -178,46 +190,11 @@
                 <p class="text-sm mt-1 text-slate-500">Sabtu – Minggu & Libur Nasional: Tutup</p>
             </div>
             <div>
-<<<<<<< HEAD
-                <h4 class="text-white font-bold mb-3 flex items-center space-x-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>Kontak Resmi</span>
-                </h4>
-                <ul class="space-y-2.5 text-xs text-slate-300">
-                    <li class="flex items-start space-x-2.5">
-                        <i class="fa-solid fa-envelope text-emerald-400 mt-0.5 text-sm flex-shrink-0"></i>
-                        <div class="space-y-0.5">
-                            <a href="mailto:smk13bdg@gmail.com" class="hover:text-emerald-400 transition hover:underline block">smk13bdg@gmail.com</a>
-                            <a href="mailto:info@smkn13bdg.sch.id" class="hover:text-emerald-400 transition hover:underline block">info@smkn13bdg.sch.id</a>
-                        </div>
-                    </li>
-                    <li class="flex items-center space-x-2.5">
-                        <i class="fa-solid fa-phone text-emerald-400 text-sm flex-shrink-0"></i>
-                        <a href="tel:0227318960" class="hover:text-emerald-400 transition hover:underline">(022) 7318960</a>
-                    </li>
-                </ul>
-
-                <div class="mt-4 pt-3 border-t border-slate-800/80">
-                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Media Sosial Resmi</span>
-                    <div class="flex items-center space-x-2">
-                        <a href="https://www.instagram.com/smkn13bandung?stkn=eWp2d2lnbXFnNHFu" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 border border-slate-800 hover:border-transparent text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm" title="Instagram @smkn13bandung">
-                            <i class="fa-brands fa-instagram text-base"></i>
-                        </a>
-                        <a href="https://www.youtube.com/@smkn13bandungofficial" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-rose-600 border border-slate-800 hover:border-transparent text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm" title="YouTube SMKN 13 Bandung Official">
-                            <i class="fa-brands fa-youtube text-base"></i>
-                        </a>
-                        <a href="https://smkn13bdg.sch.id" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-emerald-600 border border-slate-800 hover:border-transparent text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm" title="Website Resmi SMKN 13 Bandung">
-                            <i class="fa-solid fa-globe text-base"></i>
-                        </a>
-                    </div>
-                </div>
-=======
                 <h4 class="text-white font-bold mb-3">Kontak Resmi</h4>
                 <p class="text-sm text-slate-300">Email: {{ $sitePengaturan->email ?? 'smk13bdg@gmail.com' }}</p>
                 <p class="text-sm mt-1 text-slate-300">Telp/Fax: {{ $sitePengaturan->telepon ?? '(022) 7318960' }}</p>
                 <p class="text-xs mt-2 text-emerald-400">{{ $sitePengaturan->social_media ?? 'Instagram: @smkn13bdg' }}
                 </p>
->>>>>>> 7b8e368 (Integrasikan penggantian logo dinamis di seluruh aplikasi termasuk live preview upload dan kartu tanda guru)
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-slate-800 text-center text-xs">

@@ -2,7 +2,7 @@
     class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex-col flex-shrink-0 h-screen hidden md:relative md:flex transition-all duration-300 shadow-xl md:shadow-none">
     <div class="p-6 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center space-x-3">
-            <img src="{{ $sitePengaturan->logo_url ?? asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13" class="h-10 w-10 object-contain flex-shrink-0">
+            <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold shadow">13</div>
             <div>
                 <span class="text-white font-bold block text-sm">ADMINISTRATOR</span>
                 <span class="text-xs text-slate-400">CMS SMKN 13 Bandung</span>

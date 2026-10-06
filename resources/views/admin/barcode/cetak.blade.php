@@ -91,7 +91,7 @@
 
                         <div class="w-32 sm:w-36 flex flex-col items-center flex-shrink-0 space-y-2">
                             <div class="w-full bg-white rounded-2xl p-2 shadow flex flex-col items-center justify-center text-center">
-                                <img src="{{ $pengaturan->logo_url ?? asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="h-12 w-auto object-contain">
+                                <img src="{{ asset('images/logo-smkn13.png') }}" alt="SMKN 13 Bandung" class="h-12 w-auto object-contain">
                                 <span class="text-[10px] font-black text-slate-900 tracking-wider block mt-1 uppercase leading-tight">SMKN 13</span>
                                 <span class="text-[10px] font-black text-slate-900 tracking-wider block uppercase leading-tight">BANDUNG</span>
                             </div>
