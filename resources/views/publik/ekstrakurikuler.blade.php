@@ -1,180 +1,159 @@
-@extends('layouts.publik', ['title' => 'Ekstrakurikuler - SMKN 13 Bandung'])
+@extends('layouts.publik', ['title' => 'Ekstrakurikuler Pilihan - SMKN 13 Bandung'])
 
 @section('content')
-<div class="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-12 w-full flex-grow">
-    <!-- Header Banner Ekskul -->
-    <div class="bg-navy-dark rounded-3xl p-10 sm:p-14 text-center shadow-lg text-white border-b-8 border-teal-primary">
-        <span class="bg-teal-primary text-teal-tint text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">
+<div class="py-16 px-4 max-w-5xl mx-auto space-y-12 w-full flex-grow">
+    <!-- BANNER HEADER PERSIS REFERENSI DESAIN -->
+    <div class="bg-navy-dark rounded-3xl p-10 sm:p-16 text-center shadow-lg text-white border-b-8 border-teal-primary">
+        <span class="bg-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">
             Pengembangan Diri
         </span>
-        <h1 class="text-4xl sm:text-5xl font-black mb-4 tracking-tight">
-            Ekstrakurikuler SMKN 13 Bandung
+        <h1 class="text-4xl sm:text-5xl font-black mb-4">
+            Ekstrakurikuler Pilihan
         </h1>
-        <p class="text-teal-tint/90 max-w-2xl mx-auto text-base sm:text-lg font-medium leading-relaxed">
-            Pilih wadah pengembangan bakat, minat, kepemimpinan, dan kreativitasmu bersama organisasi kesiswaan unggulan.
+        <p class="text-teal-tint max-w-2xl mx-auto text-lg">
+            Pilih wadah pengembangan bakat dan minatmu di Ekstrakurikuler SMKN 13 Bandung.
         </p>
     </div>
 
     @php
-        $presetEkskul = [
+        $semuaEkskul = [
             [
+                'id' => 'ek1',
                 'nama' => 'PMR (Palang Merah Remaja)',
                 'icon' => 'fa-kit-medical',
-                'desc' => 'Pelatihan pertolongan pertama, kesehatan remaja, donor darah, dan kesiapsiagaan bencana di lingkungan sekolah.',
+                'desc' => 'Pelatihan pertolongan pertama, kesehatan remaja, dan kesiapsiagaan bencana.',
                 'ig' => '@pmrsmkn13_bdg',
                 'link' => 'https://www.instagram.com/pmrsmkn13_bdg?stkn=Z3o4Z3FzdnU4MDc2',
-                'gambar' => asset('Assets/ekskul/pmr.jpg'),
-                'jadwal' => 'Jumat, 15.30 WIB'
+                'gambar' => asset('Assets/ekskul/pmr.jpg')
             ],
             [
-                'nama' => 'Pramuka (Gudep 13)',
-                'icon' => 'fa-campground',
-                'desc' => 'Gerakan pramuka berlandaskan Dasa Darma untuk mencetak siswa berkarakter tangguh, disiplin, dan berjiwa kepemimpinan.',
-                'ig' => '@pramukasmkn13bdg',
-                'link' => 'https://www.instagram.com/pramukasmkn13bdg?stkn=bDEyZXpsYXhrbTZx',
-                'gambar' => asset('Assets/ekskul/pramuka.jpeg'),
-                'jadwal' => 'Sabtu, 08.00 WIB'
-            ],
-            [
-                'nama' => 'Paskibra (Paramartha 13)',
-                'icon' => 'fa-flag',
-                'desc' => 'Melatih kedisiplinan baris-berbaris, tata upacara bendera, dan rasa nasionalisme patriotik.',
-                'ig' => '@paskibra_paramartha13',
-                'link' => 'https://www.instagram.com/paskibra_paramartha13?stkn=MXE1M2VvaHN4dTVvNQ==',
-                'gambar' => asset('Assets/ekskul/paskibra.jpeg'),
-                'jadwal' => 'Rabu & Jumat, 15.30 WIB'
-            ],
-            [
+                'id' => 'ek2',
                 'nama' => 'IRMA Al-Hikmah',
                 'icon' => 'fa-mosque',
-                'desc' => 'Wadah pembinaan kerohanian Islam, kajian remaja, dan akhlak mulia melalui kegiatan keagamaan sekolah.',
+                'desc' => 'Wadah pembinaan keislaman dan akhlak mulia melalui kegiatan keagamaan di lingkungan sekolah.',
                 'ig' => '@irmaalhikmah13',
                 'link' => 'https://www.instagram.com/irmaalhikmah13?stkn=ZjllZWM3dmk3YW9h',
-                'gambar' => asset('Assets/ekskul/irma.jpg'),
-                'jadwal' => 'Kamis, 15.30 WIB'
+                'gambar' => asset('Assets/ekskul/irma.jpg')
             ],
             [
-                'nama' => 'Sastrala (Klub Sastra & Literasi)',
+                'id' => 'ek3',
+                'nama' => 'Sastrala',
                 'icon' => 'fa-feather-pointed',
-                'desc' => 'Mengembangkan minat dan bakat siswa di bidang sastra, cipta puisi, penulisan artikel, dan karya kreatif.',
+                'desc' => 'Mengembangkan minat dan bakat siswa di bidang sastra, menulis, dan berkarya kreatif.',
                 'ig' => '@sastrala.id',
                 'link' => 'https://www.instagram.com/sastrala.id?stkn=ZzN6Ynlxdmg5ajE2',
-                'gambar' => asset('Assets/ekskul/sastrala.jpeg'),
-                'jadwal' => 'Selasa, 15.30 WIB'
+                'gambar' => asset('Assets/ekskul/sastrala.jpeg')
             ],
             [
-                'nama' => 'Padus (Voice of SMKN 13)',
+                'id' => 'ek4',
+                'nama' => 'Padus (Paduan Suara)',
                 'icon' => 'fa-music',
-                'desc' => 'Melatih olah vokal, harmoni paduan suara, dan penampilan vokal grup untuk upacara serta festival seni.',
+                'desc' => 'Melatih olah vokal, harmoni, dan penampilan paduan suara untuk berbagai acara sekolah.',
                 'ig' => '@voice.smkn13',
                 'link' => 'https://www.instagram.com/voice.smkn13?stkn=MXVmdWNheGVlbjk5eQ==',
-                'gambar' => asset('Assets/ekskul/padus.jpeg'),
-                'jadwal' => 'Senin & Kamis, 15.30 WIB'
+                'gambar' => asset('Assets/ekskul/padus.jpeg')
             ],
             [
-                'nama' => 'Banzai (Japan Community)',
+                'id' => 'ek5',
+                'nama' => 'Banzai',
                 'icon' => 'fa-star',
-                'desc' => 'Wadah apresiasi budaya, bahasa, seni menggambar manga, dan pertukaran pengetahuan budaya Jepang.',
+                'desc' => 'Wadah kreativitas dan pengembangan minat siswa SMKN 13 Bandung.',
                 'ig' => '@banzai13vhs',
                 'link' => 'https://www.instagram.com/banzai13vhs?stkn=aGNqZWphazBvMzRy',
-                'gambar' => asset('Assets/ekskul/banzai.jpg'),
-                'jadwal' => 'Jumat, 15.30 WIB'
+                'gambar' => asset('Assets/ekskul/banzai.jpg')
             ],
             [
-                'nama' => 'Karawitan Sunda (Aleutan 13)',
+                'id' => 'ek6',
+                'nama' => 'Karawitan',
                 'icon' => 'fa-drum',
-                'desc' => 'Melestarikan seni musik tradisional gamelan Sunda melalui latihan gamelan, degung, dan pentas kebudayaan.',
+                'desc' => 'Melestarikan seni musik tradisional Sunda melalui latihan dan pementasan karawitan.',
                 'ig' => '@aleutan_13',
                 'link' => 'https://www.instagram.com/aleutan_13?stkn=MXU0YmwzeWJvMDNxdQ==',
-                'gambar' => asset('Assets/ekskul/karawitan.jpg'),
-                'jadwal' => 'Rabu, 15.30 WIB'
+                'gambar' => asset('Assets/ekskul/karawitan.jpg')
             ],
             [
-                'nama' => 'English Club (BeenGo 13)',
+                'id' => 'ek7',
+                'nama' => 'Pramuka',
+                'icon' => 'fa-campground',
+                'desc' => 'Gerakan pramuka berlandaskan Dasa Darma untuk mencetak siswa berkarakter dan berjiwa kepemimpinan.',
+                'ig' => '@pramukasmkn13bdg',
+                'link' => 'https://www.instagram.com/pramukasmkn13bdg?stkn=bDEyZXpsYXhrbTZx',
+                'gambar' => asset('Assets/ekskul/pramuka.jpeg')
+            ],
+            [
+                'id' => 'ek8',
+                'nama' => 'Paskibra',
+                'icon' => 'fa-flag',
+                'desc' => 'Melatih kedisiplinan, baris-berbaris, dan nasionalisme untuk petugas upacara bendera.',
+                'ig' => '@paskibra_paramartha13',
+                'link' => 'https://www.instagram.com/paskibra_paramartha13?stkn=MXE1M2VvaHN4dTVvNQ==',
+                'gambar' => asset('Assets/ekskul/paskibra.jpeg')
+            ],
+            [
+                'id' => 'ek9',
+                'nama' => 'English Club',
                 'icon' => 'fa-language',
-                'desc' => 'Melatih kemampuan berbahasa Inggris aktif lewat percakapan santai, storytelling, debate, dan fun games.',
+                'desc' => 'Melatih kemampuan berbahasa Inggris lewat percakapan, debat, dan berbagai kegiatan seru.',
                 'ig' => '@beengo.smkn13',
                 'link' => 'https://www.instagram.com/beengo.smkn13?stkn=bjF5bmloODEwYWo4',
-                'gambar' => asset('Assets/LOGOS.jpg'),
-                'jadwal' => 'Selasa, 15.30 WIB'
-            ],
+                'gambar' => asset('Assets/LOGOS.jpg')
+            ]
         ];
+
+        // Jika ada ekskul dari database yang belum terdaftar di preset, tambahkan secara dinamis
+        foreach($daftarEkskul as $dbEk) {
+            $sudahAda = collect($semuaEkskul)->contains(function($p) use ($dbEk) {
+                return stripos($p['nama'], $dbEk->nama) !== false || stripos($dbEk->nama, $p['nama']) !== false;
+            });
+            if (!$sudahAda) {
+                $semuaEkskul[] = [
+                    'id' => 'db_' . $dbEk->id,
+                    'nama' => $dbEk->nama,
+                    'icon' => 'fa-star',
+                    'desc' => $dbEk->deskripsi ?? 'Wadah kreativitas siswa SMKN 13 Bandung.',
+                    'ig' => '@smkn13bandung',
+                    'link' => 'https://www.instagram.com/smkn13bandung?stkn=NnhydHlmaTV2NHMy',
+                    'gambar' => !empty($dbEk->gambar) && file_exists(public_path('storage/' . $dbEk->gambar))
+                        ? asset('storage/' . $dbEk->gambar)
+                        : asset('Assets/LOGOS.jpg')
+                ];
+            }
+        }
     @endphp
 
-    <!-- List Kartu Ekskul -->
-    <div class="space-y-8">
-        {{-- Gabungkan ekskul preset referensi dan ekskul dinamis dari DB jika ada --}}
-        @foreach($presetEkskul as $ek)
-            <div class="bg-bg-card rounded-3xl p-6 sm:p-8 shadow-sm border border-teal-tint flex flex-col md:flex-row gap-8 items-center hover:shadow-md transition">
-                <div class="w-full md:w-56 h-48 rounded-2xl overflow-hidden bg-teal-tint flex-shrink-0 shadow-xs border border-teal-tint/50">
-                    <img src="{{ $ek['gambar'] }}" alt="{{ $ek['nama'] }}" class="w-full h-full object-cover">
+    <!-- DAFTAR EKSKUL ZIG-ZAG PERSIS REFERENSI DESAIN -->
+    <div class="space-y-8" id="pubEkskulList">
+        @foreach($semuaEkskul as $i => $e)
+            <div class="bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col md:flex-row {{ $i % 2 ? 'md:flex-row-reverse' : '' }}">
+                <div class="w-full md:w-5/12 h-64 md:h-auto relative bg-teal-tint">
+                    <img src="{{ $e['gambar'] }}" alt="{{ $e['nama'] }}" class="w-full h-full object-cover absolute inset-0">
                 </div>
-
-                <div class="flex-grow space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-xl bg-teal-tint text-teal-primary flex items-center justify-center text-lg flex-shrink-0">
-                                <i class="fa-solid {{ $ek['icon'] }}"></i>
-                            </div>
-                            <h3 class="text-2xl font-black text-navy-dark">{{ $ek['nama'] }}</h3>
+                <div class="w-full md:w-7/12 p-8 sm:p-12 space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-teal-tint text-teal-primary flex items-center justify-center text-2xl flex-shrink-0">
+                            <i class="fa-solid {{ $e['icon'] }}"></i>
                         </div>
-                        <a href="{{ $ek['link'] }}" target="_blank" rel="noopener noreferrer"
-                            class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-teal-tint text-teal-primary hover:bg-teal-primary hover:text-white transition text-xs font-bold">
-                            <i class="fa-brands fa-instagram text-sm"></i>
-                            <span>{{ $ek['ig'] }}</span>
-                        </a>
+                        <h4 class="text-3xl font-black text-navy-dark leading-tight">{{ $e['nama'] }}</h4>
                     </div>
 
-                    <p class="text-text-muted text-sm sm:text-base leading-relaxed">
-                        {{ $ek['desc'] }}
+                    <p class="font-medium leading-relaxed text-text-main text-base sm:text-lg">
+                        {{ $e['desc'] }}
                     </p>
 
-                    <div class="pt-2 flex items-center text-xs text-text-muted font-semibold">
-                        <i class="fa-regular fa-clock mr-1.5 text-teal-primary"></i>
-                        <span>Jadwal Latihan: {{ $ek['jadwal'] }}</span>
+                    <div class="text-sm bg-bg-page p-5 rounded-2xl border border-teal-tint/50">
+                        <span class="block text-text-muted text-xs font-bold uppercase mb-1 tracking-wider">Instagram</span>
+                        <b class="text-navy-dark flex items-center text-sm">
+                            <i class="fa-brands fa-instagram mr-2 text-rose-500 text-base"></i>
+                            <span>{{ $e['ig'] }}</span>
+                        </b>
                     </div>
+
+                    <a href="{{ $e['link'] }}" target="_blank" rel="noopener noreferrer"
+                        class="btn-animate inline-block bg-brick-red hover:bg-brick-dark text-white font-bold px-8 py-3.5 rounded-full shadow-md text-sm">
+                        Bergabung Sekarang <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
                 </div>
             </div>
-        @endforeach
-
-        {{-- Render ekskul tambahan dari database jika ada yang belum termasuk di preset --}}
-        @foreach($daftarEkskul as $dbEk)
-            @php
-                $isPreset = collect($presetEkskul)->contains(function($p) use ($dbEk) {
-                    return stripos($p['nama'], $dbEk->nama) !== false || stripos($dbEk->nama, $p['nama']) !== false;
-                });
-            @endphp
-            @if(!$isPreset)
-                <div class="bg-bg-card rounded-3xl p-6 sm:p-8 shadow-sm border border-teal-tint flex flex-col md:flex-row gap-8 items-center hover:shadow-md transition">
-                    <div class="w-full md:w-56 h-48 rounded-2xl overflow-hidden bg-teal-tint flex-shrink-0 shadow-xs border border-teal-tint/50">
-                        @if(!empty($dbEk->gambar) && file_exists(public_path('storage/' . $dbEk->gambar)))
-                            <img src="{{ asset('storage/' . $dbEk->gambar) }}" alt="{{ $dbEk->nama }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex flex-col items-center justify-center bg-navy-mid/10 text-teal-primary">
-                                <i class="fa-solid fa-people-group text-4xl"></i>
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="flex-grow space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-xl bg-teal-tint text-teal-primary flex items-center justify-center text-lg flex-shrink-0">
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                            <h3 class="text-2xl font-black text-navy-dark">{{ $dbEk->nama }}</h3>
-                        </div>
-
-                        <p class="text-text-muted text-sm sm:text-base leading-relaxed">
-                            {{ $dbEk->deskripsi }}
-                        </p>
-
-                        <div class="pt-2 flex items-center space-x-4 text-xs text-text-muted font-semibold">
-                            <span><i class="fa-solid fa-user-tie mr-1 text-teal-primary"></i> Pembina: {{ $dbEk->pembina ?? '-' }}</span>
-                            <span><i class="fa-regular fa-clock mr-1 text-teal-primary"></i> Jadwal: {{ $dbEk->jadwal ?? '-' }}</span>
-                        </div>
-                    </div>
-                </div>
-            @endif
         @endforeach
     </div>
 </div>
