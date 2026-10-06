@@ -174,10 +174,10 @@
                 <a href="{{ route('beranda') }}" class="flex items-center space-x-3 btn-animate">
                     @if(!empty($sitePengaturan?->logo_url))
                         <img src="{{ $sitePengaturan->logo_url }}" alt="Logo SMKN 13 Bandung"
-                            class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
+                            class="h-12 w-12 object-contain drop-shadow">
                     @else
                         <img src="{{ asset('Assets/LOGOS.png') }}" alt="Logo SMKN 13 Bandung"
-                            class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
+                            class="h-12 w-12 object-contain drop-shadow">
                     @endif
                     <div>
                         <span class="text-lg font-black block leading-tight tracking-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
@@ -333,10 +333,10 @@
                 <div class="flex items-center space-x-3 mb-6">
                     @if(!empty($sitePengaturan?->logo_url))
                         <img src="{{ $sitePengaturan->logo_url }}" alt="Logo SMKN 13"
-                            class="h-10 w-10 object-contain bg-white rounded-xl p-1">
+                            class="h-10 w-10 object-contain drop-shadow">
                     @else
                         <img src="{{ asset('Assets/LOGOS.png') }}" alt="Logo SMKN 13"
-                            class="h-10 w-10 object-contain bg-white rounded-xl p-1">
+                            class="h-10 w-10 object-contain drop-shadow">
                     @endif
                     <span class="font-black text-xl tracking-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
                 </div>

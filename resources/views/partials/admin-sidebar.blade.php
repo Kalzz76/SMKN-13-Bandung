@@ -3,7 +3,7 @@
     <div class="p-6 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center space-x-3">
             @if(!empty($sitePengaturan?->logo_url))
-                <img src="{{ $sitePengaturan->logo_url }}" alt="Logo" class="w-10 h-10 object-contain rounded-xl bg-white p-1 shadow flex-shrink-0">
+                <img src="{{ $sitePengaturan->logo_url }}" alt="Logo" class="w-10 h-10 object-contain flex-shrink-0 drop-shadow">
             @else
                 <div class="bg-emerald-700 text-white w-10 h-10 rounded-xl font-bold shadow flex items-center justify-center flex-shrink-0">13</div>
             @endif

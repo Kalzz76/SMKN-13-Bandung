@@ -21,19 +21,28 @@
 
   <style>
     :root {
-      /* Theme SMKN 13 Bandung: Emerald Green & Golden Yellow Accent */
-      --primary-color: #059669;
-      --primary-dark: #047857;
-      --secondary-color: #065f46;
-      --accent-color: #f9bf29;
-      --accent-hover: #e5ad20;
-      --black: #0c1412;
+      /* Theme SMKN 13 Bandung: Navy & Teal (Harmonis dengan Halaman Publik) */
+      --navy-dark: #0F2A47;
+      --navy-mid: #17476B;
+      --teal-primary: #1D6F6A;
+      --teal-light: #3A9189;
+      --teal-accent: #9ED6CF;
+      --teal-tint: #E1ECEE;
+      --brick-red: #B03A2E;
+      --brick-tint: #F5E1DE;
+
+      --primary-color: #1D6F6A;
+      --primary-dark: #14524E;
+      --secondary-color: #0F2A47;
+      --accent-color: #9ED6CF;
+      --accent-hover: #3A9189;
+      --black: #081626;
       --white: #ffffff;
-      --bg-dark: #0d1513;
-      --card-dark: #15231f;
-      --input-bg: #101c18;
-      --border-dark: #233a33;
-      --gray-muted: #94a3b8;
+      --bg-dark: #091B2E;
+      --card-dark: #102B47;
+      --input-bg: #0C233B;
+      --border-dark: #1E466E;
+      --gray-muted: #9BB3C9;
     }
 
     * {
@@ -115,20 +124,20 @@
     }
 
     .toast-item.sukses {
-      border-left-color: #10b981;
+      border-left-color: #1D6F6A;
     }
 
     .toast-item.sukses i {
-      color: #10b981;
+      color: #1D6F6A;
       font-size: 1.4rem;
     }
 
     .toast-item.peringatan {
-      border-left-color: #ef4444;
+      border-left-color: #B03A2E;
     }
 
     .toast-item.peringatan i {
-      color: #ef4444;
+      color: #B03A2E;
       font-size: 1.4rem;
     }
 
@@ -211,7 +220,7 @@
       max-height: 92vh;
       overflow-y: auto;
       box-shadow: rgba(0, 0, 0, 0.45) 0px 15px 35px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(158, 214, 207, 0.15);
       transform: scale(1);
       opacity: 1;
       pointer-events: auto;
@@ -254,8 +263,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #059669, #10b981);
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.45);
+      background: linear-gradient(135deg, #1D6F6A, #3A9189);
+      box-shadow: 0 4px 14px rgba(29, 111, 106, 0.45);
       color: #fff;
       font-size: 1.45rem;
       font-weight: 800;
@@ -265,10 +274,7 @@
       height: 42px;
       width: auto;
       object-fit: contain;
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 3px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
     }
 
     .brand-text {
@@ -301,7 +307,7 @@
       left: 1rem;
       transform: translateY(-50%);
       font-size: 1.15rem;
-      color: #34d399;
+      color: #3A9189;
       transition: color 0.3s;
       pointer-events: none;
     }
@@ -321,17 +327,17 @@
     }
 
     .input-group input::placeholder {
-      color: #9ca3af;
+      color: #94a3b8;
     }
 
     .input-group input:focus {
-      border-color: #10b981;
-      background-color: #0d1a16;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+      border-color: #3A9189;
+      background-color: #0E2A47;
+      box-shadow: 0 0 0 3px rgba(58, 145, 137, 0.28);
     }
 
     .input-group input:focus~i.field-icon {
-      color: #6ee7b7;
+      color: #9ED6CF;
     }
 
     /* Password Toggle Button */
@@ -342,7 +348,7 @@
       transform: translateY(-50%);
       background: none;
       border: none;
-      color: #34d399;
+      color: #3A9189;
       font-size: 1.15rem;
       cursor: pointer;
       display: flex;
@@ -353,7 +359,7 @@
     }
 
     .toggle-pass:hover {
-      color: #6ee7b7;
+      color: #9ED6CF;
     }
 
     /* Action Buttons */
@@ -363,14 +369,14 @@
       padding: 0.8rem 0;
       border-radius: 0.7rem;
       border: none;
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      background: linear-gradient(135deg, #1D6F6A 0%, #17476B 100%);
       color: var(--white);
       font-size: 0.95rem;
       font-weight: 600;
       font-family: inherit;
       outline: none;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+      box-shadow: 0 4px 14px rgba(29, 111, 106, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -379,8 +385,8 @@
     }
 
     .form button.btn-action:hover {
-      background: linear-gradient(135deg, #047857 0%, #064e3b 100%);
-      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.5);
+      background: linear-gradient(135deg, #3A9189 0%, #1D6F6A 100%);
+      box-shadow: 0 6px 20px rgba(29, 111, 106, 0.55);
       transform: translateY(-1px);
     }
 
@@ -413,15 +419,15 @@
     }
 
     .form .pesan.gagal {
-      background-color: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background-color: rgba(176, 58, 46, 0.18);
+      color: #F5E1DE;
+      border: 1px solid rgba(176, 58, 46, 0.38);
     }
 
     .form .pesan.berhasil {
-      background-color: rgba(16, 185, 129, 0.15);
-      color: #6ee7b7;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background-color: rgba(29, 111, 106, 0.22);
+      color: #9ED6CF;
+      border: 1px solid rgba(58, 145, 137, 0.4);
     }
 
     /* Links */
@@ -431,7 +437,7 @@
     }
 
     .tautan-beranda {
-      color: #e2e8f0;
+      color: var(--gray-muted);
       text-decoration: none;
       font-weight: 600;
       font-size: 0.82rem;
@@ -444,7 +450,7 @@
     }
 
     .tautan-beranda:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(158, 214, 207, 0.12);
       color: #ffffff;
     }
 
@@ -461,14 +467,14 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.12);
       padding: 5px 14px;
       border-radius: 20px;
       font-size: 0.76rem;
       font-weight: 600;
       letter-spacing: 0.4px;
       margin-bottom: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(158, 214, 207, 0.25);
       backdrop-filter: blur(5px);
     }
 
@@ -503,7 +509,7 @@
       filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.35));
     }
 
-    /* Curved Background Panel (Theme SMKN 13 Bandung) */
+    /* Curved Background Panel (Theme SMKN 13 Bandung - Navy & Teal) */
     .container::before {
       content: "";
       position: absolute;
@@ -512,9 +518,9 @@
       height: 100vh;
       width: 300vw;
       transform: translate(0, 0);
-      background: linear-gradient(-45deg, #047857 0%, #065f46 50%, #059669 100%);
+      background: linear-gradient(-45deg, #0F2A47 0%, #17476B 50%, #1D6F6A 100%);
       z-index: 5;
-      box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 30px;
+      box-shadow: rgba(0, 0, 0, 0.45) 0px 5px 35px;
       border-bottom-right-radius: max(50vw, 50vh);
       border-top-left-radius: max(50vw, 50vh);
     }
@@ -545,8 +551,8 @@
         width: min(85vw, 360px);
         height: min(85vw, 360px);
         border-radius: 50%;
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        box-shadow: 0 18px 45px rgba(5, 150, 105, 0.4);
+        background: linear-gradient(135deg, #17476B 0%, #1D6F6A 100%);
+        box-shadow: 0 18px 45px rgba(23, 71, 107, 0.45);
         transform: translate(25%, -25%);
         z-index: 3;
         pointer-events: none;
@@ -560,7 +566,7 @@
         width: min(45vw, 180px);
         height: min(45vw, 180px);
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(249, 191, 41, 0.45) 0%, rgba(5, 150, 105, 0.15) 100%);
+        background: radial-gradient(circle, rgba(158, 214, 207, 0.35) 0%, rgba(29, 111, 106, 0.15) 100%);
         filter: blur(10px);
         z-index: 2;
         pointer-events: none;
@@ -691,10 +697,10 @@
               <path
                 d="M100 45 C75 35 35 38 20 44 V95 C35 89 75 86 100 96 C125 86 165 89 180 95 V44 C165 38 125 35 100 45 Z"
                 fill="#ffffff" fill-opacity="0.95" />
-              <path d="M100 45 V96" stroke="#059669" stroke-width="3" stroke-linecap="round" />
-              <path d="M100 20 L55 35 L100 50 L145 35 Z" fill="#f9bf29" />
-              <path d="M145 35 V55" stroke="#f9bf29" stroke-width="3" stroke-linecap="round" />
-              <circle cx="145" cy="58" r="4" fill="#f9bf29" />
+              <path d="M100 45 V96" stroke="#1D6F6A" stroke-width="3" stroke-linecap="round" />
+              <path d="M100 20 L55 35 L100 50 L145 35 Z" fill="#9ED6CF" />
+              <path d="M145 35 V55" stroke="#9ED6CF" stroke-width="3" stroke-linecap="round" />
+              <circle cx="145" cy="58" r="4" fill="#9ED6CF" />
             </svg>
           </div>
         </div>
@@ -936,7 +942,7 @@
           this.size = Math.random() * 3 + 1.2;
           this.speedX = (Math.random() - 0.5) * 0.7;
           this.speedY = (Math.random() - 0.5) * 0.7;
-          this.color = Math.random() > 0.35 ? 'rgba(16, 185, 129, 0.45)' : 'rgba(249, 191, 41, 0.6)';
+          this.color = Math.random() > 0.35 ? 'rgba(58, 145, 137, 0.5)' : 'rgba(158, 214, 207, 0.65)';
         }
 
         update() {
@@ -986,7 +992,7 @@
             if (dist < maxDist) {
               const opacity = (1 - dist / maxDist) * 0.22;
               ctx.beginPath();
-              ctx.strokeStyle = `rgba(16, 185, 129, ${opacity})`;
+              ctx.strokeStyle = `rgba(58, 145, 137, ${opacity})`;
               ctx.lineWidth = 0.8;
               ctx.moveTo(particles[a].x, particles[a].y);
               ctx.lineTo(particles[b].x, particles[b].y);
