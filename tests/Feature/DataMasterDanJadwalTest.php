@@ -300,6 +300,39 @@ class DataMasterDanJadwalTest extends TestCase
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
+    public function test_admin_dapat_reset_password_user_ke_default(): void
+    {
+        $guruUser = User::create([
+            'name' => 'Guru Testing Reset',
+            'username' => 'gurutestreset',
+            'role' => 'guru',
+            'status' => 'Aktif',
+            'password' => bcrypt('passwordlama123'),
+        ]);
+
+        $sekreUser = User::create([
+            'name' => 'Sekre Testing Reset',
+            'username' => 'sekretestreset',
+            'role' => 'sekretaris',
+            'status' => 'Aktif',
+            'password' => bcrypt('passwordlama123'),
+        ]);
+
+        $responseResetGuru = $this->actingAs($this->admin)->post("/admin/user/{$guruUser->id}/reset-password");
+        $responseResetGuru->assertRedirect('/admin/user');
+        $responseResetGuru->assertSessionHas('sukses');
+
+        $guruUser->refresh();
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('guru123', $guruUser->password));
+
+        $responseResetSekre = $this->actingAs($this->admin)->post("/admin/user/{$sekreUser->id}/reset-password");
+        $responseResetSekre->assertRedirect('/admin/user');
+        $responseResetSekre->assertSessionHas('sukses');
+
+        $sekreUser->refresh();
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('sekretaris123', $sekreUser->password));
+    }
+
     public function test_crud_jadwal_dan_validasi_bentrok(): void
     {
         $kelas1 = Kelas::where('nama', 'XII RPL 1')->first();

@@ -27,7 +27,7 @@
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         @include('partials.admin-header')
 
-        <main class="flex-grow p-6 sm:p-10 overflow-y-auto">
+        <main class="flex-grow p-5 sm:p-7 overflow-y-auto">
             @if($errors->any())
                 <div class="mb-6 p-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-sm">
                     <ul class="list-disc pl-5 space-y-1">

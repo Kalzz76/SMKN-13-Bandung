@@ -189,6 +189,42 @@ class AdminPengaturanDanKontenTest extends TestCase
         ]);
     }
 
+    public function test_upload_multiple_foto_galeri_dan_kelola_album(): void
+    {
+        Storage::fake('public');
+        $foto1 = UploadedFile::fake()->image('foto1.jpg');
+        $foto2 = UploadedFile::fake()->image('foto2.jpg');
+        $foto3 = UploadedFile::fake()->image('foto3.jpg');
+
+        $responseTambah = $this->actingAs($this->admin)->post('/admin/galeri', [
+            'judul' => 'Lab Multimedia Anyar',
+            'kategori' => 'Fasilitas',
+            'tanggal' => '2026-10-06',
+            'foto' => [$foto1, $foto2, $foto3],
+        ]);
+
+        $responseTambah->assertRedirect('/admin/galeri');
+        $this->assertDatabaseHas('galeri', [
+            'judul' => 'Lab Multimedia Anyar',
+        ]);
+
+        $galeri = Galeri::where('judul', 'Lab Multimedia Anyar')->first();
+        $this->assertCount(3, $galeri->fotos);
+
+        $fotoBaru = UploadedFile::fake()->image('foto4.jpg');
+        $responseTambahFoto = $this->actingAs($this->admin)->post('/admin/galeri/' . $galeri->id . '/tambah-foto', [
+            'foto' => [$fotoBaru],
+        ]);
+        $responseTambahFoto->assertRedirect('/admin/galeri');
+        $galeri->refresh();
+        $this->assertCount(4, $galeri->fotos);
+
+        $fotoItem = $galeri->fotos->last();
+        $responseHapusFoto = $this->actingAs($this->admin)->delete('/admin/galeri/foto/' . $fotoItem->id);
+        $responseHapusFoto->assertStatus(302);
+        $this->assertDatabaseMissing('galeri_foto', ['id' => $fotoItem->id]);
+    }
+
     public function test_crud_jurusan_berhasil(): void
     {
         $responseTambah = $this->actingAs($this->admin)->post('/admin/jurusan', [

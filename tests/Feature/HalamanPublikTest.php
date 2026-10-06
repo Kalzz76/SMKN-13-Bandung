@@ -64,6 +64,7 @@ class HalamanPublikTest extends TestCase
         $responseAll = $this->get('/galeri');
         $responseAll->assertStatus(200);
         $responseAll->assertSee('Galeri Kegiatan & Fasilitas Sekolah', false);
+        $responseAll->assertSee('lightboxModal', false);
 
         $responseFasilitas = $this->get('/galeri?kategori=Fasilitas');
         $responseFasilitas->assertStatus(200);
