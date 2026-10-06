@@ -84,7 +84,14 @@ class DatabaseSeeder extends Seeder
             'slogan' => 'Terdepan dalam Karakter, Unggul dalam Kompetensi, Berdaya Saing Global.',
             'deskripsi_singkat' => 'SMK Negeri 13 Bandung merupakan sekolah kejuruan negeri unggulan di Kota Bandung yang berfokus pada pengembangan vokasi bidang Sains dan Teknologi Informasi. Kami berkomitmen mencetak lulusan berkarakter, kompeten, dan siap bersaing di dunia kerja maupun perguruan tinggi.',
             'visi' => 'Terwujudnya lulusan yang berakhlak mulia, kompeten, dan berdaya suai di tingkat internasional pada tahun 2030.',
-            'misi' => "Menyelenggarakan program penguatan pendidikan karakter berlandaskan nilai-nilai luhur dan Profil Pelajar Pancasila / Gapura Panca Waluya.\nMenerapkan kurikulum berbasis kompetensi yang selaras dengan perkembangan Industri 4.0 dan kebutuhan dunia kerja.\nMenyeimbangkan dan meningkatkan sarana prasarana sekolah sesuai Standar Nasional Pendidikan (SNP) serta standar industri.\nMenjalin kemitraan strategis dengan Dunia Usaha, Dunia Industri, dan Institusi Pendidikan (DU/DI/IP) skala nasional dan internasional.\nMenerapkan budaya sekolah ramah lingkungan (Green School) melalui tata kelola sampah, hemat energi, dan pengolahan limbah laboratorium.",
+            'misi' => "Penguatan Karakter: Menyelenggarakan program penguatan pendidikan karakter Gapura Panca Waluya dan 8 Dimensi Profil Lulusan.\n" .
+                      "Pembelajaran Mendalam: Mengembangkan keterampilan abad ke-21: berpikir kritis, kreatif, komunikatif, dan kolaboratif.\n" .
+                      "Profesionalisme GTK: Meningkatkan profesionalisme Guru dan Tenaga Kependidikan secara berkelanjutan.\n" .
+                      "Sarana Prasarana: Meningkatkan sarana prasarana mengacu pada Standar Nasional Pendidikan dan Dunia Industri.\n" .
+                      "Digitalisasi Sekolah: Pengelolaan pendidikan berbasis Teknologi Informasi dan Komunikasi (TIK).\n" .
+                      "Kemitraan Luas: Kemitraan strategis dengan Dunia Industri dan Institusi Pendidikan di dalam maupun luar negeri.\n" .
+                      "Asesmen Berkualitas: Melaksanakan asesmen yang berkelanjutan dan otentik.\n" .
+                      "Budaya Lingkungan: Budaya ramah lingkungan melalui pengolahan limbah, pengelolaan sampah dan hemat energi.",
             'sejarah' => "Cikal bakal SMK Negeri 13 Bandung bermula pada 16 September 1938 dengan nama Sekolah Analis Kimia ITB yang dipelopori oleh Prof. C. O. Schaeffer di bawah Departemen Kimia Institut Teknologi Bandung.\n\nPada tahun 1988, pengelolaannya dialihkan ke Departemen Pendidikan dan Kebudayaan dengan nama SMT Kimia Bandung. Selanjutnya, melalui SK Menteri Pendidikan No. 036/O/1997, nama sekolah resmi berganti menjadi SMK Negeri 13 Bandung. Seiring berjalannya waktu, SMKN 13 Bandung bertransformasi tidak hanya unggul di bidang Analisis Kimia, tetapi juga menjadi pusat keunggulan di bidang Teknologi Informasi (RPL dan TKJ/TJKT).",
             'nama_kepsek' => 'Agus Nugroho, S.Pd., M.T.',
             'foto_kepsek' => null,
@@ -155,6 +162,34 @@ class DatabaseSeeder extends Seeder
             'tampil_publik' => true,
             'kode_barcode' => 'BARCODE-NOFA-004',
         ]);
+
+        $gurusIndex = [
+            ['nama' => 'Hasan', 'username' => 'hasan', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/hasan.webp'],
+            ['nama' => 'Maya', 'username' => 'maya', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/maya.webp'],
+            ['nama' => 'Nina', 'username' => 'nina', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/nina.webp'],
+            ['nama' => 'Santika', 'username' => 'santika', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/santika.webp'],
+        ];
+
+        foreach ($gurusIndex as $idx => $gi) {
+            $u = User::create([
+                'name' => $gi['nama'],
+                'username' => $gi['username'],
+                'password' => Hash::make('guru123'),
+                'role' => 'guru',
+                'status' => 'Aktif',
+            ]);
+            Guru::create([
+                'user_id' => $u->id,
+                'nama' => $gi['nama'],
+                'nip' => '19950101202001' . ($idx + 1) . '00' . ($idx + 1),
+                'jenis' => 'Guru',
+                'jabatan' => 'Tenaga Pendidik',
+                'mapel_utama' => $gi['mapel'],
+                'foto' => $gi['foto'],
+                'tampil_publik' => true,
+                'kode_barcode' => 'BARCODE-' . strtoupper($gi['nama']) . '-00' . ($idx + 1),
+            ]);
+        }
 
         $kelasX1 = Kelas::create([
             'nama' => 'X KA 1',
@@ -270,20 +305,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Berita::create([
-            'judul' => 'SMKN 13 Bandung Juara 1 LKS Web Technologies',
+            'judul' => 'Siswa TKJ Raih Medali Emas LKS',
             'kategori' => 'Prestasi',
-            'isi' => 'Tim siswa RPL berhasil menyabet juara pertama dalam ajang LKS Web Technologies tingkat regional dan bersiap menuju jenjang nasional.',
-            'gambar' => null,
+            'isi' => "Delegasi SMKN 13 Bandung konsentrasi keahlian TKJ berhasil mengungguli puluhan perwakilan sekolah lain dalam ajang kompetensi siswa tingkat Provinsi Jawa Barat.\n\nKeberhasilan ini merupakan buah dari pembinaan intensif selama berbulan-bulan, mulai dari latihan konfigurasi jaringan, simulasi troubleshooting, hingga pendampingan langsung oleh guru produktif dan mitra industri.\n\nKepala sekolah menyampaikan apresiasi dan berharap prestasi ini memotivasi seluruh siswa untuk terus mengasah kompetensi serta berani bersaing di tingkat nasional.",
+            'gambar' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80',
             'tanggal' => '2026-10-02',
             'status' => 'Publish',
             'id_user' => $admin->id,
         ]);
 
         Berita::create([
-            'judul' => 'Workshop Industri Bersama Tech Giants',
-            'kategori' => 'Kegiatan',
-            'isi' => 'Pelatihan kurikulum industri terkini untuk mempersiapkan seluruh siswa kelas XII menghadapi masa praktik kerja lapangan dan industri.',
-            'gambar' => null,
+            'judul' => 'Workshop Sinkronisasi Kurikulum',
+            'kategori' => 'Agenda',
+            'isi' => "Langkah strategis penyesuaian kurikulum APL, TKJ, dan RPL dengan kompetensi nyata yang dibutuhkan ekosistem startup dan manufaktur saat ini.\n\nKegiatan diikuti oleh para kepala program, guru produktif, serta perwakilan dunia usaha dan dunia industri yang memberikan masukan mengenai kompetensi terbaru yang dibutuhkan lulusan.\n\nHasil workshop akan dituangkan dalam perangkat ajar yang diterapkan mulai semester berikutnya.",
+            'gambar' => 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=600&q=80',
             'tanggal' => '2026-09-28',
             'status' => 'Publish',
             'id_user' => $admin->id,
@@ -291,39 +326,39 @@ class DatabaseSeeder extends Seeder
 
         Berita::create([
             'judul' => 'Penerimaan Tamu Ambalan Pramuka',
-            'kategori' => 'Ekstrakurikuler',
-            'isi' => 'Kegiatan perkemahan pelantikan dan penerimaan tamu ambalan untuk melatih kedisiplinan, kemandirian, dan solidaritas siswa baru.',
-            'gambar' => null,
+            'kategori' => 'Ekskul',
+            'isi' => "Membangun karakter siswa yang disiplin, mandiri, tangguh, serta peka terhadap pelestarian lingkungan lewat kegiatan perkemahan.\n\nRangkaian acara meliputi upacara penerimaan, penjelajahan, permainan kelompok, dan api unggun yang diikuti seluruh calon anggota baru.\n\nPembina berharap kegiatan ini menumbuhkan jiwa kepemimpinan dan kebersamaan antarsiswa.",
+            'gambar' => 'https://images.unsplash.com/photo-1533630654593-b222d5d44449?auto=format&fit=crop&w=600&q=80',
             'tanggal' => '2026-09-20',
             'status' => 'Publish',
             'id_user' => $admin->id,
         ]);
 
         Galeri::create([
-            'judul' => 'Laboratorium Komputer RPL',
-            'kategori' => 'Fasilitas',
-            'foto' => 'galeri/lab-rpl.jpg',
+            'judul' => 'Uji Kompetensi APL',
+            'kategori' => 'Akademik',
+            'foto' => 'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=600&q=80',
             'tanggal' => '2026-10-01',
         ]);
 
         Galeri::create([
-            'judul' => 'Praktik Jaringan Komputer',
+            'judul' => 'Hackathon Siswa RPL',
+            'kategori' => 'Lomba',
+            'foto' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80',
+            'tanggal' => '2026-10-01',
+        ]);
+
+        Galeri::create([
+            'judul' => 'Gelar Karya P5 (Pancasila)',
             'kategori' => 'Kegiatan',
-            'foto' => 'galeri/praktik-jaringan.jpg',
+            'foto' => 'https://images.unsplash.com/photo-1511632765486-a01c80cf59af?auto=format&fit=crop&w=600&q=80',
             'tanggal' => '2026-10-01',
         ]);
 
         Galeri::create([
-            'judul' => 'Perpustakaan Digital',
+            'judul' => 'Fasilitas & Lab Jaringan',
             'kategori' => 'Fasilitas',
-            'foto' => 'galeri/perpustakaan.jpg',
-            'tanggal' => '2026-10-01',
-        ]);
-
-        Galeri::create([
-            'judul' => 'Upacara Bendera Senin',
-            'kategori' => 'Kegiatan',
-            'foto' => 'galeri/upacara.jpg',
+            'foto' => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',
             'tanggal' => '2026-10-01',
         ]);
 

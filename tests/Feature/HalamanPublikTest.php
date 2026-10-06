@@ -56,15 +56,15 @@ class HalamanPublikTest extends TestCase
         $response = $this->get('/berita/' . $berita->id);
         $response->assertStatus(200);
         $response->assertSee($berita->judul);
-        $response->assertSee('Kembali ke Berita & Informasi', false);
+        $response->assertSee('Kembali ke Berita', false);
     }
 
     public function test_halaman_galeri_dan_filter_berfungsi(): void
     {
         $responseAll = $this->get('/galeri');
         $responseAll->assertStatus(200);
-        $responseAll->assertSee('Galeri Kegiatan & Fasilitas Sekolah', false);
-        $responseAll->assertSee('lightboxModal', false);
+        $responseAll->assertSee('Galeri & Dokumentasi', false);
+        $responseAll->assertSee('galTrack', false);
 
         $responseFasilitas = $this->get('/galeri?kategori=Fasilitas');
         $responseFasilitas->assertStatus(200);

@@ -59,20 +59,15 @@ class PublikController extends Controller
 
     public function galeri(Request $request)
     {
-        $kategori = $request->query('kategori', 'Semua');
         $query = Galeri::query();
 
         if (\Illuminate\Support\Facades\Schema::hasTable('galeri_foto')) {
             $query->with('fotos');
         }
 
-        if ($kategori !== 'Semua' && in_array($kategori, ['Fasilitas', 'Kegiatan'])) {
-            $query->where('kategori', $kategori);
-        }
-
         $daftarGaleri = $query->orderBy('tanggal', 'desc')->get();
 
-        return view('publik.galeri', compact('daftarGaleri', 'kategori'));
+        return view('publik.galeri', compact('daftarGaleri'));
     }
 
     public function kontak()

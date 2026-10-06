@@ -49,12 +49,24 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="beritaGridContainer">
             @foreach($daftarBerita as $b)
+                @php
+                    $imgUrl = null;
+                    if (!empty($b->gambar)) {
+                        if (\Illuminate\Support\Str::startsWith($b->gambar, ['http://', 'https://'])) {
+                            $imgUrl = $b->gambar;
+                        } elseif (file_exists(public_path('storage/' . $b->gambar))) {
+                            $imgUrl = asset('storage/' . $b->gambar);
+                        } elseif (file_exists(public_path('Assets/' . basename($b->gambar)))) {
+                            $imgUrl = asset('Assets/' . basename($b->gambar));
+                        }
+                    }
+                @endphp
                 <div class="berita-card bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col hover:shadow-lg transition-all hover:-translate-y-1 group"
                     data-kategori="{{ $b->kategori }}"
                     data-judul="{{ strtolower($b->judul) }}">
-                    @if(!empty($b->gambar) && file_exists(public_path('storage/' . $b->gambar)))
+                    @if($imgUrl)
                         <a href="{{ route('publik.detail-berita', $b->id) }}" class="overflow-hidden block">
-                            <img src="{{ asset('storage/' . $b->gambar) }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
+                            <img src="{{ $imgUrl }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
                         </a>
                     @else
                         <a href="{{ route('publik.detail-berita', $b->id) }}" class="h-56 w-full bg-navy-mid/10 flex flex-col items-center justify-center text-teal-primary group-hover:bg-navy-mid/15 transition">

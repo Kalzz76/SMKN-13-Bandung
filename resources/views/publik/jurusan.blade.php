@@ -39,10 +39,6 @@
                     <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
                         <img src="{{ asset('Assets/kaprog ka.png') }}" alt="Dra. Hj. Sri Wahyuni, M.Si."
                             class="w-full h-full object-cover object-top">
-                        <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-navy-dark/95 to-transparent text-white text-center">
-                            <span class="text-xs text-teal-accent font-bold block uppercase tracking-wider">Kepala Konsentrasi Keahlian</span>
-                            <strong class="text-sm">Dra. Hj. Sri Wahyuni, M.Si.</strong>
-                        </div>
                     </div>
 
                     <div class="bg-navy-dark text-white rounded-3xl p-8 md:p-10 md:pr-[44%] md:min-h-[300px] flex items-center shadow-md">
@@ -117,10 +113,6 @@
                     <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
                         <img src="{{ asset('Assets/kaprog tkj.png') }}" alt="Hendra Setiawan, S.T., M.Kom."
                             class="w-full h-full object-cover object-top">
-                        <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-navy-dark/95 to-transparent text-white text-center">
-                            <span class="text-xs text-teal-accent font-bold block uppercase tracking-wider">Kepala Konsentrasi Keahlian</span>
-                            <strong class="text-sm">Hendra Setiawan, S.T., M.Kom.</strong>
-                        </div>
                     </div>
 
                     <div class="bg-navy-dark text-white rounded-3xl p-8 md:p-10 md:pr-[44%] md:min-h-[300px] flex items-center shadow-md">
@@ -195,10 +187,6 @@
                     <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
                         <img src="{{ asset('Assets/kaprog rpl.webp') }}" alt="Refky, M.Kom."
                             class="w-full h-full object-cover object-top">
-                        <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-navy-dark/95 to-transparent text-white text-center">
-                            <span class="text-xs text-teal-accent font-bold block uppercase tracking-wider">Kepala Konsentrasi Keahlian</span>
-                            <strong class="text-sm">Refky, M.Kom.</strong>
-                        </div>
                     </div>
 
                     <div class="bg-navy-dark text-white rounded-3xl p-8 md:p-10 md:pr-[44%] md:min-h-[300px] flex items-center shadow-md">

@@ -39,9 +39,14 @@
                     @endphp
                     @if(!empty($daftarMisi))
                         @foreach($daftarMisi as $index => $misi)
+                            @php
+                                $parts = explode(':', $misi, 2);
+                                $judulMisi = count($parts) === 2 ? trim($parts[0]) : 'Langkah ' . ($index + 1);
+                                $isiMisi = count($parts) === 2 ? trim($parts[1]) : trim($misi);
+                            @endphp
                             <div class="p-6 rounded-2xl bg-bg-page border border-teal-tint flex items-start space-x-4">
                                 <span class="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow">{{ $index + 1 }}</span>
-                                <p class="leading-relaxed text-text-main"><strong class="text-navy-dark">Langkah {{ $index + 1 }}:</strong> {{ $misi }}</p>
+                                <p class="leading-relaxed text-text-main"><strong class="text-navy-dark">{{ $judulMisi }}:</strong> {{ $isiMisi }}</p>
                             </div>
                         @endforeach
                     @else
@@ -1102,9 +1107,23 @@
                         <!-- Group 1 -->
                         <div class="marquee-group">
                             @foreach($daftarGuru as $guru)
+                                @php
+                                    $fotoGuru = null;
+                                    if (!empty($guru->foto)) {
+                                        if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
+                                            $fotoGuru = $guru->foto;
+                                        } elseif (file_exists(public_path('storage/' . $guru->foto))) {
+                                            $fotoGuru = asset('storage/' . $guru->foto);
+                                        } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
+                                            $fotoGuru = asset('Assets/' . basename($guru->foto));
+                                        } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
+                                            $fotoGuru = asset('assets/' . basename($guru->foto));
+                                        }
+                                    }
+                                @endphp
                                 <div class="w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer">
-                                    @if(!empty($guru->foto) && file_exists(public_path('storage/' . $guru->foto)))
-                                        <img src="{{ asset('storage/' . $guru->foto) }}" alt="{{ $guru->nama }}"
+                                    @if($fotoGuru)
+                                        <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}"
                                             class="w-28 h-28 mx-auto rounded-full mb-4 object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform">
                                     @else
                                         <div class="w-28 h-28 mx-auto rounded-full mb-4 bg-teal-tint text-teal-primary flex items-center justify-center text-4xl border-4 border-white shadow-md group-hover:scale-105 transition-transform">
@@ -1119,9 +1138,23 @@
                         <!-- Group 2 for smooth continuous loop -->
                         <div class="marquee-group">
                             @foreach($daftarGuru as $guru)
+                                @php
+                                    $fotoGuru = null;
+                                    if (!empty($guru->foto)) {
+                                        if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
+                                            $fotoGuru = $guru->foto;
+                                        } elseif (file_exists(public_path('storage/' . $guru->foto))) {
+                                            $fotoGuru = asset('storage/' . $guru->foto);
+                                        } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
+                                            $fotoGuru = asset('Assets/' . basename($guru->foto));
+                                        } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
+                                            $fotoGuru = asset('assets/' . basename($guru->foto));
+                                        }
+                                    }
+                                @endphp
                                 <div class="w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer">
-                                    @if(!empty($guru->foto) && file_exists(public_path('storage/' . $guru->foto)))
-                                        <img src="{{ asset('storage/' . $guru->foto) }}" alt="{{ $guru->nama }}"
+                                    @if($fotoGuru)
+                                        <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}"
                                             class="w-28 h-28 mx-auto rounded-full mb-4 object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform">
                                     @else
                                         <div class="w-28 h-28 mx-auto rounded-full mb-4 bg-teal-tint text-teal-primary flex items-center justify-center text-4xl border-4 border-white shadow-md group-hover:scale-105 transition-transform">
