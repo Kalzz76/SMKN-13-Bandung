@@ -84,4 +84,24 @@ class PengaturanSekolah extends Model
         $tersimpan = $this->struktur_organisasi ?? [];
         return array_merge($default, is_array($tersimpan) ? $tersimpan : []);
     }
+
+    public function getLogoUrlAttribute(): string
+    {
+        if (!empty($this->logo)) {
+            if (file_exists(public_path('storage/' . $this->logo))) {
+                return asset('storage/' . $this->logo);
+            }
+            if (file_exists(storage_path('app/public/' . $this->logo))) {
+                return asset('storage/' . $this->logo);
+            }
+            if (file_exists(public_path($this->logo))) {
+                return asset($this->logo);
+            }
+        }
+        if (file_exists(public_path('images/logo-smkn13.png'))) {
+            return asset('images/logo-smkn13.png');
+        }
+        return asset('images/logo.png');
+    }
 }
+
