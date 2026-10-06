@@ -1,57 +1,163 @@
-@extends('layouts.publik', ['title' => 'Berita & Informasi - SMKN 13 Bandung'])
+@extends('layouts.publik', ['title' => 'Warta & Berita - SMKN 13 Bandung'])
 
 @section('content')
-<div class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 w-full flex-grow">
-    <div class="text-center max-w-2xl mx-auto">
-        <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Warta & Informasi</span>
-        <h1 class="text-3xl font-extrabold text-slate-900 mt-1">Berita, Kegiatan & Prestasi Sekolah</h1>
-        <p class="text-slate-500 text-sm mt-2">Dapatkan kabar terbaru dan informasi terkini dari keluarga besar SMKN 13 Bandung.</p>
+<div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10 w-full flex-grow">
+    <!-- Header Halaman -->
+    <div class="text-center max-w-3xl mx-auto">
+        <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Warta & Berita</span>
+        <h1 class="text-4xl sm:text-5xl font-black text-navy-dark mt-1 mb-3">Berita, Kegiatan & Prestasi Sekolah</h1>
+        <p class="text-base sm:text-lg text-text-muted">Kabar terbaru, agenda kegiatan, pengumuman resmi, dan torehan prestasi siswa SMKN 13 Bandung.</p>
     </div>
 
+    <!-- Filter & Search Bar -->
+    <div class="bg-bg-card p-6 rounded-3xl shadow-sm border border-teal-tint flex flex-col md:flex-row justify-between items-center gap-4">
+        <!-- Kategori Filters -->
+        <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0" id="beritaFilterBtns">
+            <button type="button" onclick="filterByKategori('Semua')"
+                class="filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-navy-dark text-white border-navy-dark"
+                data-kategori="Semua">Semua</button>
+            <button type="button" onclick="filterByKategori('Prestasi')"
+                class="filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-white text-navy-dark border-teal-tint hover:bg-teal-tint"
+                data-kategori="Prestasi">Prestasi</button>
+            <button type="button" onclick="filterByKategori('Agenda')"
+                class="filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-white text-navy-dark border-teal-tint hover:bg-teal-tint"
+                data-kategori="Agenda">Agenda</button>
+            <button type="button" onclick="filterByKategori('Ekskul')"
+                class="filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-white text-navy-dark border-teal-tint hover:bg-teal-tint"
+                data-kategori="Ekskul">Ekskul</button>
+            <button type="button" onclick="filterByKategori('Pengumuman')"
+                class="filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-white text-navy-dark border-teal-tint hover:bg-teal-tint"
+                data-kategori="Pengumuman">Pengumuman</button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative w-full md:w-80">
+            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"></i>
+            <input type="text" id="searchBeritaInput" onkeyup="filterBeritaList()"
+                placeholder="Cari judul berita..."
+                class="w-full pl-11 pr-4 py-3 rounded-full border border-teal-tint focus:outline-none focus:border-teal-primary bg-bg-page text-sm font-medium">
+        </div>
+    </div>
+
+    <!-- Grid Berita -->
     @if($daftarBerita->isEmpty())
-        <div class="bg-white rounded-2xl p-12 text-center text-slate-500 border border-slate-200">
-            <i class="fa-solid fa-newspaper text-4xl text-slate-300 mb-3"></i>
-            <p>Belum ada berita yang dipublikasikan.</p>
+        <div class="bg-bg-card rounded-3xl p-16 text-center text-text-muted border border-teal-tint max-w-lg mx-auto">
+            <i class="fa-solid fa-newspaper text-5xl text-teal-primary/40 mb-4"></i>
+            <h3 class="text-xl font-bold text-navy-dark mb-1">Belum Ada Berita</h3>
+            <p class="text-sm">Saat ini belum ada warta atau berita yang dipublikasikan.</p>
         </div>
     @else
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="beritaGridContainer">
             @foreach($daftarBerita as $b)
-                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition">
-                    @if(!empty($b->gambar))
-                        <a href="{{ route('publik.detail-berita', $b->id) }}">
-                            <img src="{{ asset('storage/' . $b->gambar) }}" class="h-48 w-full object-cover" alt="{{ $b->judul }}">
+                <div class="berita-card bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col hover:shadow-lg transition-all hover:-translate-y-1 group"
+                    data-kategori="{{ $b->kategori }}"
+                    data-judul="{{ strtolower($b->judul) }}">
+                    @if(!empty($b->gambar) && file_exists(public_path('storage/' . $b->gambar)))
+                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="overflow-hidden block">
+                            <img src="{{ asset('storage/' . $b->gambar) }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
                         </a>
                     @else
-                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="h-48 w-full bg-slate-800 text-slate-400 flex flex-col items-center justify-center p-4">
-                            <i class="fa-solid fa-newspaper text-3xl mb-2 text-emerald-500"></i>
-                            <span class="text-xs">{{ $b->kategori }}</span>
+                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="h-56 w-full bg-navy-mid/10 flex flex-col items-center justify-center text-teal-primary group-hover:bg-navy-mid/15 transition">
+                            <i class="fa-solid fa-newspaper text-4xl mb-2"></i>
+                            <span class="text-xs font-bold text-navy-dark">{{ $b->kategori }}</span>
                         </a>
                     @endif
-                    <div class="p-6 flex flex-col flex-grow space-y-3">
-                        <div class="flex items-center justify-between text-xs text-slate-500">
-                            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full">{{ $b->kategori }}</span>
-                            <span><i class="fa-regular fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($b->tanggal)->locale('id')->isoFormat('D MMMM Y') }}</span>
+
+                    <div class="p-8 space-y-4 flex flex-col flex-grow">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="bg-teal-tint text-teal-primary font-bold px-3 py-1.5 rounded-full">{{ $b->kategori }}</span>
+                            <span class="text-text-muted flex items-center">
+                                <i class="fa-regular fa-calendar mr-1.5 text-teal-primary"></i>
+                                {{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('D MMMM Y') }}
+                            </span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 line-clamp-2">
-                            <a href="{{ route('publik.detail-berita', $b->id) }}" class="hover:text-emerald-700 transition">
+
+                        <h3 class="text-xl font-black text-navy-dark leading-snug group-hover:text-teal-primary transition-colors line-clamp-2">
+                            <a href="{{ route('publik.detail-berita', $b->id) }}">
                                 {{ $b->judul }}
                             </a>
                         </h3>
-                        <p class="text-slate-600 text-sm line-clamp-3 leading-relaxed flex-grow">{{ Str::limit($b->isi, 140) }}</p>
-                        <div class="pt-3 border-t border-slate-100">
-                            <a href="{{ route('publik.detail-berita', $b->id) }}" class="text-emerald-700 hover:text-emerald-800 text-xs font-bold flex items-center space-x-1">
+
+                        <p class="text-text-muted text-sm leading-relaxed line-clamp-3 flex-grow">
+                            {{ Str::limit(strip_tags($b->isi), 130) }}
+                        </p>
+
+                        <div class="pt-4 border-t border-teal-tint/60 flex items-center justify-between">
+                            <a href="{{ route('publik.detail-berita', $b->id) }}"
+                                class="text-teal-primary hover:text-teal-light font-bold text-xs flex items-center space-x-1.5 transition">
                                 <span>Baca Selengkapnya</span>
-                                <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </a>
+                            <span class="text-[11px] text-text-muted">
+                                <i class="fa-regular fa-user mr-1"></i> {{ $b->user->name ?? 'Admin' }}
+                            </span>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
 
-        <div class="pt-6">
+        <!-- Empty State Filter/Search -->
+        <div id="beritaNoResult" class="hidden bg-bg-card rounded-3xl p-16 text-center text-text-muted border border-teal-tint max-w-lg mx-auto">
+            <i class="fa-solid fa-magnifying-glass text-4xl text-teal-primary/40 mb-3"></i>
+            <p class="font-bold text-navy-dark">Berita tidak ditemukan</p>
+            <p class="text-xs text-text-muted mt-1">Coba kata kunci pencarian atau kategori lain.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pt-8 flex justify-center" id="beritaPaginationWrapper">
             {{ $daftarBerita->links() }}
         </div>
     @endif
 </div>
+
+<script>
+    let activeKategori = 'Semua';
+
+    function filterByKategori(kat) {
+        activeKategori = kat;
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            if (btn.getAttribute('data-kategori') === kat) {
+                btn.className = 'filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-navy-dark text-white border-navy-dark';
+            } else {
+                btn.className = 'filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-white text-navy-dark border-teal-tint hover:bg-teal-tint';
+            }
+        });
+
+        filterBeritaList();
+    }
+
+    function filterBeritaList() {
+        const query = (document.getElementById('searchBeritaInput').value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.berita-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const cardKat = card.getAttribute('data-kategori') || '';
+            const cardJudul = card.getAttribute('data-judul') || '';
+
+            const matchKat = (activeKategori === 'Semua' || cardKat.toLowerCase() === activeKategori.toLowerCase());
+            const matchQuery = (query === '' || cardJudul.includes(query));
+
+            if (matchKat && matchQuery) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const noResult = document.getElementById('beritaNoResult');
+        const pagination = document.getElementById('beritaPaginationWrapper');
+
+        if (noResult) {
+            noResult.style.display = (visibleCount === 0) ? 'block' : 'none';
+        }
+
+        if (pagination) {
+            pagination.style.display = (query !== '' || activeKategori !== 'Semua') ? 'none' : 'flex';
+        }
+    }
+</script>
 @endsection

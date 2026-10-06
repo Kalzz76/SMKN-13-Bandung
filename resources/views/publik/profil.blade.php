@@ -1,63 +1,151 @@
 @extends('layouts.publik', ['title' => 'Profil & Sejarah - SMKN 13 Bandung'])
 
 @section('content')
-    <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 w-full flex-grow">
-        <div class="text-center max-w-2xl mx-auto">
-            <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Profil Sekolah</h2>
-            <h1 class="text-3xl font-extrabold text-slate-900 mt-1">Sejarah, Visi & Misi SMKN 13 Bandung</h1>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                <div
-                    class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl font-bold">
-                    <i class="fa-solid fa-landmark"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-900">Sejarah Singkat SMKN 13 Bandung</h3>
-                <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
-                    {{ $pengaturan->sejarah ?? "Cikal bakal SMK Negeri 13 Bandung bermula pada 16 September 1938 dengan nama Sekolah Analis Kimia ITB yang dipelopori oleh Prof. C. O. Schaeffer di bawah Departemen Kimia Institut Teknologi Bandung.\n\nPada tahun 1988, pengelolaannya dialihkan ke Departemen Pendidikan dan Kebudayaan dengan nama SMT Kimia Bandung. Selanjutnya, melalui SK Menteri Pendidikan No. 036/O/1997, nama sekolah resmi berganti menjadi SMK Negeri 13 Bandung. Seiring berjalannya waktu, SMKN 13 Bandung bertransformasi tidak hanya unggul di bidang Analisis Kimia, tetapi juga menjadi pusat keunggulan di bidang Teknologi Informasi (RPL dan TKJ/TJKT)." }}
-                </p>
+    <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24 w-full flex-grow">
+        <!-- 1. VISI & MISI -->
+        <div id="visi-misi" class="scroll-mt-32 space-y-12">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Identitas Sekolah</span>
+                <h3 class="text-4xl sm:text-5xl font-black text-navy-dark mt-1 mb-4">Profil & Visi Misi</h3>
+                <p class="text-base sm:text-lg text-text-muted">Landasan, arah kebijakan, dan penggerak mutu pendidikan SMK Negeri 13 Bandung.</p>
             </div>
 
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                <div
-                    class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl font-bold">
-                    <i class="fa-solid fa-bullseye"></i>
+            <!-- VISI SEKOLAH -->
+            <div class="bg-bg-card p-8 sm:p-12 rounded-3xl shadow-sm border-t-8 border-teal-primary border-x border-b border-teal-tint text-center max-w-4xl mx-auto">
+                <span class="bg-teal-tint text-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">VISI SEKOLAH</span>
+                <h4 class="text-2xl sm:text-3xl font-black text-navy-dark leading-relaxed italic">
+                    "{{ $pengaturan->visi ?? 'Terwujudnya lulusan yang berakhlak mulia, kompeten dan berdaya suai di tingkat internasional pada tahun 2030' }}"
+                </h4>
+            </div>
+
+            <!-- MISI SEKOLAH -->
+            <div class="bg-bg-card p-8 sm:p-14 rounded-3xl shadow-sm border border-teal-tint space-y-8">
+                <div class="text-center">
+                    <span class="bg-navy-dark text-teal-accent text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-2">MISI SEKOLAH</span>
+                    <h4 class="text-3xl font-black text-navy-dark">Langkah Strategis Pencapaian</h4>
                 </div>
-                <h3 class="text-xl font-bold text-slate-900">Visi & Misi</h3>
-                <div class="space-y-4 text-sm text-slate-600">
-                    <div>
-                        <strong class="text-slate-900 block font-semibold mb-1">Visi:</strong>
-                        <p class="leading-relaxed">
-                            {{ $pengaturan->visi ?? 'Terwujudnya lulusan yang berakhlak mulia, kompeten, dan berdaya suai di tingkat internasional pada tahun 2030.' }}
-                        </p>
-                    </div>
-                    <div>
-                        <strong class="text-slate-900 block font-semibold mb-1">Misi:</strong>
-                        @if(!empty($daftarMisi))
-                            <ul class="list-disc pl-5 space-y-1.5 mt-1">
-                                @foreach($daftarMisi as $misi)
-                                    <li>{{ $misi }}</li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <ul class="list-disc pl-5 space-y-1.5 mt-1">
-                                <li>Menyelenggarakan program penguatan pendidikan karakter berlandaskan nilai-nilai luhur dan
-                                    Profil Pelajar Pancasila / Gapura Panca Waluya.</li>
-                                <li>Menerapkan kurikulum berbasis kompetensi yang selaras dengan perkembangan Industri 4.0 dan
-                                    kebutuhan dunia kerja.</li>
-                                <li>Menyeimbangkan dan meningkatkan sarana prasarana sekolah sesuai Standar Nasional Pendidikan
-                                    (SNP) serta standar industri.</li>
-                                <li>Menjalin kemitraan strategis dengan Dunia Usaha, Dunia Industri, dan Institusi Pendidikan
-                                    (DU/DI/IP) skala nasional dan internasional.</li>
-                                <li>Menerapkan budaya sekolah ramah lingkungan (Green School) melalui tata kelola sampah, hemat
-                                    energi, dan pengolahan limbah laboratorium.</li>
-                            </ul>
-                        @endif
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    @php
+                        $defaultMisi = [
+                            ['Penguatan Karakter', 'Menyelenggarakan program penguatan pendidikan karakter Gapura Panca Waluya dan 8 Dimensi Profil Lulusan.'],
+                            ['Pembelajaran Mendalam', 'Mengembangkan keterampilan abad ke-21: berpikir kritis, kreatif, komunikatif, dan kolaboratif.'],
+                            ['Profesionalisme GTK', 'Meningkatkan profesionalisme Guru dan Tenaga Kependidikan secara berkelanjutan.'],
+                            ['Sarana Prasarana', 'Meningkatkan sarana prasarana mengacu pada Standar Nasional Pendidikan dan Dunia Industri.'],
+                            ['Digitalisasi Sekolah', 'Pengelolaan pendidikan berbasis Teknologi Informasi dan Komunikasi (TIK).'],
+                            ['Kemitraan Luas', 'Kemitraan strategis dengan Dunia Industri dan Institusi Pendidikan di dalam maupun luar negeri.'],
+                            ['Asesmen Berkualitas', 'Melaksanakan asesmen yang berkelanjutan dan otentik.'],
+                            ['Budaya Lingkungan', 'Budaya ramah lingkungan melalui pengolahan limbah, pengelolaan sampah dan hemat energi.']
+                        ];
+                    @endphp
+                    @if(!empty($daftarMisi))
+                        @foreach($daftarMisi as $index => $misi)
+                            <div class="p-6 rounded-2xl bg-bg-page border border-teal-tint flex items-start space-x-4">
+                                <span class="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow">{{ $index + 1 }}</span>
+                                <p class="leading-relaxed text-text-main"><strong class="text-navy-dark">Langkah {{ $index + 1 }}:</strong> {{ $misi }}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        @foreach($defaultMisi as $index => $item)
+                            <div class="p-6 rounded-2xl bg-bg-page border border-teal-tint flex items-start space-x-4">
+                                <span class="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow">{{ $index + 1 }}</span>
+                                <p class="leading-relaxed text-text-main"><strong class="text-navy-dark">{{ $item[0] }}:</strong> {{ $item[1] }}</p>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
+
+        <!-- 2. SEJARAH SMKN 13 BANDUNG -->
+        <div id="sejarah" class="scroll-mt-32 bg-bg-card p-6 sm:p-10 lg:p-14 rounded-3xl shadow-sm border border-teal-tint">
+            <h4 class="text-3xl sm:text-4xl font-black text-navy-dark mb-10 text-center">Sejarah Singkat SMKN 13 Bandung</h4>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+                <!-- Kolom Kiri: Garis Waktu Sejarah -->
+                <div class="order-2 lg:order-1">
+                    <div class="relative timeline-line space-y-8 pl-12 pr-2">
+                        <div class="relative z-10">
+                            <div class="absolute -left-12 mt-1 w-8 h-8 bg-teal-primary rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
+                                <i class="fa-solid fa-flask text-xs"></i>
+                            </div>
+                            <h5 class="text-xl font-bold text-navy-dark">Sekolah Analis Kimia ITB</h5>
+                            <span class="text-sm font-bold text-teal-primary block mb-2">16 September 1938</span>
+                            <p class="text-text-muted leading-relaxed text-justify text-sm">
+                                SMKN 13 Bandung berdiri pada 16 September 1938 dengan nama Sekolah Analis Kimia ITB yang dipelopori oleh Prof. C. O. Schaeffer di bawah Departemen Kimia ITB. Pada masa awal, sekolah ini berfokus pada pendidikan dan pelatihan analis kimia untuk memenuhi kebutuhan industri dan penelitian.
+                            </p>
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="absolute -left-12 mt-1 w-8 h-8 bg-navy-mid rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
+                                <i class="fa-solid fa-building-columns text-xs"></i>
+                            </div>
+                            <h5 class="text-xl font-bold text-navy-dark">Pengalihan Pengelolaan & SMT Kimia</h5>
+                            <span class="text-sm font-bold text-teal-primary block mb-2">1980 - 1988</span>
+                            <p class="text-text-muted leading-relaxed text-justify text-sm">
+                                Pada tahun 1980, pengelolaan sekolah dialihkan dari perguruan tinggi ke pemerintah sesuai kebijakan pendidikan nasional. Perubahan ini membuat sekolah berganti nama menjadi SMT Kimia pada 7 Maret 1988, berdasarkan kebijakan Direktorat Pendidikan Menengah Kejuruan di Jawa Barat.
+                            </p>
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="absolute -left-12 mt-1 w-8 h-8 bg-brick-red rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
+                                <i class="fa-solid fa-school text-xs"></i>
+                            </div>
+                            <h5 class="text-xl font-bold text-navy-dark">SMK Negeri 13 Bandung & Jurusan Baru</h5>
+                            <span class="text-sm font-bold text-teal-primary block mb-2">1997 - 2007</span>
+                            <p class="text-text-muted leading-relaxed text-justify text-sm">
+                                Selanjutnya, melalui SK Mendikbud RI Nomor 036/0/1997, sekolah ini resmi menjadi SMK Negeri 13 Bandung dengan program keahlian utama Analisis Kimia. Seiring perkembangan teknologi, pada tahun 2007 dibuka dua konsentrasi keahlian baru yaitu Teknik Komputer dan Jaringan (TKJ) serta Rekayasa Perangkat Lunak (RPL).
+                            </p>
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="absolute -left-12 mt-1 w-8 h-8 bg-teal-light rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
+                                <i class="fa-solid fa-award text-xs"></i>
+                            </div>
+                            <h5 class="text-xl font-bold text-navy-dark">SMKN 13 Bandung Saat Ini</h5>
+                            <span class="text-sm font-bold text-teal-primary block mb-2">Sekarang</span>
+                            <p class="text-text-muted leading-relaxed text-justify text-sm">
+                                Kini, SMKN 13 Bandung menjadi salah satu SMK Pusat Keunggulan di Kota Bandung dengan akreditasi A, menerapkan Kurikulum Merdeka, dan memiliki tiga kompetensi keahlian unggulan. Berlokasi strategis di Jl. Soekarno-Hatta Km. 10, Bandung.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Galeri Dokumentasi Sejarah Slider -->
+                <div class="order-1 lg:order-2 lg:sticky lg:top-28 self-start min-w-0" id="sejGallery">
+                    <figure class="m-0">
+                        <div class="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border border-teal-tint bg-teal-tint">
+                            <img id="sejImgA" src="{{ asset('Assets/sejarah1.jpg.jpeg') }}" alt="Dokumentasi sejarah SMKN 13 Bandung 1"
+                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-100">
+                            <img id="sejImgB" alt="Dokumentasi sejarah"
+                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
+                            <button id="sejPrev" type="button" aria-label="Foto sebelumnya" onclick="prevSejFoto()"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-navy-dark shadow flex items-center justify-center transition">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button id="sejNext" type="button" aria-label="Foto berikutnya" onclick="nextSejFoto()"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-navy-dark shadow flex items-center justify-center transition">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            <figcaption class="absolute inset-x-0 bottom-0 z-[5] p-4 sm:p-5 bg-gradient-to-t from-navy-dark/95 to-transparent text-white flex justify-between items-end gap-3">
+                                <span class="font-semibold text-sm sm:text-base">Dokumentasi Sejarah SMKN 13 Bandung</span>
+                                <span id="sejCounter" class="text-sm text-teal-accent font-bold whitespace-nowrap">1 / 6</span>
+                            </figcaption>
+                        </div>
+                    </figure>
+                    <div id="sejThumbs" class="mt-4 flex gap-3 overflow-x-auto snap-x pb-2">
+                        @for($i = 1; $i <= 6; $i++)
+                            <img src="{{ asset('Assets/sejarah' . $i . '.jpg.jpeg') }}"
+                                onclick="setSejFoto({{ $i - 1 }})"
+                                alt="Thumb {{ $i }}"
+                                class="sej-thumb w-20 h-14 object-cover rounded-xl cursor-pointer border-2 border-transparent flex-shrink-0 {{ $i === 1 ? 'active' : '' }}"
+                                id="sejThumb{{ $i - 1 }}">
+                        @endfor
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. STRUKTUR ORGANISASI SEKOLAH (DIPERTAHANKAN UTUH SESUAI INSTRUKSI) -->
+        <div id="struktur" class="scroll-mt-32">
 
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
             <div
@@ -995,44 +1083,64 @@
                 </div>
             @endif
         </div>
+        </div>
 
-        <div>
-            <div class="text-center max-w-2xl mx-auto mb-8">
-                <h3 class="text-2xl font-bold text-slate-900">Tenaga Pendidik & Staff Pengajar</h3>
-                <p class="text-slate-500 text-sm mt-1">Guru dan tenaga kependidikan berdedikasi tinggi</p>
-            </div>
+        <!-- 4. TENAGA PENDIDIK PROFESIONAL -->
+        <div id="pengajar" class="scroll-mt-32 text-center w-full space-y-4">
+            <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Guru & Tenaga Kependidikan</span>
+            <h4 class="text-3xl sm:text-4xl font-black text-navy-dark mt-1 mb-2">Tenaga Pendidik & Staff Pengajar</h4>
+            <p class="text-text-muted text-sm max-w-xl mx-auto">Guru dan tenaga kependidikan SMKN 13 Bandung berdedikasi tinggi membimbing generasi masa depan. Arahkan kursor untuk menjeda animasi.</p>
 
             @if($daftarGuru->isEmpty())
-                <div class="bg-white p-8 rounded-2xl text-center text-slate-500 border border-slate-200">
-                    <p>Belum ada data guru yang ditampilkan.</p>
+                <div class="bg-bg-card p-10 rounded-3xl border border-teal-tint max-w-md mx-auto text-text-muted shadow-sm mt-6">
+                    <i class="fa-solid fa-chalkboard-user text-3xl text-teal-primary/50 mb-2"></i>
+                    <p class="font-medium">Belum ada data tenaga pendidik yang ditampilkan.</p>
                 </div>
             @else
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                    @foreach($daftarGuru as $guru)
-                        <div
-                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center flex flex-col items-center">
-                            <div
-                                class="w-20 h-20 rounded-full overflow-hidden bg-slate-100 mb-4 border border-slate-200 flex-shrink-0">
-                                @if($guru->foto)
-                                    <img src="{{ asset('storage/' . $guru->foto) }}" alt="{{ $guru->nama }}"
-                                        class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
-                                        <i class="fa-solid fa-user text-2xl"></i>
-                                    </div>
-                                @endif
-                            </div>
-                            <h4 class="font-bold text-slate-900 text-sm leading-tight">{{ $guru->nama }}</h4>
-                            <span
-                                class="text-xs text-emerald-700 font-medium mt-1">{{ $guru->mapel_utama ?? $guru->jabatan }}</span>
+                <div class="marquee mt-8">
+                    <div class="marquee-track">
+                        <!-- Group 1 -->
+                        <div class="marquee-group">
+                            @foreach($daftarGuru as $guru)
+                                <div class="w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer">
+                                    @if(!empty($guru->foto) && file_exists(public_path('storage/' . $guru->foto)))
+                                        <img src="{{ asset('storage/' . $guru->foto) }}" alt="{{ $guru->nama }}"
+                                            class="w-28 h-28 mx-auto rounded-full mb-4 object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                                    @else
+                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 bg-teal-tint text-teal-primary flex items-center justify-center text-4xl border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                                            <i class="fa-solid fa-user-graduate"></i>
+                                        </div>
+                                    @endif
+                                    <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
+                                    <span class="text-xs text-text-muted font-bold mt-2 bg-teal-tint text-teal-primary py-1 px-3 rounded-full inline-block">{{ $guru->mapel_utama ?? $guru->jabatan ?? 'Tenaga Pengajar' }}</span>
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                        <!-- Group 2 for smooth continuous loop -->
+                        <div class="marquee-group">
+                            @foreach($daftarGuru as $guru)
+                                <div class="w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer">
+                                    @if(!empty($guru->foto) && file_exists(public_path('storage/' . $guru->foto)))
+                                        <img src="{{ asset('storage/' . $guru->foto) }}" alt="{{ $guru->nama }}"
+                                            class="w-28 h-28 mx-auto rounded-full mb-4 object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                                    @else
+                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 bg-teal-tint text-teal-primary flex items-center justify-center text-4xl border-4 border-white shadow-md group-hover:scale-105 transition-transform">
+                                            <i class="fa-solid fa-user-graduate"></i>
+                                        </div>
+                                    @endif
+                                    <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
+                                    <span class="text-xs text-text-muted font-bold mt-2 bg-teal-tint text-teal-primary py-1 px-3 rounded-full inline-block">{{ $guru->mapel_utama ?? $guru->jabatan ?? 'Tenaga Pengajar' }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>
     </div>
 
     <script>
+        // SCRIPT STRUKTUR ORGANISASI (DIPERTAHANKAN)
         function setTampilanStruktur(mode) {
             const cBagan = document.getElementById('kontainerBaganDiagram');
             const cKartu = document.getElementById('kontainerKartuRuntun');
@@ -1052,14 +1160,69 @@
 
             if (mode === 'bagan' && cBagan && btnBagan) {
                 cBagan.classList.remove('hidden');
-                btnBagan.className = 'px-4 py-2 bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5';
+                btnBagan.className = 'px-4 py-2 bg-teal-primary text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5';
             } else if (mode === 'kartu' && cKartu && btnKartu) {
                 cKartu.classList.remove('hidden');
-                btnKartu.className = 'px-4 py-2 bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5';
+                btnKartu.className = 'px-4 py-2 bg-teal-primary text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5';
             } else if (mode === 'poster' && cPoster && btnPoster) {
                 cPoster.classList.remove('hidden');
-                btnPoster.className = 'px-4 py-2 bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5';
+                btnPoster.className = 'px-4 py-2 bg-teal-primary text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5';
             }
+        }
+
+        // SCRIPT SLIDER SEJARAH
+        const sejImages = [
+            "{{ asset('Assets/sejarah1.jpg.jpeg') }}",
+            "{{ asset('Assets/sejarah2.jpg.jpeg') }}",
+            "{{ asset('Assets/sejarah3.jpg.jpeg') }}",
+            "{{ asset('Assets/sejarah4.jpg.jpeg') }}",
+            "{{ asset('Assets/sejarah5.jpg.jpeg') }}",
+            "{{ asset('Assets/sejarah6.jpg.jpeg') }}"
+        ];
+        let currentSejIdx = 0;
+        let isImgAActive = true;
+
+        function setSejFoto(idx) {
+            if (idx < 0) idx = sejImages.length - 1;
+            if (idx >= sejImages.length) idx = 0;
+            currentSejIdx = idx;
+
+            const imgA = document.getElementById('sejImgA');
+            const imgB = document.getElementById('sejImgB');
+            const counter = document.getElementById('sejCounter');
+
+            if (isImgAActive) {
+                imgB.src = sejImages[idx];
+                imgB.classList.remove('opacity-0');
+                imgB.classList.add('opacity-100');
+                imgA.classList.remove('opacity-100');
+                imgA.classList.add('opacity-0');
+            } else {
+                imgA.src = sejImages[idx];
+                imgA.classList.remove('opacity-0');
+                imgA.classList.add('opacity-100');
+                imgB.classList.remove('opacity-100');
+                imgB.classList.add('opacity-0');
+            }
+            isImgAActive = !isImgAActive;
+
+            if (counter) counter.innerText = (idx + 1) + ' / ' + sejImages.length;
+
+            document.querySelectorAll('.sej-thumb').forEach((thumb, i) => {
+                if (i === idx) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
+
+        function nextSejFoto() {
+            setSejFoto(currentSejIdx + 1);
+        }
+
+        function prevSejFoto() {
+            setSejFoto(currentSejIdx - 1);
         }
     </script>
 @endsection

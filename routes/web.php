@@ -36,7 +36,6 @@ Route::get('/berita/{id}', [PublikController::class, 'detailBerita'])->name('pub
 Route::get('/galeri', [PublikController::class, 'galeri'])->name('publik.galeri');
 Route::get('/kontak', [PublikController::class, 'kontak'])->name('publik.kontak');
 Route::get('/ekstrakurikuler', [PublikController::class, 'ekstrakurikuler'])->name('publik.ekstrakurikuler');
-Route::get('/prestasi', [PublikController::class, 'prestasi'])->name('publik.prestasi');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);

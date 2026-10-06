@@ -84,11 +84,4 @@ class PublikController extends Controller
 
         return view('publik.ekstrakurikuler', compact('daftarEkskul'));
     }
-
-    public function prestasi()
-    {
-        $daftarPrestasi = Prestasi::orderBy('tahun', 'desc')->get();
-
-        return view('publik.prestasi', compact('daftarPrestasi'));
-    }
 }

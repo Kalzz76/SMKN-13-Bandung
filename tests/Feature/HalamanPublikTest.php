@@ -88,12 +88,4 @@ class HalamanPublikTest extends TestCase
         $response->assertSee('Ekstrakurikuler SMKN 13 Bandung');
         $response->assertSee('Pramuka');
     }
-
-    public function test_halaman_prestasi_menampilkan_daftar_prestasi(): void
-    {
-        $response = $this->get('/prestasi');
-        $response->assertStatus(200);
-        $response->assertSee('Torehan Prestasi SMKN 13 Bandung');
-        $response->assertSee('Juara 1 LKS Web Technologies Kota Bandung');
-    }
 }
