@@ -78,10 +78,10 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Logo Sekolah</label>
                     <div class="flex items-center space-x-6 mt-2">
-                        @if($pengaturan->logo)
+                        @if($pengaturan->logo_url)
                             <div
-                                class="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-50 flex items-center justify-center p-1">
-                                <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo"
+                                class="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-white flex items-center justify-center p-1 shadow-xs">
+                                <img src="{{ $pengaturan->logo_url }}" alt="Logo"
                                     class="max-h-full max-w-full object-contain">
                             </div>
                         @else

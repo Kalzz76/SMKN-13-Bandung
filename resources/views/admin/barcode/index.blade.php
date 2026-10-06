@@ -75,8 +75,8 @@
                                 <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 8px 14px 14px; box-sizing: border-box; position: relative; z-index: 2;">
                                     <!-- Top Left: Logo & School Title -->
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        @if(!empty($pengaturan->logo))
-                                            <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo" style="width: 34px; height: 34px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0;">
+                                        @if(!empty($pengaturan?->logo_url))
+                                            <img src="{{ $pengaturan->logo_url }}" alt="Logo" style="width: 34px; height: 34px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0;">
                                         @else
                                             <div style="width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fbbf24; background: #0f172a; color: #ffffff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                                 13

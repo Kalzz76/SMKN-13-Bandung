@@ -172,11 +172,11 @@
             <div class="flex justify-between h-20 items-center">
                 <!-- Brand / Logo -->
                 <a href="{{ route('beranda') }}" class="flex items-center space-x-3 btn-animate">
-                    @if(!empty($sitePengaturan->logo) && file_exists(public_path('storage/' . $sitePengaturan->logo)))
-                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung"
+                    @if(!empty($sitePengaturan?->logo_url))
+                        <img src="{{ $sitePengaturan->logo_url }}" alt="Logo SMKN 13 Bandung"
                             class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
                     @else
-                        <img src="{{ asset('Assets/LOGOS.jpg') }}" alt="Logo SMKN 13 Bandung"
+                        <img src="{{ asset('Assets/LOGOS.png') }}" alt="Logo SMKN 13 Bandung"
                             class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
                     @endif
                     <div>
@@ -331,11 +331,11 @@
             <!-- Kolom 1: Profil Brand -->
             <div>
                 <div class="flex items-center space-x-3 mb-6">
-                    @if(!empty($sitePengaturan->logo) && file_exists(public_path('storage/' . $sitePengaturan->logo)))
-                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13"
+                    @if(!empty($sitePengaturan?->logo_url))
+                        <img src="{{ $sitePengaturan->logo_url }}" alt="Logo SMKN 13"
                             class="h-10 w-10 object-contain bg-white rounded-xl p-1">
                     @else
-                        <img src="{{ asset('Assets/LOGOS.jpg') }}" alt="Logo SMKN 13"
+                        <img src="{{ asset('Assets/LOGOS.png') }}" alt="Logo SMKN 13"
                             class="h-10 w-10 object-contain bg-white rounded-xl p-1">
                     @endif
                     <span class="font-black text-xl tracking-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
@@ -377,7 +377,7 @@
                         class="w-10 h-10 rounded-full bg-teal-primary hover:bg-teal-light text-white flex items-center justify-center transition shadow">
                         <i class="fa-brands fa-youtube"></i>
                     </a>
-                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"
+                    <a href="https://www.facebook.com/smkn13bandung" target="_blank" rel="noopener noreferrer"
                         aria-label="Facebook SMKN 13 Bandung"
                         class="w-10 h-10 rounded-full bg-teal-primary hover:bg-teal-light text-white flex items-center justify-center transition shadow">
                         <i class="fa-brands fa-facebook"></i>

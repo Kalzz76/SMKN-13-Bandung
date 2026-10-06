@@ -2,10 +2,14 @@
     class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex-col flex-shrink-0 h-screen hidden md:relative md:flex transition-all duration-300 shadow-xl md:shadow-none">
     <div class="p-6 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center space-x-3">
-            <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold shadow">13</div>
-            <div>
-                <span class="text-white font-bold block text-sm">Dashboard Siswa</span>
-                <span class="text-xs text-slate-400">SMKN 13 Bandung</span>
+            @if(!empty($sitePengaturan?->logo_url))
+                <img src="{{ $sitePengaturan->logo_url }}" alt="Logo" class="w-10 h-10 object-contain rounded-xl bg-white p-1 shadow flex-shrink-0">
+            @else
+                <div class="bg-emerald-700 text-white w-10 h-10 rounded-xl font-bold shadow flex items-center justify-center flex-shrink-0">13</div>
+            @endif
+            <div class="min-w-0">
+                <span class="text-white font-bold block text-sm truncate">Dashboard Siswa</span>
+                <span class="text-xs text-slate-400 block truncate">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
             </div>
         </div>
         <button type="button" onclick="toggleSekretarisSidebar()" class="md:hidden text-slate-400 hover:text-white p-1">

@@ -707,8 +707,8 @@
 
             <div class="brand-logo-wrap">
               <a href="{{ url('/') }}" class="brand-link">
-                @if(!empty($sitePengaturan->logo))
-                  <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo {{ $namaSekolah }}"
+                @if(!empty($sitePengaturan?->logo_url))
+                  <img src="{{ $sitePengaturan->logo_url }}" alt="Logo {{ $namaSekolah }}"
                     class="brand-img">
                 @else
                   <div class="brand-icon">

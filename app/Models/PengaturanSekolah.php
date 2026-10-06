@@ -85,16 +85,36 @@ class PengaturanSekolah extends Model
         return array_merge($default, is_array($tersimpan) ? $tersimpan : []);
     }
 
-    public function getLogoUrlAttribute(): string
+    public function getLogoUrlAttribute(): ?string
     {
         if (!empty($this->logo)) {
+            if (\Illuminate\Support\Str::startsWith($this->logo, ['http://', 'https://'])) {
+                return $this->logo;
+            }
             if (file_exists(public_path('storage/' . $this->logo)) || file_exists(storage_path('app/public/' . $this->logo))) {
                 return asset('storage/' . $this->logo);
             }
             if (file_exists(public_path($this->logo))) {
                 return asset($this->logo);
             }
+            if (file_exists(public_path('Assets/' . basename($this->logo)))) {
+                return asset('Assets/' . basename($this->logo));
+            }
+            if (file_exists(public_path('assets/' . basename($this->logo)))) {
+                return asset('assets/' . basename($this->logo));
+            }
         }
-        return asset('images/logo-smkn13.png');
+
+        if (file_exists(public_path('Assets/LOGOS.png'))) {
+            return asset('Assets/LOGOS.png');
+        }
+        if (file_exists(public_path('Assets/LOGOS.jpg'))) {
+            return asset('Assets/LOGOS.jpg');
+        }
+        if (file_exists(public_path('assets/LOGOS.png'))) {
+            return asset('assets/LOGOS.png');
+        }
+
+        return null;
     }
 }
