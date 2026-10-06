@@ -4,6 +4,9 @@
 <div class="relative bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-900 text-white py-24 sm:py-28 px-4 overflow-hidden">
     <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
     <div class="max-w-7xl mx-auto relative z-10 text-center">
+        <div class="mb-5 flex justify-center">
+            <img src="{{ !empty($pengaturan->logo) && file_exists(public_path('storage/' . $pengaturan->logo)) ? asset('storage/' . $pengaturan->logo) : asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="h-24 w-24 sm:h-28 sm:w-28 object-contain drop-shadow-2xl">
+        </div>
         <span class="bg-emerald-800/80 text-emerald-200 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest border border-emerald-600/30 inline-block mb-4">
             {{ $pengaturan->slogan ?? 'Unggul, Berkarakter & Berdaya Saing' }}
         </span>

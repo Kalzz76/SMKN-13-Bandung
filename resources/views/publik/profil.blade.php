@@ -91,11 +91,7 @@
                         <p class="text-sm font-black text-amber-700 uppercase tracking-widest mt-1">Tahun Pelajaran {{ $struktur['tahun_pelajaran'] ?? '2025 – 2026' }}</p>
                     </div>
                     <div class="w-20 h-20 rounded-full border-2 border-amber-600 p-1 flex items-center justify-center bg-white shadow-sm flex-shrink-0">
-                        <div class="w-full h-full rounded-full bg-slate-900 text-white flex flex-col items-center justify-center text-center p-1">
-                            <span class="text-[8px] font-black tracking-widest leading-none text-emerald-400">SMKN 13</span>
-                            <span class="text-sm font-black text-yellow-400">13</span>
-                            <span class="text-[6px] uppercase leading-none font-bold text-slate-300">Bandung</span>
-                        </div>
+                        <img src="{{ !empty($pengaturan->logo) && file_exists(public_path('storage/' . $pengaturan->logo)) ? asset('storage/' . $pengaturan->logo) : asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="w-full h-full object-contain p-0.5">
                     </div>
                 </div>
 

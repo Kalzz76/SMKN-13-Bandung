@@ -63,15 +63,9 @@
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Logo Sekolah</label>
                 <div class="flex items-center space-x-6 mt-2">
-                    @if($pengaturan->logo)
-                        <div class="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-50 flex items-center justify-center p-1">
-                            <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo" class="max-h-full max-w-full object-contain">
-                        </div>
-                    @else
-                        <div class="w-16 h-16 rounded-xl bg-emerald-700 text-white font-black text-xl flex items-center justify-center flex-shrink-0 shadow">
-                            13
-                        </div>
-                    @endif
+                    <div class="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-50 flex items-center justify-center p-1">
+                        <img src="{{ !empty($pengaturan->logo) && file_exists(public_path('storage/' . $pengaturan->logo)) ? asset('storage/' . $pengaturan->logo) : asset('images/logo-smkn13.png') }}" alt="Logo" class="max-h-full max-w-full object-contain">
+                    </div>
                     <div class="flex-grow">
                         <input type="file" name="logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                         <p class="text-xs text-slate-400 mt-1">Format: JPG, JPEG, PNG. Maksimal 2MB.</p>

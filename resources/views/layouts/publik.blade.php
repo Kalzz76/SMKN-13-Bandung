@@ -19,11 +19,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <a href="{{ url('/') }}" class="flex items-center space-x-3">
-                    @if(!empty($sitePengaturan->logo))
-                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung" class="h-12 w-12 object-contain bg-white rounded-xl p-1 shadow">
-                    @else
-                        <div class="bg-white p-2 rounded-xl text-emerald-900 font-black text-xl shadow">13</div>
-                    @endif
+                    <img src="{{ !empty($sitePengaturan->logo) && file_exists(public_path('storage/' . $sitePengaturan->logo)) ? asset('storage/' . $sitePengaturan->logo) : asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="h-12 w-12 object-contain flex-shrink-0">
                     <div>
                         <span class="text-lg font-bold tracking-tight block leading-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
                         <span class="text-xs text-emerald-200 tracking-wider">Official Portal & CMS</span>
@@ -117,11 +113,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <div class="flex items-center space-x-3 mb-4">
-                    @if(!empty($sitePengaturan->logo))
-                        <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo SMKN 13 Bandung" class="h-10 w-10 object-contain bg-white rounded-xl p-1">
-                    @else
-                        <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold">13</div>
-                    @endif
+                    <img src="{{ !empty($sitePengaturan->logo) && file_exists(public_path('storage/' . $sitePengaturan->logo)) ? asset('storage/' . $sitePengaturan->logo) : asset('images/logo-smkn13.png') }}" alt="Logo SMKN 13 Bandung" class="h-10 w-10 object-contain flex-shrink-0">
                     <span class="text-white font-bold text-lg">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</span>
                 </div>
                 <p class="text-sm text-slate-400 leading-relaxed">{{ $sitePengaturan->alamat ?? 'Jl. Soekarno-Hatta KM. 10, Kelurahan Jatisari, Kecamatan Buahbatu, Kota Bandung, Jawa Barat, Kode Pos 40286' }}</p>
