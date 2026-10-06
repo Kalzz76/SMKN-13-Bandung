@@ -209,6 +209,15 @@ class DataMasterDanJadwalTest extends TestCase
         $responseHapusTerpakai->assertSessionHas('error');
         $this->assertDatabaseHas('kelas', ['id' => $kelasTerpakai->id]);
 
+        $kelasX2 = Kelas::where('nama', 'X KA 2')->first();
+        $this->assertGreaterThan(0, $kelasX2->jadwal()->count());
+        $this->assertSame(0, $kelasX2->siswa()->count());
+        $responseHapusDenganJadwal = $this->actingAs($this->admin)->delete('/admin/kelas/' . $kelasX2->id);
+        $responseHapusDenganJadwal->assertRedirect('/admin/kelas');
+        $responseHapusDenganJadwal->assertSessionHas('sukses');
+        $this->assertDatabaseMissing('kelas', ['id' => $kelasX2->id]);
+        $this->assertDatabaseMissing('jadwal', ['id_kelas' => $kelasX2->id]);
+
         $responseHapus = $this->actingAs($this->admin)->delete('/admin/kelas/' . $kelas->id);
         $responseHapus->assertRedirect('/admin/kelas');
         $this->assertDatabaseMissing('kelas', ['id' => $kelas->id]);
