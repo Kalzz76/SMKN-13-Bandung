@@ -42,9 +42,10 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-slate-900">Email Resmi</h3>
-                    <p class="text-sm text-slate-600 mt-1">
-                        {{ $pengaturan->email ?? 'smk13bdg@gmail.com / info@smkn13bdg.sch.id' }}
-                    </p>
+                    <div class="text-sm text-slate-600 mt-1 space-y-0.5">
+                        <a href="mailto:smk13bdg@gmail.com" class="block text-emerald-700 hover:underline">smk13bdg@gmail.com</a>
+                        <a href="mailto:info@smkn13bdg.sch.id" class="block text-emerald-700 hover:underline">info@smkn13bdg.sch.id</a>
+                    </div>
                 </div>
             </div>
 
@@ -55,7 +56,7 @@
                 <div>
                     <h3 class="font-bold text-slate-900">Telepon / Fax</h3>
                     <p class="text-sm text-slate-600 mt-1">
-                        {{ $pengaturan->telepon ?? '(022) 7318960' }}
+                        <a href="tel:0227318960" class="text-emerald-700 hover:underline">{{ $pengaturan->telepon ?? '(022) 7318960' }}</a>
                     </p>
                 </div>
             </div>
@@ -75,13 +76,20 @@
 
             <div class="flex items-start space-x-4">
                 <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                    <i class="fa-solid fa-hashtag"></i>
+                    <i class="fa-solid fa-share-nodes"></i>
                 </div>
                 <div>
                     <h3 class="font-bold text-slate-900">Media Sosial Resmi</h3>
-                    <p class="text-sm text-slate-600 mt-1">
-                        {{ $pengaturan->social_media ?? 'Instagram: @smkn13bdg / @smkn13bandung | YouTube: SMKN 13 Bandung Official' }}
-                    </p>
+                    <div class="flex flex-wrap gap-2.5 mt-2">
+                        <a href="https://www.instagram.com/smkn13bandung?stkn=eWp2d2lnbXFnNHFu" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-tr from-amber-500/10 via-rose-500/10 to-purple-500/10 text-rose-700 hover:text-rose-800 border border-rose-200 hover:border-rose-300 text-xs font-bold transition shadow-2xs">
+                            <i class="fa-brands fa-instagram text-base"></i>
+                            <span>@smkn13bandung</span>
+                        </a>
+                        <a href="https://www.youtube.com/@smkn13bandungofficial" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 hover:text-rose-800 border border-rose-200 hover:border-rose-300 text-xs font-bold transition shadow-2xs">
+                            <i class="fa-brands fa-youtube text-base"></i>
+                            <span>SMKN 13 Bandung Official</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
