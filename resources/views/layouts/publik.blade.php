@@ -256,10 +256,10 @@
                             </a>
                         @endif
                     @else
-                        <button type="button" onclick="openLoginModal()"
+                        <a href="{{ route('login') }}"
                             class="btn-animate bg-teal-primary hover:bg-teal-light px-6 py-2.5 rounded-full text-sm font-bold shadow-md text-white inline-flex items-center">
                             <i class="fa-solid fa-lock mr-2"></i>Login
-                        </button>
+                        </a>
                     @endauth
                 </div>
 
@@ -310,11 +310,11 @@
                             class="block w-full text-center bg-amber-600 text-white py-3 rounded-full font-bold">Portal Sekretaris</a>
                     @endif
                 @else
-                    <button type="button" onclick="openLoginModal()"
+                    <a href="{{ route('login') }}"
                         class="w-full text-center bg-teal-primary text-white py-3 rounded-full font-bold flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-lock"></i>
                         <span>Login Portal</span>
-                    </button>
+                    </a>
                 @endauth
             </div>
         </div>
@@ -410,7 +410,6 @@
         </div>
     </footer>
 
-    @include('partials.modal-login')
     @include('partials.modal-pesan')
 
     <script>
