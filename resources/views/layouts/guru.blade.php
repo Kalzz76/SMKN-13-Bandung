@@ -21,12 +21,15 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col md:flex-row">
+    {{-- Mobile Sidebar Backdrop with Blur --}}
+    <div id="guruSidebarBackdrop" onclick="closeGuruSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden md:hidden transition-all duration-200" style="touch-action: none;"></div>
+
     @include('partials.guru-sidebar')
 
-    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    <div id="guruMainContent" class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden transition-all duration-200">
         @include('partials.guru-header')
 
-        <main class="flex-grow p-6 sm:p-10 overflow-y-auto">
+        <main id="guruMainScroll" class="flex-grow p-4 sm:p-6 lg:p-8 overflow-y-auto">
             @if($errors->any())
                 <div class="mb-6 p-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-sm">
                     <ul class="list-disc pl-5 space-y-1">
@@ -47,11 +50,77 @@
     <script>
     function toggleGuruSidebar() {
         const sidebar = document.getElementById('guruSidebar');
-        if (sidebar) {
-            sidebar.classList.toggle('hidden');
-            sidebar.classList.toggle('flex');
+        if (!sidebar) return;
+        const isHidden = sidebar.classList.contains('hidden');
+        if (isHidden) {
+            openGuruSidebar();
+        } else {
+            closeGuruSidebar();
         }
     }
+
+    function openGuruSidebar() {
+        const sidebar = document.getElementById('guruSidebar');
+        const backdrop = document.getElementById('guruSidebarBackdrop');
+        const content = document.getElementById('guruMainContent');
+        const main = document.getElementById('guruMainScroll');
+
+        if (sidebar) {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex');
+        }
+        if (backdrop) {
+            backdrop.classList.remove('hidden');
+        }
+        if (content) {
+            content.classList.add('blur-[3px]', 'pointer-events-none');
+        }
+        if (main) {
+            main.classList.add('overflow-hidden');
+        }
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeGuruSidebar() {
+        const sidebar = document.getElementById('guruSidebar');
+        const backdrop = document.getElementById('guruSidebarBackdrop');
+        const content = document.getElementById('guruMainContent');
+        const main = document.getElementById('guruMainScroll');
+
+        if (sidebar && window.innerWidth < 768) {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex');
+        }
+        if (backdrop) {
+            backdrop.classList.add('hidden');
+        }
+        if (content) {
+            content.classList.remove('blur-[3px]', 'pointer-events-none');
+        }
+        if (main) {
+            main.classList.remove('overflow-hidden');
+        }
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+            closeGuruSidebar();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeGuruSidebar();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('#guruSidebar a');
+        links.forEach(function(link) {
+            link.addEventListener('click', closeGuruSidebar);
+        });
+    });
     </script>
 </body>
 </html>

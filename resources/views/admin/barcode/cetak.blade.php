@@ -1,70 +1,185 @@
+@php
+    $pengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Barcode Absensi Guru - SMKN 13 Bandung</title>
+    <title>Cetak Barcode Absensi Guru - {{ $pengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+
+        .card-id {
+            width: 480px;
+            min-width: 480px;
+            max-width: 480px;
+            height: 276px;
+            min-height: 276px;
+            background-image: url('{{ asset('images/desain-card.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+            position: relative;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            display: flex;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; padding: 0 !important; }
-            .card-cetak { page-break-inside: avoid; }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .grid-cetak {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 16px !important;
+                padding: 10px !important;
+            }
+            .card-scale-wrapper {
+                width: 480px !important;
+                height: 276px !important;
+                max-width: 480px !important;
+                overflow: visible !important;
+                display: block !important;
+            }
+            .card-scaler {
+                transform: none !important;
+                width: 480px !important;
+                height: 276px !important;
+            }
+            .card-id {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                width: 480px !important;
+                height: 276px !important;
+            }
         }
     </style>
 </head>
-<body class="bg-slate-100 p-8 min-h-screen text-slate-900">
-    <div class="max-w-4xl mx-auto space-y-6">
-        <div class="no-print bg-white p-4 rounded-2xl shadow flex items-center justify-between">
+<body class="p-4 sm:p-8 min-h-screen text-slate-900">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- Control Header -->
+        <div class="no-print bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-                <h1 class="font-bold text-slate-800">Cetak Kartu Absensi Guru</h1>
-                <p class="text-xs text-slate-500">Jumlah kartu: {{ $daftarGuru->count() }} guru</p>
+                <h1 class="font-bold text-slate-900 text-base sm:text-lg">Cetak Kartu Absensi Guru</h1>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    Jumlah kartu: <span class="font-semibold text-emerald-700">{{ $daftarGuru->count() }} guru</span>
+                </p>
             </div>
-            <div class="flex items-center space-x-3">
-                <button type="button" onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-5 py-2 rounded-xl text-sm shadow transition flex items-center space-x-2">
+            <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
+                <button type="button" id="btnDownloadPdf" onclick="downloadAllPDF()" class="col-span-1 sm:w-auto bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Download PDF</span>
+                </button>
+                <button type="button" onclick="window.print()" class="col-span-1 sm:w-auto bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-3.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap">
                     <i class="fa-solid fa-print"></i>
                     <span>Cetak Sekarang</span>
                 </button>
-                <button type="button" onclick="window.close()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-xl text-sm transition">
+                <button type="button" onclick="window.close()" class="col-span-2 sm:col-span-1 sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition flex items-center justify-center cursor-pointer">
                     Tutup
                 </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Cards Grid (2 Kolom Seperti Awal) -->
+        <div id="printableArea" class="grid grid-cols-1 md:grid-cols-2 gap-6 grid-cetak justify-items-center">
             @foreach($daftarGuru as $g)
-                <div class="card-cetak bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-sm flex flex-col justify-between space-y-4">
-                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white font-black text-sm flex items-center justify-center flex-shrink-0">
-                            13
-                        </div>
-                        <div class="flex-grow">
-                            <h2 class="text-xs font-black uppercase tracking-wider text-slate-900">SMK Negeri 13 Bandung</h2>
-                            <p class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">Kartu Barcode Kehadiran Guru</p>
-                        </div>
-                    </div>
+                @php
+                    $rawNama = trim($g->nama);
+                    $parts = explode(' ', $rawNama, 2);
+                    $nama1 = $parts[0] ?? $rawNama;
+                    $nama2 = $parts[1] ?? '';
+                @endphp
+                <div class="card-scale-wrapper w-full max-w-[480px] flex justify-center items-start overflow-hidden">
+                    <div class="card-scaler origin-top transition-transform duration-150" style="width: 480px; height: 276px; flex-shrink: 0;">
+                        <div class="card-id" id="card_{{ $g->id }}">
+                            <!-- Left Section: Dark Navy Area -->
+                            <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 6px 14px 14px; box-sizing: border-box; text-align: left; position: relative; z-index: 2;">
+                                <!-- Top Left: Logo dari Pengaturan Sekolah & School Title -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    @if(!empty($pengaturan->logo))
+                                        <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo" style="width: 35px; height: 35px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                                    @else
+                                        <div style="width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fbbf24; background: #0f172a; color: #ffffff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                                            13
+                                        </div>
+                                    @endif
+                                    <div style="min-width: 0; flex: 1;">
+                                        <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; color: #ffffff; line-height: 1.15; margin: 0; font-family: 'Inter', sans-serif;">
+                                            {{ $pengaturan->nama_sekolah ?? 'SMK Negeri 13 Bandung' }}
+                                        </h2>
+                                        <p style="font-size: 7.5px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1; margin: 3px 0 0 0; font-family: 'Inter', sans-serif;">
+                                            KARTU PRESENSI GURU
+                                        </p>
+                                    </div>
+                                </div>
 
-                    <div class="flex items-center justify-between gap-4 py-2">
-                        <div class="space-y-1">
-                            <h3 class="font-extrabold text-slate-900 text-sm leading-tight">{{ $g->nama }}</h3>
-                            <p class="text-[11px] text-slate-500 font-mono">{{ $g->nip ?? 'NIP: -' }}</p>
-                            <p class="text-[11px] text-slate-700 font-semibold">{{ $g->jabatan }}</p>
-                            <span class="inline-block text-[9px] bg-slate-100 text-slate-600 font-mono px-2 py-0.5 rounded mt-2">
-                                {{ \Illuminate\Support\Str::substr($g->kode_barcode, 0, 16) }}...
-                            </span>
-                        </div>
-                        <div class="flex-shrink-0 p-2 bg-white rounded-xl border border-slate-200">
-                            <div id="qr_{{ $g->id }}" data-code="{{ $g->kode_barcode }}" class="qrcode-item"></div>
-                        </div>
-                    </div>
+                                <!-- Bottom Left: Contact Info from Pengaturan Sekolah (Ukuran Pas Tidak Kepotong) -->
+                                <div style="max-width: 175px; font-size: 8px; color: #f1f5f9; line-height: 1.35; margin-top: 6px; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif;">
+                                    <div style="display: flex; align-items: flex-start; gap: 5px;">
+                                        <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 8px;"></i>
+                                        <span style="color: #f1f5f9; line-height: 1.25; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                        <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 155px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <i class="fa-solid fa-phone" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                        <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->telepon ?? '(022) 7801234 / 7805678' }}</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <i class="fa-solid fa-globe" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                        <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->social_media ?? 'smkn13bdg.sch.id' }}</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="border-t border-slate-200 pt-2 flex items-center justify-between text-[9px] text-slate-400">
-                        <span>Gunakan saat presensi di area kampus</span>
-                        <span>SMKN 13 Bandung</span>
+                            <!-- Right Section: White Area -->
+                            <div style="width: 54%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; padding: 14px 14px 14px 8px; box-sizing: border-box; position: relative; z-index: 2;">
+                                <!-- Top Right: Name & Role -->
+                                <div style="max-width: 210px; display: flex; flex-direction: column; gap: 2px;">
+                                    <h3 style="font-size: 14px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; text-transform: uppercase; margin: 0; font-family: 'Inter', sans-serif;">
+                                        <span class="sr-only">{{ $g->nama }}</span>
+                                        <span style="color: #f59e0b;">{{ $nama1 }}</span>
+                                        <span style="color: #0f172a;">{{ $nama2 }}</span>
+                                    </h3>
+                                    <p style="font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e293b; margin: 0; font-family: 'Inter', sans-serif;">
+                                        {{ $g->jabatan ?? 'GURU PENGAJAR' }}
+                                    </p>
+                                    <p style="font-size: 8.5px; color: #64748b; font-family: monospace; margin: 0;">
+                                        NIP. {{ $g->nip ?? '-' }}
+                                    </p>
+                                </div>
+
+                                <!-- Bottom Right: QR Code -->
+                                <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                    <div style="padding: 4px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; display: inline-block;">
+                                        <div id="qr_{{ $g->id }}" data-code="{{ $g->kode_barcode }}" class="qrcode-item"></div>
+                                    </div>
+                                    <span style="font-size: 7.5px; font-family: monospace; color: #94a3b8; margin-top: 3px; text-transform: uppercase; letter-spacing: -0.02em;">
+                                        {{ Str::substr($g->kode_barcode, 0, 16) }}...
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -72,21 +187,114 @@
     </div>
 
     <script>
+    function resizeCardScalers() {
+        const wrappers = document.querySelectorAll('.card-scale-wrapper');
+        const baseW = 480;
+        const baseH = 276;
+
+        wrappers.forEach(function(wrapper) {
+            const scaler = wrapper.querySelector('.card-scaler');
+            if (!scaler) return;
+            const availW = wrapper.clientWidth;
+
+            if (availW > 0 && availW < baseW) {
+                const scale = availW / baseW;
+                scaler.style.transform = `scale(${scale})`;
+                scaler.style.transformOrigin = 'top center';
+                wrapper.style.height = `${Math.round(baseH * scale)}px`;
+            } else {
+                scaler.style.transform = 'none';
+                wrapper.style.height = `${baseH}px`;
+            }
+        });
+    }
+
+    window.addEventListener('resize', resizeCardScalers);
+
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.qrcode-item').forEach(function(el) {
             const code = el.getAttribute('data-code');
             if (code) {
                 new QRCode(el, {
                     text: code,
-                    width: 90,
-                    height: 90,
-                    colorDark : "#022c22",
+                    width: 76,
+                    height: 76,
+                    colorDark : "#0f172a",
                     colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.M
                 });
             }
         });
+
+        resizeCardScalers();
+
+        // Auto download if query param download=pdf exists
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('download') === 'pdf') {
+            setTimeout(function() {
+                downloadAllPDF();
+            }, 800);
+        }
     });
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(resizeCardScalers, 50);
+    }
+
+    function downloadAllPDF() {
+        const targetEl = document.getElementById('printableArea');
+        const btn = document.getElementById('btnDownloadPdf');
+
+        if (!targetEl) return;
+
+        const originalText = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Membuat PDF...</span>';
+            btn.disabled = true;
+        }
+
+        const isSingle = {{ $daftarGuru->count() == 1 ? 'true' : 'false' }};
+        const filename = isSingle
+            ? 'Kartu-Barcode-{{ Str::slug($daftarGuru->first()->nama ?? "Guru") }}.pdf'
+            : 'Kumpulan-Kartu-Barcode-Guru.pdf';
+
+        const opt = {
+            margin: isSingle ? [4, 4, 4, 4] : [8, 8, 8, 8],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF: isSingle
+                ? { unit: 'mm', format: [100, 62], orientation: 'landscape' }
+                : { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        const scalers = document.querySelectorAll('.card-scaler');
+        scalers.forEach(s => s.style.transform = 'none');
+        const wrappers = document.querySelectorAll('.card-scale-wrapper');
+        wrappers.forEach(w => w.style.height = '276px');
+
+        html2pdf().set(opt).from(targetEl).save().then(function() {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+            resizeCardScalers();
+        }).catch(function(err) {
+            console.error('Error generating PDF:', err);
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+            resizeCardScalers();
+            window.print();
+        });
+    }
     </script>
 </body>
 </html>

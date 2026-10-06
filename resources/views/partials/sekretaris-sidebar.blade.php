@@ -16,12 +16,12 @@
         <div>
             <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Akademik</p>
             <div class="space-y-1">
-                <a href="{{ route('sekretaris.dashboard', ['tab' => 'jadwal']) }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ ($tabAktif ?? 'jadwal') === 'jadwal' ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                <a href="{{ route('sekretaris.dashboard') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('sekretaris.dashboard') && request('tab') !== 'laporan' ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
                     <i class="fa-solid fa-calendar-days w-5 text-center"></i>
                     <span>Jadwal & Presensi</span>
                 </a>
 
-                <a href="{{ route('sekretaris.dashboard', ['tab' => 'laporan']) }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ ($tabAktif ?? 'jadwal') === 'laporan' ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
+                <a href="{{ route('sekretaris.rekap-presensi') }}" class="w-full text-left px-3 py-2 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('sekretaris.rekap-presensi') || request('tab') === 'laporan' ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
                     <i class="fa-solid fa-chart-pie w-5 text-center"></i>
                     <span>Rekap Presensi</span>
                 </a>

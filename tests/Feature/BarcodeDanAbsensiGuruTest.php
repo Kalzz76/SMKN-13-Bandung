@@ -116,7 +116,7 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'longitude' => $long,
         ]);
 
-        $response->assertRedirect('/guru?tab=validasi');
+        $response->assertRedirect('/guru?tab=absensi-saya');
         $response->assertSessionHas('sukses');
 
         $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
@@ -134,7 +134,7 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'longitude' => 106.8456,
         ]);
 
-        $response->assertRedirect('/guru?tab=validasi');
+        $response->assertRedirect('/guru?tab=absensi-saya');
         $response->assertSessionHas('error');
 
         $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
@@ -156,7 +156,7 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'longitude' => $long,
         ]);
 
-        $response->assertRedirect('/guru?tab=validasi');
+        $response->assertRedirect('/guru?tab=absensi-saya');
         $response->assertSessionHas('error');
     }
 
@@ -178,7 +178,7 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'longitude' => $long,
         ]);
 
-        $responseKedua->assertRedirect('/guru?tab=validasi');
+        $responseKedua->assertRedirect('/guru?tab=absensi-saya');
         $responseKedua->assertSessionHas('error');
     }
 
@@ -295,7 +295,7 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'materi' => 'Pengenalan Basis Data Relasional dan Perancangan Skema',
         ]);
 
-        $response->assertRedirect('/guru?tab=validasi');
+        $response->assertRedirect('/guru?tab=jadwal');
         $response->assertSessionHas('sukses');
 
         $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');

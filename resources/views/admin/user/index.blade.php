@@ -13,32 +13,46 @@
         </button>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
-                <a href="{{ route('admin.user.index') }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ !request('role') ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                    Semua
-                </a>
-                <a href="{{ route('admin.user.index', ['role' => 'admin']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ request('role') === 'admin' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                    Admin
-                </a>
-                <a href="{{ route('admin.user.index', ['role' => 'guru']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ request('role') === 'guru' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                    Guru
-                </a>
-                <a href="{{ route('admin.user.index', ['role' => 'sekretaris']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ request('role') === 'sekretaris' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                    Sekretaris
-                </a>
+    <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4 sm:space-y-5">
+        <!-- Form Pencarian (Di Atas) -->
+        <form method="GET" action="{{ route('admin.user.index') }}" class="flex flex-col sm:flex-row gap-3">
+            @if(request('role'))
+                <input type="hidden" name="role" value="{{ request('role') }}">
+            @endif
+            <div class="relative flex-grow">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama atau username..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
             </div>
-
-            <form method="GET" action="{{ route('admin.user.index') }}" class="flex items-center space-x-2 w-full sm:w-auto">
-                @if(request('role'))
-                    <input type="hidden" name="role" value="{{ request('role') }}">
-                @endif
-                <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama atau username..." class="px-4 py-2 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-xs w-full sm:w-64">
-                <button type="submit" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-700 transition">
+            <div class="flex items-center space-x-2">
+                <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm flex-1 sm:flex-initial cursor-pointer">
                     Cari
                 </button>
-            </form>
+                @if(request('cari'))
+                    <a href="{{ route('admin.user.index', array_filter(['role' => request('role')])) }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center">
+                        Reset
+                    </a>
+                @endif
+            </div>
+        </form>
+
+        <!-- Filter Role (Di Bawah Search) -->
+        <div class="grid grid-cols-4 gap-2 sm:flex sm:items-center sm:space-x-2">
+            <a href="{{ route('admin.user.index', array_filter(['cari' => request('cari')])) }}"
+               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ !request('role') ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Semua
+            </a>
+            <a href="{{ route('admin.user.index', array_filter(['role' => 'admin', 'cari' => request('cari')])) }}"
+               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'admin' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Admin
+            </a>
+            <a href="{{ route('admin.user.index', array_filter(['role' => 'guru', 'cari' => request('cari')])) }}"
+               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'guru' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Guru
+            </a>
+            <a href="{{ route('admin.user.index', array_filter(['role' => 'sekretaris', 'cari' => request('cari')])) }}"
+               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'sekretaris' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                Sekretaris
+            </a>
         </div>
 
         @if($daftarUser->isEmpty())
@@ -48,41 +62,59 @@
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
+                <table class="w-full text-left text-sm min-w-[780px]">
                     <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                         <tr>
-                            <th class="p-3.5 rounded-l-xl">No</th>
-                            <th class="p-3.5">Nama Lengkap</th>
-                            <th class="p-3.5">Username</th>
-                            <th class="p-3.5">Hak Akses (Role)</th>
-                            <th class="p-3.5">Terhubung Profil Guru</th>
-                            <th class="p-3.5">Status</th>
-                            <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
+                            <th class="p-3.5 rounded-l-xl whitespace-nowrap">No</th>
+                            <th class="p-3.5 whitespace-nowrap">Nama Lengkap</th>
+                            <th class="p-3.5 whitespace-nowrap">Username</th>
+                            <th class="p-3.5 whitespace-nowrap">Hak Akses (Role)</th>
+                            <th class="p-3.5 whitespace-nowrap">Terhubung Profil Guru</th>
+                            <th class="p-3.5 whitespace-nowrap">Status</th>
+                            <th class="p-3.5 rounded-r-xl text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @foreach($daftarUser as $index => $u)
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="p-3.5 font-medium text-slate-400">{{ $daftarUser->firstItem() + $index }}</td>
-                                <td class="p-3.5 font-bold text-slate-900">{{ $u->name }}</td>
-                                <td class="p-3.5 font-mono text-emerald-700 font-semibold">{{ $u->username }}</td>
-                                <td class="p-3.5">
+                                <td class="p-3.5 font-medium text-slate-400 whitespace-nowrap">{{ $daftarUser->firstItem() + $index }}</td>
+                                <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">{{ $u->name }}</td>
+                                <td class="p-3.5 font-mono text-emerald-700 font-semibold whitespace-nowrap">{{ $u->username }}</td>
+                                <td class="p-3.5 whitespace-nowrap">
                                     @if($u->role === 'admin')
-                                        <span class="bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase">Administrator</span>
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-xs whitespace-nowrap">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                                            <i class="fa-solid fa-shield-halved text-[11px]"></i>
+                                            <span>Administrator</span>
+                                        </span>
                                     @elseif($u->role === 'guru')
-                                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase">Guru Pengajar</span>
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs whitespace-nowrap">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            <i class="fa-solid fa-chalkboard-user text-[11px]"></i>
+                                            <span>Guru Pengajar</span>
+                                        </span>
                                     @else
-                                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase">Sekretaris</span>
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200/80 shadow-xs whitespace-nowrap">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                            <i class="fa-solid fa-user-pen text-[11px]"></i>
+                                            <span>Sekretaris</span>
+                                        </span>
                                     @endif
                                 </td>
-                                <td class="p-3.5 text-xs text-slate-600">
+                                <td class="p-3.5 text-xs text-slate-600 whitespace-nowrap">
                                     {{ $u->guru ? $u->guru->nama : '-' }}
                                 </td>
-                                <td class="p-3.5">
+                                <td class="p-3.5 whitespace-nowrap">
                                     @if($u->status === 'Aktif')
-                                        <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full">Aktif</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs whitespace-nowrap">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            <span>Aktif</span>
+                                        </span>
                                     @else
-                                        <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-1 rounded-full">Nonaktif</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 shadow-xs whitespace-nowrap">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                            <span>Nonaktif</span>
+                                        </span>
                                     @endif
                                 </td>
                                 <td class="p-3.5 text-right whitespace-nowrap">
@@ -94,14 +126,14 @@
                                             data-role="{{ $u->role }}"
                                             data-status="{{ $u->status }}"
                                             onclick="openEditModal(this)"
-                                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
                                         </button>
                                         @if(auth()->id() != $u->id)
                                             <form method="POST" action="{{ route('admin.user.destroy', $u->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun pengguna ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                                <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                                     <i class="fa-solid fa-trash mr-1"></i> Hapus
                                                 </button>
                                             </form>

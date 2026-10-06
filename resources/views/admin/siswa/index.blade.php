@@ -25,7 +25,7 @@
             </div>
             <div class="relative flex-grow">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari NIS, nama siswa, atau tahun ajaran..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari NIS, NISN, nama siswa, atau kelas..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
             </div>
             <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm">
                 Cari
@@ -44,35 +44,33 @@
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
+                <table class="w-full text-left text-sm min-w-[620px]">
                     <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                         <tr>
-                            <th class="p-3.5 rounded-l-xl">No</th>
-                            <th class="p-3.5">NIS / NISN</th>
-                            <th class="p-3.5">Nama Lengkap</th>
-                            <th class="p-3.5">L/P</th>
-                            <th class="p-3.5">Kelas</th>
-                            <th class="p-3.5">Tahun Ajaran</th>
-                            <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
+                            <th class="p-3.5 rounded-l-xl whitespace-nowrap">No</th>
+                            <th class="p-3.5 whitespace-nowrap">NIS / NISN</th>
+                            <th class="p-3.5 whitespace-nowrap">Nama Lengkap</th>
+                            <th class="p-3.5 whitespace-nowrap">L/P</th>
+                            <th class="p-3.5 whitespace-nowrap">Kelas</th>
+                            <th class="p-3.5 rounded-r-xl text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @foreach($daftarSiswa as $index => $s)
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="p-3.5 font-medium text-slate-400">{{ $daftarSiswa->firstItem() + $index }}</td>
-                                <td class="p-3.5 font-mono text-slate-900"><span class="font-bold">{{ $s->nis }}</span><span class="text-slate-400 font-normal"> / </span><span class="text-slate-600">{{ $s->nisn ?? '-' }}</span></td>
-                                <td class="p-3.5 font-bold text-slate-900">{{ $s->nama }}</td>
-                                <td class="p-3.5">
-                                    <span class="text-xs font-semibold px-2 py-0.5 rounded {{ $s->jenis_kelamin === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800' }}">
+                                <td class="p-3.5 font-medium text-slate-400 whitespace-nowrap">{{ $daftarSiswa->firstItem() + $index }}</td>
+                                <td class="p-3.5 font-mono text-slate-900 whitespace-nowrap"><span class="font-bold">{{ $s->nis }}</span><span class="text-slate-400 font-normal"> / </span><span class="text-slate-600">{{ $s->nisn ?? '-' }}</span></td>
+                                <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">{{ $s->nama }}</td>
+                                <td class="p-3.5 whitespace-nowrap">
+                                    <span class="text-xs font-semibold px-2 py-0.5 rounded whitespace-nowrap {{ $s->jenis_kelamin === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800' }}">
                                         {{ $s->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}
                                     </span>
                                 </td>
-                                <td class="p-3.5">
-                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">
+                                <td class="p-3.5 whitespace-nowrap">
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full whitespace-nowrap inline-block">
                                         {{ $s->kelas ? $s->kelas->nama : '-' }}
                                     </span>
                                 </td>
-                                <td class="p-3.5 text-slate-600 text-xs font-mono">{{ $s->tahun_ajaran }}</td>
                                 <td class="p-3.5 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end space-x-2">
                                         <button type="button"
@@ -82,7 +80,6 @@
                                             data-nama="{{ $s->nama }}"
                                             data-jk="{{ $s->jenis_kelamin }}"
                                             data-kelas="{{ $s->id_kelas }}"
-                                            data-tahun="{{ $s->tahun_ajaran }}"
                                             onclick="openEditModal(this)"
                                             class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
@@ -140,18 +137,14 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
-                    <input type="text" name="tahun_ajaran" value="2026/2027" placeholder="2026/2027" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
+                    <select name="id_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        @foreach($daftarKelas as $k)
+                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
-                <select name="id_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                    <option value="">-- Pilih Kelas --</option>
-                    @foreach($daftarKelas as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                    @endforeach
-                </select>
             </div>
             <div class="flex justify-end space-x-3 pt-3">
                 <button type="button" onclick="closeTambahModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Batal</button>
@@ -193,18 +186,14 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
-                    <input type="text" id="editTahun" name="tahun_ajaran" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
+                    <select id="editKelas" name="id_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        @foreach($daftarKelas as $k)
+                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
-                <select id="editKelas" name="id_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                    <option value="">-- Pilih Kelas --</option>
-                    @foreach($daftarKelas as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                    @endforeach
-                </select>
             </div>
             <div class="flex justify-end space-x-3 pt-3">
                 <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Batal</button>
@@ -228,7 +217,6 @@ function openEditModal(button) {
     const nama = button.getAttribute('data-nama');
     const jk = button.getAttribute('data-jk');
     const kelas = button.getAttribute('data-kelas');
-    const tahun = button.getAttribute('data-tahun');
 
     document.getElementById('editForm').action = '/admin/siswa/' + id;
     document.getElementById('editNis').value = nis;
@@ -236,7 +224,6 @@ function openEditModal(button) {
     document.getElementById('editNama').value = nama;
     document.getElementById('editJk').value = jk;
     document.getElementById('editKelas').value = kelas;
-    document.getElementById('editTahun').value = tahun;
 
     document.getElementById('editModal').classList.remove('hidden');
 }

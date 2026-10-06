@@ -344,7 +344,6 @@
                                     <th class="p-3">Nama Lengkap</th>
                                     <th class="p-3">L/P</th>
                                     <th class="p-3">Kelas</th>
-                                    <th class="p-3">Tahun Ajaran</th>
                                     <th class="p-3 rounded-r-xl text-right">Aksi</th>
                                 </tr>
                             </thead>
@@ -778,7 +777,6 @@
                 <input type="text" id="siswaNama" placeholder="Nama Lengkap" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
                 <select id="siswaLp" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none bg-white"><option value="L">Laki-laki (L)</option><option value="P">Perempuan (P)</option></select>
                 <input type="text" id="siswaKelas" placeholder="Kelas (Cth: XII RPL 1)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
-                <input type="text" id="siswaTahun" placeholder="Tahun Ajaran (Cth: 2026/2027)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none" required>
                 <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">Simpan Siswa</button>
             </form>
         </div>
@@ -1121,7 +1119,6 @@
                     <td class="p-3">${s.nama}</td>
                     <td class="p-3">${s.lp}</td>
                     <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full">${s.kelas}</span></td>
-                    <td class="p-3">${s.tahun}</td>
                     <td class="p-3 text-right"><button onclick="deleteSiswa('${s.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
             `).join('');
@@ -1328,7 +1325,7 @@
         function closeSiswaModal() { document.getElementById('siswaModal').classList.add('hidden'); }
         function saveSiswa(e) {
             e.preventDefault();
-            dbData.siswa.push({ id: 's_'+Date.now(), nis: document.getElementById('siswaNis').value, nama: document.getElementById('siswaNama').value, lp: document.getElementById('siswaLp').value, kelas: document.getElementById('siswaKelas').value, tahun: document.getElementById('siswaTahun').value });
+            dbData.siswa.push({ id: 's_'+Date.now(), nis: document.getElementById('siswaNis').value, nama: document.getElementById('siswaNama').value, lp: document.getElementById('siswaLp').value, kelas: document.getElementById('siswaKelas').value });
             closeSiswaModal(); renderAdminAllTables(); showModalMsg('Berhasil', 'Data siswa berhasil disimpan.');
         }
         function deleteSiswa(id) { dbData.siswa = dbData.siswa.filter(x => x.id !== id); renderAdminAllTables(); }

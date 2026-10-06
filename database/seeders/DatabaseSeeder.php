@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
             'telepon' => '(022) 7318960',
             'social_media' => 'Instagram: @smkn13bdg / @smkn13bandung | YouTube: SMKN 13 Bandung Official',
             'jam_operasional' => 'Senin – Jumat: 07.00 – 16.00 WIB | Sabtu – Minggu & Hari Libur Nasional: Tutup',
-            'logo' => 'pengaturan/u1uuRkFr8pwEBbiYShmpK5yMGVU1S7ywCSBifCi0.jpg',
+            'logo' => 'pengaturan/ddmJH0NrFZ6S9DKwBbZFHoNSVyhGzi27kRokgVPj.png',
             'slogan' => 'Terdepan dalam Karakter, Unggul dalam Kompetensi, Berdaya Saing Global.',
             'deskripsi_singkat' => 'SMK Negeri 13 Bandung merupakan sekolah kejuruan negeri unggulan di Kota Bandung yang berfokus pada pengembangan vokasi bidang Sains dan Teknologi Informasi. Kami berkomitmen mencetak lulusan berkarakter, kompeten, dan siap bersaing di dunia kerja maupun perguruan tinggi.',
             'visi' => 'Terwujudnya lulusan yang berakhlak mulia, kompeten, dan berdaya suai di tingkat internasional pada tahun 2030.',
@@ -212,7 +212,6 @@ class DatabaseSeeder extends Seeder
                 'nama' => $s['nama'],
                 'jenis_kelamin' => $s['jenis_kelamin'],
                 'id_kelas' => $kelasXIRPL->id,
-                'tahun_ajaran' => '2026/2027',
             ]);
         }
 
@@ -222,7 +221,6 @@ class DatabaseSeeder extends Seeder
             'nama' => 'Rizky Pratama',
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelasXII->id,
-            'tahun_ajaran' => '2026/2027',
             'jabatan' => 'Ketua Murid',
         ]);
 
@@ -232,7 +230,6 @@ class DatabaseSeeder extends Seeder
             'nama' => 'Siti Nurhaliza',
             'jenis_kelamin' => 'P',
             'id_kelas' => $kelasXII->id,
-            'tahun_ajaran' => '2026/2027',
             'jabatan' => 'Bendahara 1',
         ]);
 
@@ -242,7 +239,6 @@ class DatabaseSeeder extends Seeder
             'nama' => 'Ahmad Fauzi',
             'jenis_kelamin' => 'L',
             'id_kelas' => $kelasX1->id,
-            'tahun_ajaran' => '2026/2027',
             'jabatan' => 'Anggota',
         ]);
 

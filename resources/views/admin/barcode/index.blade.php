@@ -7,16 +7,20 @@
             <h1 class="text-2xl font-black text-slate-900">Barcode Absensi Guru</h1>
             <p class="text-sm text-slate-500 mt-1">Pembuatan QR Code acak 32-karakter dan kartu cetak kehadiran guru.</p>
         </div>
-        <div class="flex items-center space-x-3">
-            <a href="{{ route('admin.barcode.cetak') }}" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
-                <i class="fa-solid fa-print"></i>
-                <span>Cetak Semua Barcode</span>
+        <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto shrink-0">
+            <a href="{{ route('admin.barcode.cetak', ['download' => 'pdf']) }}" target="_blank" class="col-span-1 sm:w-auto bg-rose-600 hover:bg-rose-500 text-white font-semibold px-3.5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center space-x-2 text-xs sm:text-sm whitespace-nowrap">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>Download PDF</span>
             </a>
-            <form method="POST" action="{{ route('admin.barcode.generate-semua') }}" onsubmit="return confirm('Apakah Anda yakin ingin membuat ulang semua barcode guru? Barcode lama tidak akan berlaku.')">
+            <a href="{{ route('admin.barcode.cetak') }}" target="_blank" class="col-span-1 sm:w-auto bg-slate-800 hover:bg-slate-700 text-white font-semibold px-3.5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center space-x-2 text-xs sm:text-sm whitespace-nowrap">
+                <i class="fa-solid fa-print"></i>
+                <span>Cetak Barcode</span>
+            </a>
+            <form method="POST" action="{{ route('admin.barcode.generate-semua') }}" onsubmit="return confirm('Apakah Anda yakin ingin membuat ulang semua barcode guru? Barcode lama tidak akan berlaku.')" class="col-span-2 sm:col-span-1 m-0 w-full sm:w-auto">
                 @csrf
-                <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
+                <button type="submit" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-500 text-white font-semibold px-3.5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center space-x-2 text-xs sm:text-sm whitespace-nowrap cursor-pointer">
                     <i class="fa-solid fa-arrows-rotate"></i>
-                    <span>Generate Ulang Semua</span>
+                    <span>Generate Ulang</span>
                 </button>
             </form>
         </div>
@@ -54,18 +58,98 @@
             </form>
         </div>
 
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4">
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4">
             @if($guruTerpilih && $guruTerpilih->kode_barcode)
-                <div class="p-4 bg-white rounded-2xl border-2 border-emerald-600/30 shadow-sm flex items-center justify-center">
-                    <div id="qrcode" class="flex items-center justify-center"></div>
+                @php
+                    $pengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
+                    $rawNama = trim($guruTerpilih->nama);
+                    $parts = explode(' ', $rawNama, 2);
+                    $nama1 = $parts[0] ?? $rawNama;
+                    $nama2 = $parts[1] ?? '';
+                @endphp
+                <div class="w-full flex flex-col items-center justify-center overflow-hidden">
+                    <div id="cardScaleContainer" class="w-full max-w-[480px] flex justify-center items-start overflow-hidden">
+                        <div id="cardBarcodeScaler" class="origin-top transition-transform duration-150" style="width: 480px; height: 276px; flex-shrink: 0;">
+                            <div id="cardBarcodePreview" style="background-image: url('{{ asset('images/desain-card.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 480px; height: 276px; min-width: 480px; min-height: 276px; border-radius: 16px; border: 1px solid #cbd5e1; position: relative; overflow: hidden; display: flex; box-sizing: border-box; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                                <!-- Left Section: Dark Navy Area -->
+                                <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 8px 14px 14px; box-sizing: border-box; position: relative; z-index: 2;">
+                                    <!-- Top Left: Logo & School Title -->
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        @if(!empty($pengaturan->logo))
+                                            <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo" style="width: 34px; height: 34px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0;">
+                                        @else
+                                            <div style="width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fbbf24; background: #0f172a; color: #ffffff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                13
+                                            </div>
+                                        @endif
+                                        <div style="min-width: 0; flex: 1;">
+                                            <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; color: #ffffff; line-height: 1.15; margin: 0; font-family: 'Inter', sans-serif;">
+                                                {{ $pengaturan->nama_sekolah ?? 'SMK Negeri 13 Bandung' }}
+                                            </h2>
+                                            <p style="font-size: 7.5px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1; margin: 3px 0 0 0; font-family: 'Inter', sans-serif;">
+                                                KARTU PRESENSI GURU
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Left: Contact Info from Pengaturan Sekolah -->
+                                    <div style="max-width: 175px; font-size: 8px; color: #f1f5f9; line-height: 1.35; margin-top: 6px; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif;">
+                                        <div style="display: flex; align-items: flex-start; gap: 5px;">
+                                            <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 8px;"></i>
+                                            <span style="color: #f1f5f9; line-height: 1.25; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 155px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <i class="fa-solid fa-phone" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->telepon ?? '(022) 7801234 / 7805678' }}</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <i class="fa-solid fa-globe" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->social_media ?? 'smkn13bdg.sch.id' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right Section: White Area -->
+                                <div style="width: 54%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; padding: 14px 14px 14px 8px; box-sizing: border-box; position: relative; z-index: 2;">
+                                    <!-- Top Right: Name & Role -->
+                                    <div style="max-width: 210px; display: flex; flex-direction: column; gap: 2px;">
+                                        <h3 style="font-size: 14px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; text-transform: uppercase; margin: 0; font-family: 'Inter', sans-serif;">
+                                            <span style="color: #f59e0b;">{{ $nama1 }}</span>
+                                            <span style="color: #0f172a;">{{ $nama2 }}</span>
+                                        </h3>
+                                        <p style="font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e293b; margin: 0; font-family: 'Inter', sans-serif;">
+                                            {{ $guruTerpilih->jabatan ?? 'GURU PENGAJAR' }}
+                                        </p>
+                                        <p style="font-size: 8.5px; color: #64748b; font-family: monospace; margin: 0;">
+                                            NIP. {{ $guruTerpilih->nip ?? '-' }}
+                                        </p>
+                                    </div>
+
+                                    <!-- Bottom Right: QR Code -->
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                        <div style="padding: 4px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; display: inline-block;">
+                                            <div id="qrcode"></div>
+                                        </div>
+                                        <span style="font-size: 7.5px; font-family: monospace; color: #94a3b8; margin-top: 3px; text-transform: uppercase; letter-spacing: -0.02em;">
+                                            {{ Str::substr($guruTerpilih->kode_barcode, 0, 16) }}...
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest block">Barcode Aktif</span>
-                    <h4 class="text-lg font-bold text-slate-900 mt-0.5">Barcode: {{ $guruTerpilih->nama }}</h4>
-                    <p class="text-xs text-slate-400 font-mono mt-1">Kode: {{ $guruTerpilih->kode_barcode }}</p>
-                </div>
-                <div class="flex items-center space-x-3 pt-2">
-                    <a href="{{ route('admin.barcode.cetak', ['id' => $guruTerpilih->id]) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs transition flex items-center space-x-1.5">
+
+                <div class="grid grid-cols-2 gap-2.5 pt-2 w-full max-w-[480px]">
+                    <button type="button" id="btnDownloadCardPdf" onclick="downloadCardPDF('{{ Str::slug($guruTerpilih->nama) }}')" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition flex items-center justify-center space-x-2 shadow cursor-pointer">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>Download PDF</span>
+                    </button>
+                    <a href="{{ route('admin.barcode.cetak', ['id' => $guruTerpilih->id]) }}" target="_blank" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition flex items-center justify-center space-x-2 shadow">
                         <i class="fa-solid fa-print"></i>
                         <span>Cetak Kartu</span>
                     </a>
@@ -95,40 +179,48 @@
         </h3>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
+            <table class="w-full text-left text-sm min-w-[680px]">
                 <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                     <tr>
-                        <th class="p-3.5 rounded-l-xl">No</th>
-                        <th class="p-3.5">Nama Guru</th>
-                        <th class="p-3.5">NIP</th>
-                        <th class="p-3.5">Mata Pelajaran</th>
-                        <th class="p-3.5">Status Barcode</th>
-                        <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
+                        <th class="p-3.5 rounded-l-xl whitespace-nowrap">No</th>
+                        <th class="p-3.5 whitespace-nowrap">Nama Guru</th>
+                        <th class="p-3.5 whitespace-nowrap">NIP</th>
+                        <th class="p-3.5 whitespace-nowrap">Mata Pelajaran</th>
+                        <th class="p-3.5 whitespace-nowrap">Status Barcode</th>
+                        <th class="p-3.5 rounded-r-xl text-right whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach($daftarGuru as $index => $g)
                         <tr class="hover:bg-slate-50/50 transition">
-                            <td class="p-3.5 font-medium text-slate-400">{{ $index + 1 }}</td>
-                            <td class="p-3.5 font-bold text-slate-900">{{ $g->nama }}</td>
-                            <td class="p-3.5 text-slate-500 text-xs font-mono">{{ $g->nip ?? '-' }}</td>
-                            <td class="p-3.5 text-slate-600 text-xs">{{ $g->mapel_utama ?? '-' }}</td>
-                            <td class="p-3.5">
+                            <td class="p-3.5 font-medium text-slate-400 whitespace-nowrap">{{ $index + 1 }}</td>
+                            <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">{{ $g->nama }}</td>
+                            <td class="p-3.5 text-slate-500 text-xs font-mono whitespace-nowrap">{{ $g->nip ?? '-' }}</td>
+                            <td class="p-3.5 text-slate-600 text-xs whitespace-nowrap">{{ $g->mapel_utama ?? '-' }}</td>
+                            <td class="p-3.5 whitespace-nowrap">
                                 @if($g->kode_barcode)
-                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                        <i class="fa-solid fa-check mr-1"></i> Aktif
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs whitespace-nowrap">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        <i class="fa-solid fa-check text-[10px]"></i>
+                                        <span>Aktif</span>
                                     </span>
                                 @else
-                                    <span class="bg-slate-100 text-slate-500 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                        Belum Ada
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200 whitespace-nowrap">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                        <span>Belum Ada</span>
                                     </span>
                                 @endif
                             </td>
                             <td class="p-3.5 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end space-x-2">
                                     @if($g->kode_barcode)
-                                        <a href="{{ route('admin.barcode.cetak', ['id' => $g->id]) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                                            <i class="fa-solid fa-print mr-1"></i> Cetak
+                                        <a href="{{ route('admin.barcode.cetak', ['id' => $g->id, 'download' => 'pdf']) }}" target="_blank" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1" title="Download Kartu PDF">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            <span>PDF</span>
+                                        </a>
+                                        <a href="{{ route('admin.barcode.cetak', ['id' => $g->id]) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1" title="Cetak / Preview">
+                                            <i class="fa-solid fa-print"></i>
+                                            <span>Cetak</span>
                                         </a>
                                     @endif
                                     <form method="POST" action="{{ route('admin.barcode.generate') }}">
@@ -148,18 +240,81 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 @if($guruTerpilih && $guruTerpilih->kode_barcode)
 <script>
+function resizeCardPreview() {
+    const scaler = document.getElementById('cardBarcodeScaler');
+    const container = document.getElementById('cardScaleContainer');
+    if (!scaler || !container) return;
+    const baseW = 480;
+    const baseH = 276;
+    const containerW = container.clientWidth;
+
+    if (containerW > 0 && containerW < baseW) {
+        const scale = containerW / baseW;
+        scaler.style.transform = `scale(${scale})`;
+        scaler.style.transformOrigin = 'top center';
+        container.style.height = `${Math.round(baseH * scale)}px`;
+    } else {
+        scaler.style.transform = 'none';
+        container.style.height = `${baseH}px`;
+    }
+}
+
+window.addEventListener('resize', resizeCardPreview);
 document.addEventListener('DOMContentLoaded', function() {
     new QRCode(document.getElementById("qrcode"), {
         text: "{{ $guruTerpilih->kode_barcode }}",
-        width: 140,
-        height: 140,
-        colorDark : "#065f46",
+        width: 76,
+        height: 76,
+        colorDark : "#0f172a",
         colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        correctLevel : QRCode.CorrectLevel.M
     });
+    resizeCardPreview();
 });
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(resizeCardPreview, 50);
+}
+
+function downloadCardPDF(namaSlug) {
+    const cardEl = document.getElementById('cardBarcodePreview');
+    const btn = document.getElementById('btnDownloadCardPdf');
+    if (!cardEl) return;
+
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Membuat PDF...</span>';
+    btn.disabled = true;
+
+    const opt = {
+        margin: [3, 3, 3, 3],
+        filename: 'Kartu-Barcode-' + (namaSlug || 'Guru') + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 3,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: [100, 62],
+            orientation: 'landscape'
+        }
+    };
+
+    html2pdf().set(opt).from(cardEl).save().then(function() {
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+    }).catch(function(err) {
+        console.error('Error generating PDF:', err);
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+        alert('Terjadi kesalahan saat membuat file PDF: ' + err.message);
+    });
+}
 </script>
 @endif
 @endsection

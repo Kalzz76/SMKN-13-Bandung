@@ -2,15 +2,15 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('admin.kelas.index') }}" class="w-11 h-11 rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition flex-shrink-0 backdrop-blur-sm shadow">
-                    <i class="fa-solid fa-arrow-left text-lg"></i>
+    <div class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <a href="{{ route('admin.kelas.index') }}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition flex-shrink-0 backdrop-blur-sm shadow">
+                    <i class="fa-solid fa-arrow-left text-base sm:text-lg"></i>
                 </a>
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-wide">{{ $kelas->nama }}</h1>
-                    <div class="flex items-center space-x-4 text-xs sm:text-sm text-emerald-100 font-medium mt-1">
+                <div class="min-w-0">
+                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-wide truncate">{{ $kelas->nama }}</h1>
+                    <div class="flex items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-emerald-100 font-medium mt-0.5 sm:mt-1">
                         <span class="flex items-center space-x-1.5">
                             <i class="fa-solid fa-location-dot text-emerald-300"></i>
                             <span>{{ $kelas->ruangan ? $kelas->ruangan->kode : 'Belum Ada Ruangan' }}</span>
@@ -23,21 +23,21 @@
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center md:items-end lg:items-center gap-3">
-                <button type="button" onclick="openKelolaKelasModal()" class="bg-white hover:bg-emerald-50 text-emerald-800 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+            <div class="flex flex-row items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+                <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-xl sm:rounded-2xl px-3 sm:px-3.5 py-1.5 sm:py-2 flex items-center space-x-2.5 sm:space-x-3 text-left flex-1 sm:flex-initial min-w-0">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/25 text-white font-black text-xs flex items-center justify-center uppercase shadow-inner flex-shrink-0">
+                        {{ $kelas->waliKelas ? \Illuminate\Support\Str::substr($kelas->waliKelas->nama, 0, 1) : '?' }}
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-200 block leading-tight">Wali Kelas</span>
+                        <span class="text-xs font-bold text-white block truncate leading-tight">{{ $kelas->waliKelas ? $kelas->waliKelas->nama : 'Belum Ditentukan' }}</span>
+                    </div>
+                </div>
+
+                <button type="button" onclick="openKelolaKelasModal()" class="bg-white hover:bg-emerald-50 text-emerald-800 font-bold px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-1.5 sm:space-x-2 flex-1 sm:flex-initial whitespace-nowrap">
                     <i class="fa-solid fa-gear"></i>
                     <span>Kelola Kelas</span>
                 </button>
-
-                <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl px-3.5 py-1.5 flex items-center space-x-3 text-left">
-                    <div class="w-8 h-8 rounded-full bg-white/25 text-white font-black text-xs flex items-center justify-center uppercase shadow-inner">
-                        {{ $kelas->waliKelas ? \Illuminate\Support\Str::substr($kelas->waliKelas->nama, 0, 1) : '?' }}
-                    </div>
-                    <div>
-                        <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-200 block">Wali Kelas</span>
-                        <span class="text-xs font-bold text-white block">{{ $kelas->waliKelas ? $kelas->waliKelas->nama : 'Belum Ditentukan' }}</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -124,17 +124,17 @@
     @endphp
 
     <div id="panelStruktur" class="tab-panel">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             @foreach($posisiList as $p)
-                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition text-center flex flex-col items-center justify-center min-h-[150px]">
-                    <div class="w-12 h-12 rounded-full {{ $p['bg'] }} {{ $p['color'] }} flex items-center justify-center text-lg mb-3 shadow-inner">
+                <div class="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 border border-slate-100 shadow-sm hover:shadow-md transition text-center flex flex-col items-center justify-center min-h-[130px] sm:min-h-[150px]">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full {{ $p['bg'] }} {{ $p['color'] }} flex items-center justify-center text-base sm:text-lg mb-2 sm:mb-3 shadow-inner">
                         <i class="{{ $p['icon'] }}"></i>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{{ $p['label'] }}</p>
+                    <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{{ $p['label'] }}</p>
                     @if($p['nama'])
-                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-tight line-clamp-2">{{ $p['nama'] }}</h4>
+                        <h4 class="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-tight line-clamp-2">{{ $p['nama'] }}</h4>
                     @else
-                        <span class="text-xs text-slate-400 italic">Belum ditentukan</span>
+                        <span class="text-[11px] sm:text-xs text-slate-400 italic">Belum ditentukan</span>
                     @endif
                 </div>
             @endforeach
@@ -163,42 +163,42 @@
                 </div>
             @else
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm" id="tableSiswaKelas">
+                    <table class="w-full text-left text-sm min-w-[560px]" id="tableSiswaKelas">
                         <thead class="bg-slate-50 text-slate-700 uppercase text-xs border-b border-slate-100">
                             <tr>
-                                <th class="p-4 rounded-l-xl">NIS / NISN</th>
-                                <th class="p-4">Nama Siswa</th>
-                                <th class="p-4">L/P</th>
-                                <th class="p-4">Jabatan</th>
-                                <th class="p-4 rounded-r-xl text-right">Aksi</th>
+                                <th class="p-3.5 sm:p-4 rounded-l-xl whitespace-nowrap">NIS / NISN</th>
+                                <th class="p-3.5 sm:p-4 whitespace-nowrap">Nama Siswa</th>
+                                <th class="p-3.5 sm:p-4 whitespace-nowrap">L/P</th>
+                                <th class="p-3.5 sm:p-4 whitespace-nowrap">Jabatan</th>
+                                <th class="p-3.5 sm:p-4 rounded-r-xl text-right whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100" id="tbodySiswaKelas">
                             @foreach($kelas->siswa as $s)
                                 <tr class="hover:bg-slate-50/50 transition row-siswa" data-nama="{{ strtolower($s->nama) }}">
-                                    <td class="p-4 font-mono font-medium text-slate-700">
+                                    <td class="p-3.5 sm:p-4 font-mono font-medium text-slate-700 whitespace-nowrap">
                                         <span class="font-bold text-slate-900">{{ $s->nis }}</span>
                                         <span class="text-slate-400"> / </span>
                                         <span class="text-slate-600">{{ $s->nisn ?? '-' }}</span>
                                     </td>
-                                    <td class="p-4 font-bold text-slate-900 uppercase student-name">{{ $s->nama }}</td>
-                                    <td class="p-4">
-                                        <span class="text-xs font-semibold px-2 py-0.5 rounded {{ $s->jenis_kelamin === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800' }}">
+                                    <td class="p-3.5 sm:p-4 font-bold text-slate-900 uppercase student-name whitespace-nowrap">{{ $s->nama }}</td>
+                                    <td class="p-3.5 sm:p-4 whitespace-nowrap">
+                                        <span class="text-xs font-semibold px-2 py-0.5 rounded whitespace-nowrap {{ $s->jenis_kelamin === 'L' ? 'bg-sky-100 text-sky-800' : 'bg-pink-100 text-pink-800' }}">
                                             {{ $s->jenis_kelamin }}
                                         </span>
                                     </td>
-                                    <td class="p-4">
+                                    <td class="p-3.5 sm:p-4 whitespace-nowrap">
                                         @if($s->jabatan && $s->jabatan !== 'Anggota')
-                                            <span class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                                            <span class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm whitespace-nowrap inline-block">
                                                 {{ $s->jabatan }}
                                             </span>
                                         @else
-                                            <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold">
+                                            <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap inline-block">
                                                 Anggota
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="p-4 text-right whitespace-nowrap">
+                                    <td class="p-3.5 sm:p-4 text-right whitespace-nowrap">
                                         <form method="POST" action="{{ route('admin.siswa.destroy', $s->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data siswa ini?')">
                                             @csrf
                                             @method('DELETE')

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('jabatan')->nullable()->default('Anggota');
             $table->string('jenis_kelamin');
             $table->foreignId('id_kelas')->constrained('kelas')->restrictOnDelete();
-            $table->string('tahun_ajaran');
             $table->timestamps();
         });
     }

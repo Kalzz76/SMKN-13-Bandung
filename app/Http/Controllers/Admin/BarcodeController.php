@@ -13,6 +13,7 @@ class BarcodeController extends Controller
 {
     public function index(Request $request)
     {
+        $pengaturan = PengaturanSekolah::first();
         $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
 
         $guruTerpilih = null;
@@ -22,7 +23,7 @@ class BarcodeController extends Controller
             $guruTerpilih = $daftarGuru->firstWhere('kode_barcode', '!=', null) ?? $daftarGuru->first();
         }
 
-        return view('admin.barcode.index', compact('daftarGuru', 'guruTerpilih'));
+        return view('admin.barcode.index', compact('daftarGuru', 'guruTerpilih', 'pengaturan'));
     }
 
     public function generate(Request $request)

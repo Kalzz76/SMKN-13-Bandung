@@ -88,13 +88,13 @@ class SekretarisDanLaporanTest extends TestCase
         $responseCari->assertSee('Pengujian Log');
     }
 
-    public function test_sekretaris_dapat_mengakses_dashboard_dan_tab_tabnya(): void
+    public function test_sekretaris_dapat_mengakses_dashboard_dan_rekap(): void
     {
-        $tabs = ['jadwal', 'laporan'];
-        foreach ($tabs as $tab) {
-            $response = $this->actingAs($this->sekretaris)->get('/sekretaris?tab=' . $tab);
-            $response->assertStatus(200);
-        }
+        $responseJadwal = $this->actingAs($this->sekretaris)->get('/sekretaris');
+        $responseJadwal->assertStatus(200);
+
+        $responseRekap = $this->actingAs($this->sekretaris)->get('/sekretaris/rekap-presensi');
+        $responseRekap->assertStatus(200);
     }
 
     public function test_sekretaris_dapat_mengabsen_siswa_di_kelas(): void
@@ -111,7 +111,7 @@ class SekretarisDanLaporanTest extends TestCase
             ],
         ]);
 
-        $response->assertRedirect('/sekretaris?tab=jadwal&kelas_id=' . $jadwal->id_kelas);
+        $response->assertRedirect('/sekretaris?kelas_id=' . $jadwal->id_kelas);
         $response->assertSessionHas('sukses');
 
         $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');

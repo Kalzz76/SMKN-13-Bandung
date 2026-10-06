@@ -14,29 +14,29 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         <!-- Left Column: Scanner -->
-        <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm space-y-6">
+        <div class="lg:col-span-7 bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-sm space-y-5 sm:space-y-6">
             
             <!-- Scanner Card Header -->
-            <div class="flex items-center justify-between gap-4 pb-5 border-b border-slate-100">
-                <div class="flex items-center gap-3.5 min-w-0">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center text-xl shrink-0 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-slate-100">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-2xs">
                         <i class="fa-solid fa-qrcode"></i>
                     </div>
                     <div class="min-w-0">
-                        <h4 class="font-bold text-slate-900 text-base leading-tight">Pemindai Barcode Kehadiran</h4>
-                        <p class="text-xs text-slate-400 mt-0.5 truncate">Pastikan barcode berada tepat di dalam kotak fokus kamera.</p>
+                        <h4 class="font-bold text-slate-900 text-sm sm:text-base leading-tight">Pemindai Barcode Kehadiran</h4>
+                        <p class="text-xs text-slate-400 mt-0.5 leading-snug">Pastikan barcode berada tepat di dalam kotak fokus kamera.</p>
                     </div>
                 </div>
 
-                <!-- Status Badge (Never wraps) -->
-                <div class="shrink-0">
+                <!-- Status Badge -->
+                <div class="shrink-0 self-start sm:self-center">
                     @if($absensiHariIni)
-                        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                             <span>Sudah Absen ({{ $absensiHariIni->status }})</span>
                         </span>
                     @else
-                        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-rose-50 text-rose-700 border border-rose-200">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-rose-50 text-rose-700 border border-rose-200">
                             <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
                             <span>Belum Absen Hari Ini</span>
                         </span>
@@ -46,52 +46,52 @@
 
             @if($absensiHariIni)
                 <!-- Success State -->
-                <div class="bg-gradient-to-b from-emerald-50/80 to-white border border-emerald-200/90 rounded-3xl p-8 text-center space-y-4">
-                    <div class="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-md ring-4 ring-emerald-100">
+                <div class="bg-gradient-to-b from-emerald-50/80 to-white border border-emerald-200/90 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center space-y-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mx-auto shadow-md ring-4 ring-emerald-100">
                         <i class="fa-solid fa-check"></i>
                     </div>
                     <div>
-                        <h4 class="text-xl font-bold text-slate-900">Presensi Hari Ini Berhasil!</h4>
+                        <h4 class="text-lg sm:text-xl font-bold text-slate-900">Presensi Hari Ini Berhasil!</h4>
                         <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
                             Kehadiran Anda telah tercatat otomatis pada <span class="font-semibold text-slate-700">{{ \Carbon\Carbon::parse($absensiHariIni->tanggal)->isoFormat('dddd, D MMMM Y') }}</span> pukul <span class="font-semibold text-slate-700">{{ \Illuminate\Support\Str::substr($absensiHariIni->jam_masuk, 0, 5) }} WIB</span>.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-emerald-100 max-w-lg mx-auto">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-4 border-t border-emerald-100 max-w-lg mx-auto">
                         <div class="p-3 bg-white rounded-2xl border border-slate-200/70 shadow-2xs">
                             <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Status</span>
-                            <span class="font-bold text-emerald-700 text-sm mt-0.5 block">{{ $absensiHariIni->status }}</span>
+                            <span class="font-bold text-emerald-700 text-xs sm:text-sm mt-0.5 block">{{ $absensiHariIni->status }}</span>
                         </div>
                         <div class="p-3 bg-white rounded-2xl border border-slate-200/70 shadow-2xs">
                             <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Waktu</span>
-                            <span class="font-bold text-slate-800 text-sm mt-0.5 block">{{ \Illuminate\Support\Str::substr($absensiHariIni->jam_masuk, 0, 5) }} WIB</span>
+                            <span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">{{ \Illuminate\Support\Str::substr($absensiHariIni->jam_masuk, 0, 5) }} WIB</span>
                         </div>
                         <div class="p-3 bg-white rounded-2xl border border-slate-200/70 shadow-2xs">
                             <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Metode</span>
-                            <span class="font-bold text-slate-800 text-sm mt-0.5 block">{{ $absensiHariIni->metode }}</span>
+                            <span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">{{ $absensiHariIni->metode }}</span>
                         </div>
                         <div class="p-3 bg-white rounded-2xl border border-slate-200/70 shadow-2xs">
                             <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Jarak GPS</span>
-                            <span class="font-bold text-slate-800 text-sm mt-0.5 block">{{ $absensiHariIni->jarak_meter ?? 0 }} m</span>
+                            <span class="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">{{ $absensiHariIni->jarak_meter ?? 0 }} m</span>
                         </div>
                     </div>
                 </div>
             @else
                 <!-- GPS Indicator Box -->
-                <div id="gpsStatusBox" class="p-3.5 bg-slate-50/80 border border-slate-200 rounded-2xl flex items-center justify-between text-xs transition">
+                <div id="gpsStatusBox" class="p-3 sm:p-3.5 bg-slate-50/80 border border-slate-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs transition">
                     <div class="flex items-center gap-2.5 text-slate-600 min-w-0">
                         <span id="gpsIndicator" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping shrink-0"></span>
                         <span id="gpsText" class="truncate font-medium">Mendeteksi koordinat lokasi GPS Anda...</span>
                     </div>
-                    <button type="button" onclick="ambilLokasiUlang()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-emerald-700 font-bold hover:bg-emerald-50 hover:border-emerald-200 transition shadow-2xs shrink-0">
+                    <button type="button" onclick="ambilLokasiUlang()" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 sm:py-1.5 rounded-xl bg-white border border-slate-200 text-emerald-700 font-bold hover:bg-emerald-50 hover:border-emerald-200 transition shadow-2xs shrink-0 cursor-pointer">
                         <i class="fa-solid fa-arrows-rotate text-xs"></i>
                         <span>Perbarui GPS</span>
                     </button>
                 </div>
 
                 <!-- Camera Scanner Container -->
-                <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 p-3 shadow-inner min-h-[320px] flex flex-col items-center justify-center">
-                    <div id="reader" class="w-full overflow-hidden rounded-2xl"></div>
+                <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200 bg-slate-900 p-2 sm:p-3 shadow-inner min-h-[260px] sm:min-h-[320px] flex flex-col items-center justify-center">
+                    <div id="reader" class="w-full overflow-hidden rounded-xl sm:rounded-2xl"></div>
                 </div>
 
                 <!-- Hidden Scan Submission Form -->

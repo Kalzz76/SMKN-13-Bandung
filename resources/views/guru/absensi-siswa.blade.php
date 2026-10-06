@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6 max-w-6xl mx-auto">
     {{-- Header & Info Kelas --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl shadow-xs border border-slate-200">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xs border border-slate-200">
         <div>
             <a href="{{ route('guru.jadwal') }}" class="inline-flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-emerald-700 mb-2 transition">
                 <i class="fa-solid fa-arrow-left"></i>
@@ -20,7 +20,7 @@
                 <span>Jam ke {{ $jadwal->jam_ke_mulai }} - {{ $jadwal->jam_ke_selesai }}</span>
             </p>
         </div>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center self-start sm:self-auto">
             <span class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-emerald-50 text-emerald-800 border border-emerald-200">
                 <i class="fa-solid fa-calendar-day mr-1.5 text-emerald-600"></i>
                 {{ $jadwal->hari }}, {{ \Carbon\Carbon::parse($tanggalHariIni)->locale('id')->isoFormat('D MMMM Y') }}
@@ -35,7 +35,7 @@
         @php
             $guruHadirDefault = !($absensiGuruHariIni && $absensiGuruHariIni->status === 'Tidak Hadir');
         @endphp
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-xs space-y-5">
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-7 shadow-xs space-y-5">
             <div class="flex items-center space-x-2.5 text-slate-900">
                 <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
                     <i class="fa-regular fa-user"></i>
@@ -46,14 +46,14 @@
             <input type="hidden" name="kehadiran_guru" id="inputKehadiranGuru" value="{{ $guruHadirDefault ? 'Hadir' : 'Tidak Hadir' }}">
 
             {{-- Toggle Button: Hadir vs Tidak Hadir --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button type="button" onclick="setKehadiranGuru('Hadir')" id="btnGuruHadir" class="w-full py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-center space-x-2 {{ $guruHadirDefault ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300' }}">
-                    <i class="fa-solid fa-check text-base text-emerald-600"></i>
+            <div class="grid grid-cols-2 gap-2.5 sm:gap-4">
+                <button type="button" onclick="setKehadiranGuru('Hadir')" id="btnGuruHadir" class="w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 {{ $guruHadirDefault ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300' }}">
+                    <i class="fa-solid fa-check text-sm sm:text-base text-emerald-600"></i>
                     <span>Hadir</span>
                 </button>
 
-                <button type="button" onclick="setKehadiranGuru('Tidak Hadir')" id="btnGuruTidakHadir" class="w-full py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-center space-x-2 {{ !$guruHadirDefault ? 'border-rose-500 bg-rose-50/50 text-rose-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:border-rose-200 hover:text-rose-600' }}">
-                    <i class="fa-solid fa-xmark text-base text-rose-500"></i>
+                <button type="button" onclick="setKehadiranGuru('Tidak Hadir')" id="btnGuruTidakHadir" class="w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 {{ !$guruHadirDefault ? 'border-rose-500 bg-rose-50/50 text-rose-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:border-rose-200 hover:text-rose-600' }}">
+                    <i class="fa-solid fa-xmark text-sm sm:text-base text-rose-500"></i>
                     <span>Tidak Hadir</span>
                 </button>
             </div>
@@ -96,9 +96,9 @@
         </div>
 
         {{-- 2. Daftar Siswa (Tabel Presensi dengan gaya Pill Buttons seperti referensi) --}}
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
             {{-- Header Table --}}
-            <div class="px-6 py-4 bg-slate-50/70 border-b border-slate-200/80 flex items-center justify-between">
+            <div class="hidden sm:flex px-6 py-4 bg-slate-50/70 border-b border-slate-200/80 items-center justify-between">
                 <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Nama Siswa</span>
                 <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 pr-2">
                     Status Kehadiran
@@ -106,19 +106,15 @@
             </div>
 
             {{-- Ringkasan Status & Set Semua Hadir --}}
-            <div class="px-6 py-3 bg-white border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="font-bold text-slate-600">Total: <strong>{{ $daftarSiswa->count() }}</strong></span>
-                    <span class="text-slate-300">•</span>
-                    <span class="text-emerald-700 font-semibold">Hadir: <strong id="hitungHadir">0</strong></span>
-                    <span class="text-slate-300">•</span>
-                    <span class="text-amber-600 font-semibold">Izin: <strong id="hitungIzin">0</strong></span>
-                    <span class="text-slate-300">•</span>
-                    <span class="text-blue-600 font-semibold">Sakit: <strong id="hitungSakit">0</strong></span>
-                    <span class="text-slate-300">•</span>
-                    <span class="text-rose-600 font-semibold">Alpa: <strong id="hitungAlpa">0</strong></span>
+            <div class="p-3.5 sm:px-6 sm:py-3 bg-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span class="font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">Total: <strong class="ml-0.5">{{ $daftarSiswa->count() }}</strong></span>
+                    <span class="text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-1 rounded-lg font-semibold">Hadir: <strong id="hitungHadir">0</strong></span>
+                    <span class="text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-1 rounded-lg font-semibold">Izin: <strong id="hitungIzin">0</strong></span>
+                    <span class="text-blue-700 bg-blue-50 border border-blue-200/60 px-2 py-1 rounded-lg font-semibold">Sakit: <strong id="hitungSakit">0</strong></span>
+                    <span class="text-rose-700 bg-rose-50 border border-rose-200/60 px-2 py-1 rounded-lg font-semibold">Alpa: <strong id="hitungAlpa">0</strong></span>
                 </div>
-                <button type="button" onclick="setSemuaStatus('Hadir')" class="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                <button type="button" onclick="setSemuaStatus('Hadir')" class="w-full sm:w-auto justify-center px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-check-double text-xs"></i>
                     <span>Set Semua Hadir</span>
                 </button>
@@ -131,17 +127,17 @@
                         $statusSiswa = $absensiTersimpan[$siswa->id]->status ?? 'Hadir';
                         $initial = strtoupper(substr($siswa->nama, 0, 1));
                     @endphp
-                    <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition">
+                    <div class="p-3.5 sm:px-6 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-slate-50/50 transition">
                         {{-- Avatar & Nama Siswa --}}
-                        <div class="flex items-center space-x-3.5 min-w-0">
-                            <div class="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center flex-shrink-0 text-sm shadow-2xs">
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center shrink-0 text-xs sm:text-sm shadow-2xs">
                                 {{ $initial }}
                             </div>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-sm text-slate-900 leading-snug truncate">
+                            <div class="min-w-0 flex-1">
+                                <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug truncate">
                                     {{ $siswa->nama }}
                                 </h4>
-                                <div class="flex items-center space-x-2 text-xs text-slate-400 font-mono mt-0.5">
+                                <div class="flex items-center space-x-2 text-[11px] sm:text-xs text-slate-400 font-mono mt-0.5">
                                     <span>{{ $siswa->nis }}</span>
                                     @if($siswa->jenis_kelamin)
                                         <span class="text-slate-300">•</span>
@@ -152,27 +148,27 @@
                         </div>
 
                         {{-- 4 Pill Status Buttons: Hadir, Izin, Sakit, Alpa --}}
-                        <div class="flex items-center space-x-2 self-end sm:self-auto flex-shrink-0">
+                        <div class="grid grid-cols-4 gap-1.5 w-full sm:w-auto sm:flex sm:items-center sm:space-x-2 shrink-0">
                             {{-- Input radio tersembunyi --}}
                             <input type="hidden" name="status[{{ $siswa->id }}]" id="statusInput_{{ $siswa->id }}" value="{{ $statusSiswa }}" class="siswa-status-hidden">
 
                             {{-- Button Hadir --}}
-                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Hadir')" id="btn_{{ $siswa->id }}_Hadir" class="btn-status-siswa px-4 py-2 rounded-xl text-xs font-bold transition {{ $statusSiswa === 'Hadir' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
+                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Hadir')" id="btn_{{ $siswa->id }}_Hadir" class="btn-status-siswa py-2 px-1 sm:px-4 rounded-xl text-xs font-bold transition text-center flex items-center justify-center {{ $statusSiswa === 'Hadir' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
                                 Hadir
                             </button>
 
                             {{-- Button Izin --}}
-                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Izin')" id="btn_{{ $siswa->id }}_Izin" class="btn-status-siswa px-4 py-2 rounded-xl text-xs font-bold transition {{ $statusSiswa === 'Izin' ? 'bg-amber-500 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
+                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Izin')" id="btn_{{ $siswa->id }}_Izin" class="btn-status-siswa py-2 px-1 sm:px-4 rounded-xl text-xs font-bold transition text-center flex items-center justify-center {{ $statusSiswa === 'Izin' ? 'bg-amber-500 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
                                 Izin
                             </button>
 
                             {{-- Button Sakit --}}
-                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Sakit')" id="btn_{{ $siswa->id }}_Sakit" class="btn-status-siswa px-4 py-2 rounded-xl text-xs font-bold transition {{ $statusSiswa === 'Sakit' ? 'bg-blue-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
+                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Sakit')" id="btn_{{ $siswa->id }}_Sakit" class="btn-status-siswa py-2 px-1 sm:px-4 rounded-xl text-xs font-bold transition text-center flex items-center justify-center {{ $statusSiswa === 'Sakit' ? 'bg-blue-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
                                 Sakit
                             </button>
 
                             {{-- Button Alpa --}}
-                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Alpa')" id="btn_{{ $siswa->id }}_Alpa" class="btn-status-siswa px-4 py-2 rounded-xl text-xs font-bold transition {{ $statusSiswa === 'Alpa' ? 'bg-rose-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
+                            <button type="button" onclick="setStatusSiswa({{ $siswa->id }}, 'Alpa')" id="btn_{{ $siswa->id }}_Alpa" class="btn-status-siswa py-2 px-1 sm:px-4 rounded-xl text-xs font-bold transition text-center flex items-center justify-center {{ $statusSiswa === 'Alpa' ? 'bg-rose-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300' }}">
                                 Alpa
                             </button>
                         </div>
@@ -187,8 +183,8 @@
         </div>
 
         {{-- Tombol Aksi Submit --}}
-        <div class="flex flex-col sm:flex-row justify-end items-center gap-3 pt-2">
-            <a href="{{ route('guru.jadwal') }}" class="w-full sm:w-auto px-6 py-3 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-2xl text-xs transition text-center">
+        <div class="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 pt-2">
+            <a href="{{ route('guru.jadwal') }}" class="w-full sm:w-auto px-6 py-3.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-2xl text-xs transition text-center">
                 Batal
             </a>
             <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-2xl text-xs transition shadow-md flex items-center justify-center space-x-2">
@@ -210,12 +206,12 @@ function setKehadiranGuru(status) {
     input.value = status;
 
     if (status === 'Hadir') {
-        btnHadir.className = 'w-full py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-center space-x-2 border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-xs';
-        btnTidakHadir.className = 'w-full py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-center space-x-2 border-slate-200 bg-white text-slate-600 hover:border-rose-200 hover:text-rose-600';
+        btnHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-xs';
+        btnTidakHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-slate-200 bg-white text-slate-600 hover:border-rose-200 hover:text-rose-600';
         if (sectionDetail) sectionDetail.classList.add('hidden');
     } else {
-        btnHadir.className = 'w-full py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-center space-x-2 border-slate-200 bg-white text-slate-600 hover:border-slate-300';
-        btnTidakHadir.className = 'w-full py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition flex items-center justify-center space-x-2 border-rose-500 bg-rose-50/50 text-rose-700 shadow-xs';
+        btnHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-slate-200 bg-white text-slate-600 hover:border-slate-300';
+        btnTidakHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-rose-500 bg-rose-50/50 text-rose-700 shadow-xs';
         if (sectionDetail) sectionDetail.classList.remove('hidden');
     }
 }
@@ -238,9 +234,12 @@ function setStatusSiswa(siswaId, status) {
     ['Hadir', 'Izin', 'Sakit', 'Alpa'].forEach(st => {
         const btn = document.getElementById('btn_' + siswaId + '_' + st);
         if (btn) {
-            btn.className = 'btn-status-siswa px-4 py-2 rounded-xl text-xs font-bold transition ' + (st === status ? activeClasses[st] : inactiveClass);
+            btn.className = 'btn-status-siswa py-2 px-1 sm:px-4 rounded-xl text-xs font-bold transition text-center flex items-center justify-center ' + (st === status ? activeClasses[st] : inactiveClass);
         }
     });
+
+    perbaruiHitungan();
+}
 
     perbaruiHitungan();
 }

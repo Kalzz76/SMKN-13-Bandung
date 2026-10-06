@@ -1,114 +1,114 @@
 @extends('layouts.admin', ['title' => 'Dashboard Administrator - CMS SMKN 13 Bandung'])
 
 @section('content')
-<div class="space-y-8">
-    <div class="bg-gradient-to-r from-emerald-900 via-emerald-850 to-slate-900 text-white rounded-3xl p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+<div class="space-y-6 sm:space-y-8">
+    <div class="bg-gradient-to-r from-emerald-900 via-emerald-850 to-slate-900 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6">
         <div>
             <span class="bg-emerald-800/80 text-emerald-200 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-emerald-600/30">Panel Utama</span>
-            <h1 class="text-3xl font-extrabold mt-2 tracking-tight">Selamat Datang, {{ auth()->user()->name }}</h1>
+            <h1 class="text-2xl sm:text-3xl font-extrabold mt-2 tracking-tight">Selamat Datang, {{ auth()->user()->name }}</h1>
             <p class="text-xs text-emerald-100 mt-1 font-light">Sistem Informasi Manajemen & Portal Resmi SMKN 13 Bandung</p>
         </div>
-        <div class="bg-white/10 backdrop-blur px-5 py-3 rounded-2xl border border-white/10 text-right">
+        <div class="bg-white/10 backdrop-blur px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl border border-white/10 text-left md:text-right">
             <span class="text-[11px] text-emerald-300 block">Hari & Tanggal</span>
             <span class="text-sm font-semibold text-white">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-            <div class="w-14 h-14 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-2xl font-bold flex-shrink-0">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div class="bg-white p-3.5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-emerald-100 text-emerald-800 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-2xl font-bold flex-shrink-0">
                 <i class="fa-solid fa-chalkboard-user"></i>
             </div>
-            <div>
-                <span class="text-xs text-slate-500 font-semibold uppercase">Total Guru & Staff</span>
-                <h3 class="text-2xl font-black text-slate-900">{{ $totalGuru }}</h3>
-                <span class="text-xs text-emerald-600 font-medium">Terdaftar di sistem</span>
+            <div class="min-w-0 w-full sm:w-auto">
+                <span class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider block truncate">Total Guru & Staff</span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight mt-0.5">{{ $totalGuru }}</h3>
+                <span class="text-[10px] sm:text-xs text-emerald-600 font-medium block truncate">Terdaftar di sistem</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-            <div class="w-14 h-14 bg-sky-100 text-sky-800 rounded-2xl flex items-center justify-center text-2xl font-bold flex-shrink-0">
+        <div class="bg-white p-3.5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-sky-100 text-sky-800 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-2xl font-bold flex-shrink-0">
                 <i class="fa-solid fa-user-graduate"></i>
             </div>
-            <div>
-                <span class="text-xs text-slate-500 font-semibold uppercase">Total Siswa</span>
-                <h3 class="text-2xl font-black text-slate-900">{{ $totalSiswa }}</h3>
-                <span class="text-xs text-sky-600 font-medium">Siswa aktif</span>
+            <div class="min-w-0 w-full sm:w-auto">
+                <span class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider block truncate">Total Siswa</span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight mt-0.5">{{ $totalSiswa }}</h3>
+                <span class="text-[10px] sm:text-xs text-sky-600 font-medium block truncate">Siswa aktif</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-            <div class="w-14 h-14 bg-amber-100 text-amber-800 rounded-2xl flex items-center justify-center text-2xl font-bold flex-shrink-0">
+        <div class="bg-white p-3.5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-amber-100 text-amber-800 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-2xl font-bold flex-shrink-0">
                 <i class="fa-solid fa-chalkboard"></i>
             </div>
-            <div>
-                <span class="text-xs text-slate-500 font-semibold uppercase">Total Kelas</span>
-                <h3 class="text-2xl font-black text-slate-900">{{ $totalKelas }}</h3>
-                <span class="text-xs text-amber-600 font-medium">Rombongan belajar</span>
+            <div class="min-w-0 w-full sm:w-auto">
+                <span class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider block truncate">Total Kelas</span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight mt-0.5">{{ $totalKelas }}</h3>
+                <span class="text-[10px] sm:text-xs text-amber-600 font-medium block truncate">Rombongan belajar</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-            <div class="w-14 h-14 bg-indigo-100 text-indigo-800 rounded-2xl flex items-center justify-center text-2xl font-bold flex-shrink-0">
+        <div class="bg-white p-3.5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 bg-indigo-100 text-indigo-800 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-2xl font-bold flex-shrink-0">
                 <i class="fa-solid fa-newspaper"></i>
             </div>
-            <div>
-                <span class="text-xs text-slate-500 font-semibold uppercase">Warta Berita</span>
-                <h3 class="text-2xl font-black text-slate-900">{{ $totalBerita }}</h3>
-                <span class="text-xs text-indigo-600 font-medium">Artikel publik</span>
+            <div class="min-w-0 w-full sm:w-auto">
+                <span class="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider block truncate">Warta Berita</span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight mt-0.5">{{ $totalBerita }}</h3>
+                <span class="text-[10px] sm:text-xs text-indigo-600 font-medium block truncate">Artikel publik</span>
             </div>
         </div>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+    <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2 sm:gap-4">
             <div>
                 <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
-                    <i class="fa-solid fa-user-check text-emerald-700"></i>
+                    <i class="fa-solid fa-user-check text-emerald-700 flex-shrink-0"></i>
                     <span>Status Presensi Guru Hari Ini ({{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }})</span>
                 </h3>
                 <p class="text-xs text-slate-500 mt-0.5">Pemantauan langsung kehadiran tenaga pendidik dan staff pengajar.</p>
             </div>
-            <a href="{{ route('admin.laporan.index') }}" class="text-xs text-emerald-700 font-bold hover:underline">
+            <a href="{{ route('admin.laporan.index') }}" class="inline-flex items-center text-xs text-emerald-700 font-bold hover:underline whitespace-nowrap self-start sm:self-auto">
                 Lihat Rekap Lengkap &rarr;
             </a>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
-                <span class="text-[11px] font-bold text-emerald-800 uppercase block">Hadir Tepat Waktu</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+            <div class="p-3 sm:p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+                <span class="text-[11px] font-bold text-emerald-800 uppercase block truncate">Hadir Tepat Waktu</span>
                 <span class="text-2xl font-black text-emerald-950 mt-1 block font-mono">{{ $guruHadirHariIni }}</span>
-                <span class="text-[11px] text-emerald-700">Tercatat Hadir</span>
+                <span class="text-[11px] text-emerald-700 block truncate">Tercatat Hadir</span>
             </div>
-            <div class="p-4 bg-amber-50 border border-amber-100 rounded-xl">
-                <span class="text-[11px] font-bold text-amber-800 uppercase block">Terlambat</span>
+            <div class="p-3 sm:p-4 bg-amber-50 border border-amber-100 rounded-xl">
+                <span class="text-[11px] font-bold text-amber-800 uppercase block truncate">Terlambat</span>
                 <span class="text-2xl font-black text-amber-950 mt-1 block font-mono">{{ $guruTerlambatHariIni }}</span>
-                <span class="text-[11px] text-amber-700">Lewat jam masuk</span>
+                <span class="text-[11px] text-amber-700 block truncate">Lewat jam masuk</span>
             </div>
-            <div class="p-4 bg-sky-50 border border-sky-100 rounded-xl">
-                <span class="text-[11px] font-bold text-sky-800 uppercase block">Izin / Sakit / Alpa</span>
+            <div class="p-3 sm:p-4 bg-sky-50 border border-sky-100 rounded-xl">
+                <span class="text-[11px] font-bold text-sky-800 uppercase block truncate">Izin / Sakit / Alpa</span>
                 <span class="text-2xl font-black text-sky-950 mt-1 block font-mono">{{ $guruIzinSakitHariIni }}</span>
-                <span class="text-[11px] text-sky-700">Via Sekretaris</span>
+                <span class="text-[11px] text-sky-700 block truncate">Via Sekretaris</span>
             </div>
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                <span class="text-[11px] font-bold text-slate-700 uppercase block">Belum Absen</span>
+            <div class="p-3 sm:p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-[11px] font-bold text-slate-700 uppercase block truncate">Belum Absen</span>
                 <span class="text-2xl font-black text-slate-900 mt-1 block font-mono">{{ $guruBelumAbsen->count() }}</span>
-                <span class="text-[11px] text-slate-500">Guru pengajar</span>
+                <span class="text-[11px] text-slate-500 block truncate">Guru pengajar</span>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="lg:col-span-7 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+            <div class="flex items-start sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
                 <div>
                     <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-user-clock text-amber-600"></i>
+                        <i class="fa-solid fa-user-clock text-amber-600 flex-shrink-0"></i>
                         <span>Daftar Guru Belum Presensi Hari Ini</span>
                     </h3>
                     <p class="text-xs text-slate-500 mt-0.5">Daftar guru yang belum mencatat kehadiran per hari ini.</p>
                 </div>
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 whitespace-nowrap flex-shrink-0">
                     {{ $guruBelumAbsen->count() }} Pendidik
                 </span>
             </div>
@@ -147,16 +147,16 @@
             @endif
         </div>
 
-        <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="lg:col-span-5 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2 sm:gap-4">
                 <div>
                     <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-newspaper text-emerald-700"></i>
+                        <i class="fa-solid fa-newspaper text-emerald-700 flex-shrink-0"></i>
                         <span>5 Warta Berita Terbaru</span>
                     </h3>
                     <p class="text-xs text-slate-500 mt-0.5">Artikel dan warta terkini di portal sekolah.</p>
                 </div>
-                <a href="{{ route('admin.berita.index') }}" class="text-xs text-emerald-700 font-bold hover:underline">
+                <a href="{{ route('admin.berita.index') }}" class="inline-flex items-center text-xs text-emerald-700 font-bold hover:underline whitespace-nowrap self-start sm:self-auto">
                     Kelola Berita &rarr;
                 </a>
             </div>

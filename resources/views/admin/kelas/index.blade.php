@@ -13,8 +13,8 @@
         </button>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <form method="GET" action="{{ route('admin.kelas.index') }}" class="flex flex-col sm:flex-row gap-4 mb-6">
+    <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+        <form method="GET" action="{{ route('admin.kelas.index') }}" class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
             <div class="relative flex-grow">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama kelas, ruangan, atau wali kelas..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
@@ -36,34 +36,34 @@
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
+                <table class="w-full text-left text-sm min-w-[640px]">
                     <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                         <tr>
-                            <th class="p-3.5 rounded-l-xl">No</th>
-                            <th class="p-3.5">Nama Kelas</th>
-                            <th class="p-3.5">Ruang Kelas</th>
-                            <th class="p-3.5">Wali Kelas</th>
-                            <th class="p-3.5">Jumlah Siswa</th>
-                            <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
+                            <th class="p-3.5 rounded-l-xl whitespace-nowrap">No</th>
+                            <th class="p-3.5 whitespace-nowrap">Nama Kelas</th>
+                            <th class="p-3.5 whitespace-nowrap">Ruang Kelas</th>
+                            <th class="p-3.5 whitespace-nowrap">Wali Kelas</th>
+                            <th class="p-3.5 whitespace-nowrap">Jumlah Siswa</th>
+                            <th class="p-3.5 rounded-r-xl text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @foreach($daftarKelas as $index => $k)
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="p-3.5 font-medium text-slate-400">{{ $daftarKelas->firstItem() + $index }}</td>
-                                <td class="p-3.5 font-bold text-slate-900">
-                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
+                                <td class="p-3.5 font-medium text-slate-400 whitespace-nowrap">{{ $daftarKelas->firstItem() + $index }}</td>
+                                <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap inline-block">
                                         {{ $k->nama }}
                                     </span>
                                 </td>
-                                <td class="p-3.5 text-slate-700 font-semibold text-xs">
+                                <td class="p-3.5 text-slate-700 font-semibold text-xs whitespace-nowrap">
                                     {{ $k->ruangan ? $k->ruangan->nama . ' (' . $k->ruangan->kode . ')' : '-' }}
                                 </td>
-                                <td class="p-3.5 text-slate-800 text-xs font-semibold">
+                                <td class="p-3.5 text-slate-800 text-xs font-semibold whitespace-nowrap">
                                     {{ $k->waliKelas ? $k->waliKelas->nama : '-' }}
                                 </td>
-                                <td class="p-3.5 text-slate-600 text-xs">
-                                    <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-semibold">
+                                <td class="p-3.5 text-slate-600 text-xs whitespace-nowrap">
+                                    <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-semibold whitespace-nowrap inline-block">
                                         {{ $k->siswa->count() }} siswa
                                     </span>
                                 </td>

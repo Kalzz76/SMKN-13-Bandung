@@ -21,12 +21,15 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col md:flex-row">
+    {{-- Mobile Sidebar Backdrop with Blur --}}
+    <div id="sekretarisSidebarBackdrop" onclick="closeSekretarisSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden md:hidden transition-all duration-200" style="touch-action: none;"></div>
+
     @include('partials.sekretaris-sidebar')
 
-    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    <div id="sekretarisMainContent" class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden transition-all duration-200">
         @include('partials.sekretaris-header')
 
-        <main class="flex-grow p-6 sm:p-10 overflow-y-auto">
+        <main id="sekretarisMainScroll" class="flex-grow p-6 sm:p-10 overflow-y-auto">
             @if(session('sukses'))
                 <div class="mb-6 p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-sm font-semibold flex items-center justify-between shadow-xs">
                     <div class="flex items-center space-x-2">
@@ -71,11 +74,77 @@
     <script>
     function toggleSekretarisSidebar() {
         const sidebar = document.getElementById('sekretarisSidebar');
-        if (sidebar) {
-            sidebar.classList.toggle('hidden');
-            sidebar.classList.toggle('flex');
+        if (!sidebar) return;
+        const isHidden = sidebar.classList.contains('hidden');
+        if (isHidden) {
+            openSekretarisSidebar();
+        } else {
+            closeSekretarisSidebar();
         }
     }
+
+    function openSekretarisSidebar() {
+        const sidebar = document.getElementById('sekretarisSidebar');
+        const backdrop = document.getElementById('sekretarisSidebarBackdrop');
+        const content = document.getElementById('sekretarisMainContent');
+        const main = document.getElementById('sekretarisMainScroll');
+
+        if (sidebar) {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex');
+        }
+        if (backdrop) {
+            backdrop.classList.remove('hidden');
+        }
+        if (content) {
+            content.classList.add('blur-[3px]', 'pointer-events-none');
+        }
+        if (main) {
+            main.classList.add('overflow-hidden');
+        }
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeSekretarisSidebar() {
+        const sidebar = document.getElementById('sekretarisSidebar');
+        const backdrop = document.getElementById('sekretarisSidebarBackdrop');
+        const content = document.getElementById('sekretarisMainContent');
+        const main = document.getElementById('sekretarisMainScroll');
+
+        if (sidebar && window.innerWidth < 768) {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex');
+        }
+        if (backdrop) {
+            backdrop.classList.add('hidden');
+        }
+        if (content) {
+            content.classList.remove('blur-[3px]', 'pointer-events-none');
+        }
+        if (main) {
+            main.classList.remove('overflow-hidden');
+        }
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+            closeSekretarisSidebar();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSekretarisSidebar();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('#sekretarisSidebar a');
+        links.forEach(function(link) {
+            link.addEventListener('click', closeSekretarisSidebar);
+        });
+    });
     </script>
 </body>
 </html>

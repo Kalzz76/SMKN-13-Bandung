@@ -150,6 +150,7 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
 
 Route::middleware(['auth', 'role:sekretaris'])->prefix('sekretaris')->name('sekretaris.')->group(function () {
     Route::get('/', [SekretarisDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/rekap-presensi', [SekretarisDashboardController::class, 'rekapPresensi'])->name('rekap-presensi');
     Route::get('/absensi-siswa/{id}', [SekretarisDashboardController::class, 'absensiSiswa'])->name('absensi-siswa');
     Route::post('/absensi-siswa/{id}', [SekretarisDashboardController::class, 'simpanAbsensiSiswa'])->name('absensi-siswa.simpan');
 });

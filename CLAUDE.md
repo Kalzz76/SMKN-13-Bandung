@@ -234,7 +234,7 @@ P. Log Aktivitas           (tambahan)
 
 **Barcode Absensi**: dua kolom. Kiri: pilihan Guru, tombol **Buat Barcode Absensi**. Kanan: kotak berisi QR Code (`qrcodejs`, 140x140) dan label `Barcode: {nama guru}`. Tambahan di bawahnya: tabel guru (jenis Guru) dengan status barcode, tombol **Cetak** (kartu berisi nama, NIP, QR; `window.print()` dengan CSS cetak), **Cetak Semua**, dan **Generate Ulang** (kode lama otomatis tidak berlaku). Tombol Buat membuat `kode_barcode` acak 32 karakter lewat `Str::random(32)` dan menyimpannya ke tabel `guru`. Isi QR hanya `kode_barcode`.
 
-**A. Data Siswa**: kolom No, NIS/NISN, Nama Lengkap, L/P, Kelas (badge hijau), Tahun Ajaran, Aksi. Modal: NIS/NISN, Nama, Jenis Kelamin (L/P), Kelas (**dropdown dari tabel kelas**, bukan teks bebas), Tahun Ajaran (contoh `2026/2027`).
+**A. Data Siswa**: kolom No, NIS/NISN, Nama Lengkap, L/P, Kelas (badge hijau), Aksi. Modal: NIS/NISN, Nama, Jenis Kelamin (L/P), Kelas (**dropdown dari tabel kelas**, bukan teks bebas).
 
 **B. Manajemen Kelas**: kolom Nama Kelas, Ruangan, Wali Kelas, Aksi. Modal: Nama Kelas (contoh `XII RPL 1`), Ruangan (dropdown dari Data Ruangan), Wali Kelas (dropdown dari Data Guru).
 
@@ -362,7 +362,7 @@ Satu baris saja (id selalu 1): `nama_sekolah`, `npsn`, `alamat`, `email`, `telep
 `id`, `nama` (unik, contoh `XII RPL 1`), `id_ruangan` (nullable, FK), `id_wali_kelas` (nullable, FK `guru`).
 
 ### siswa
-`id`, `nis` (unik), `nama`, `jenis_kelamin` (`L` / `P`), `id_kelas` (FK), `tahun_ajaran`.
+`id`, `nis` (unik), `nama`, `jenis_kelamin` (`L` / `P`), `id_kelas` (FK).
 
 ### mapel
 `id`, `kode` (unik), `nama`, `kelompok` (`Produktif` / `Normatif` / `Adaptif`).

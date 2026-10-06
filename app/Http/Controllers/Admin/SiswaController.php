@@ -24,7 +24,6 @@ class SiswaController extends Controller
                 $q->where('nis', 'like', "%{$cari}%")
                   ->orWhere('nisn', 'like', "%{$cari}%")
                   ->orWhere('nama', 'like', "%{$cari}%")
-                  ->orWhere('tahun_ajaran', 'like', "%{$cari}%")
                   ->orWhereHas('kelas', function ($kq) use ($cari) {
                       $kq->where('nama', 'like', "%{$cari}%");
                   });
@@ -45,7 +44,6 @@ class SiswaController extends Controller
             'nama' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
             'id_kelas' => 'required|exists:kelas,id',
-            'tahun_ajaran' => 'required|string|max:20',
         ], [
             'nis.regex' => 'NIS hanya boleh berisi angka.',
             'nisn.regex' => 'NISN hanya boleh berisi angka.',
@@ -57,7 +55,6 @@ class SiswaController extends Controller
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
             'id_kelas' => $request->id_kelas,
-            'tahun_ajaran' => $request->tahun_ajaran,
         ]);
 
         LogAktivitas::catat('Tambah Siswa', "Menambahkan siswa '{$siswa->nama}' (NIS: {$siswa->nis})");
@@ -75,7 +72,6 @@ class SiswaController extends Controller
             'nama' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
             'id_kelas' => 'required|exists:kelas,id',
-            'tahun_ajaran' => 'required|string|max:20',
         ], [
             'nis.regex' => 'NIS hanya boleh berisi angka.',
             'nisn.regex' => 'NISN hanya boleh berisi angka.',
@@ -87,7 +83,6 @@ class SiswaController extends Controller
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
             'id_kelas' => $request->id_kelas,
-            'tahun_ajaran' => $request->tahun_ajaran,
         ]);
 
         LogAktivitas::catat('Ubah Siswa', "Memperbarui data siswa '{$siswa->nama}' (NIS: {$siswa->nis})");
