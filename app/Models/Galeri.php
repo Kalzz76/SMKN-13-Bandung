@@ -12,4 +12,20 @@ class Galeri extends Model
     protected $table = 'galeri';
 
     protected $guarded = ['id'];
+
+    public function fotos()
+    {
+        return $this->hasMany(GaleriFoto::class, 'galeri_id')->orderBy('urutan')->orderBy('id');
+    }
+
+    public function getFotoUtamaAttribute()
+    {
+        if ($this->foto) {
+            return $this->foto;
+        }
+
+        $pertama = $this->fotos->first();
+        return $pertama ? $pertama->foto : null;
+    }
 }
+

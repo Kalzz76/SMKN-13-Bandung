@@ -1,4 +1,5 @@
-<aside id="sekretarisSidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex-col flex-shrink-0 h-screen hidden md:relative md:flex transition-all duration-300 shadow-xl md:shadow-none">
+<aside id="sekretarisSidebar"
+    class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex-col flex-shrink-0 h-screen hidden md:relative md:flex transition-all duration-300 shadow-xl md:shadow-none">
     <div class="p-6 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center space-x-3">
             <div class="bg-emerald-700 text-white p-2 rounded-xl font-bold shadow">13</div>
@@ -30,7 +31,8 @@
     </div>
 
     <div class="p-4 border-t border-slate-800 flex-shrink-0">
-        <button type="button" onclick="openLogoutModal()" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
+        <button type="button" onclick="openLogoutModal()"
+            class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Keluar ke Portal</span>
         </button>

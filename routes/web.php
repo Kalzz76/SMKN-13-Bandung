@@ -75,16 +75,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+    Route::get('/siswa/template', [SiswaController::class, 'template'])->name('siswa.template');
+    Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+    Route::delete('/siswa/bulk-delete', [SiswaController::class, 'bulkDelete'])->name('siswa.bulk-delete');
     Route::post('/siswa', [SiswaController::class, 'store'])->name('siswa.store');
     Route::put('/siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
     Route::delete('/siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
 
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    Route::post('/user/generate-guru', [UserController::class, 'generateGuru'])->name('user.generate-guru');
+    Route::post('/user/generate-siswa', [UserController::class, 'generateSiswa'])->name('user.generate-siswa');
+    Route::post('/user/{id}/reset-password', [UserController::class, 'resetPassword'])->name('user.reset-password');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
     Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/jam/{hari}', [JadwalController::class, 'jamHari'])->name('jadwal.jam');
     Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
     Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
     Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
@@ -104,6 +111,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/galeri', [GaleriController::class, 'store'])->name('galeri.store');
     Route::put('/galeri/{id}', [GaleriController::class, 'update'])->name('galeri.update');
     Route::delete('/galeri/{id}', [GaleriController::class, 'destroy'])->name('galeri.destroy');
+    Route::post('/galeri/{id}/tambah-foto', [GaleriController::class, 'tambahFoto'])->name('galeri.tambah-foto');
+    Route::delete('/galeri/foto/{id}', [GaleriController::class, 'destroyFoto'])->name('galeri.destroy-foto');
 
     Route::get('/jurusan', [JurusanController::class, 'index'])->name('jurusan.index');
     Route::post('/jurusan', [JurusanController::class, 'store'])->name('jurusan.store');

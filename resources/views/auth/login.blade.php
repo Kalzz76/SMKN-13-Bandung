@@ -1,19 +1,22 @@
 @php
-    $sitePengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
-    $namaSekolah = $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung';
+  $sitePengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
+  $namaSekolah = $sitePengaturan->nama_sekolah ?? 'SMKN 13 Bandung';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Masuk — {{ $namaSekolah }}</title>
-  
+
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <style>
@@ -45,6 +48,7 @@
         filter: blur(8px);
         transform: scale(0.985);
       }
+
       100% {
         opacity: 1;
         filter: blur(0);
@@ -326,7 +330,7 @@
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
     }
 
-    .input-group input:focus ~ i.field-icon {
+    .input-group input:focus~i.field-icon {
       color: #6ee7b7;
     }
 
@@ -629,29 +633,36 @@
         font-size: 1.8rem;
         margin-bottom: 0.5rem;
       }
+
       .promo-content p {
         font-size: 0.82rem;
         line-height: 1.45;
       }
+
       .img-wrap svg {
         width: 120px;
       }
+
       .form {
         padding: 1.3rem 1.5rem;
       }
+
       .input-group {
         margin: 0.55rem 0;
       }
+
       .input-group input {
         padding: 0.68rem 2.2rem 0.68rem 2.4rem;
         font-size: 0.82rem;
       }
+
       .brand-logo-wrap {
         margin-bottom: 0.7rem;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Interactive Canvas Background -->
@@ -672,15 +683,18 @@
           </div>
           <h2>Selamat datang kembali!</h2>
           <p>
-            Sistem Informasi &amp; Portal Akademik {{ $namaSekolah }}. Akses jadwal pelajaran, presensi digital, jurnal kelas, serta layanan sekolah terpadu.
+            Sistem Informasi &amp; Portal Akademik {{ $namaSekolah }}. Akses jadwal pelajaran, presensi digital, jurnal
+            kelas, serta layanan sekolah terpadu.
           </p>
           <div class="img-wrap">
             <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M100 45 C75 35 35 38 20 44 V95 C35 89 75 86 100 96 C125 86 165 89 180 95 V44 C165 38 125 35 100 45 Z" fill="#ffffff" fill-opacity="0.95"/>
-              <path d="M100 45 V96" stroke="#059669" stroke-width="3" stroke-linecap="round"/>
-              <path d="M100 20 L55 35 L100 50 L145 35 Z" fill="#f9bf29"/>
-              <path d="M145 35 V55" stroke="#f9bf29" stroke-width="3" stroke-linecap="round"/>
-              <circle cx="145" cy="58" r="4" fill="#f9bf29"/>
+              <path
+                d="M100 45 C75 35 35 38 20 44 V95 C35 89 75 86 100 96 C125 86 165 89 180 95 V44 C165 38 125 35 100 45 Z"
+                fill="#ffffff" fill-opacity="0.95" />
+              <path d="M100 45 V96" stroke="#059669" stroke-width="3" stroke-linecap="round" />
+              <path d="M100 20 L55 35 L100 50 L145 35 Z" fill="#f9bf29" />
+              <path d="M145 35 V55" stroke="#f9bf29" stroke-width="3" stroke-linecap="round" />
+              <circle cx="145" cy="58" r="4" fill="#f9bf29" />
             </svg>
           </div>
         </div>
@@ -690,11 +704,12 @@
       <div class="col align-items-center flex-col">
         <div class="form-wrapper align-items-center">
           <div class="form">
-            
+
             <div class="brand-logo-wrap">
               <a href="{{ url('/') }}" class="brand-link">
                 @if(!empty($sitePengaturan->logo))
-                  <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo {{ $namaSekolah }}" class="brand-img">
+                  <img src="{{ asset('storage/' . $sitePengaturan->logo) }}" alt="Logo {{ $namaSekolah }}"
+                    class="brand-img">
                 @else
                   <div class="brand-icon">
                     <i class="bx bxs-graduation"></i>
@@ -710,13 +725,16 @@
 
               <div class="input-group">
                 <i class="bx bx-user field-icon"></i>
-                <input type="text" id="usernameMasuk" name="username" placeholder="Username / NIP / NISN" autocomplete="username" required autofocus value="{{ old('username') }}">
+                <input type="text" id="usernameMasuk" name="username" placeholder="Username / NIP / NISN"
+                  autocomplete="username" required autofocus value="{{ old('username') }}">
               </div>
 
               <div class="input-group">
                 <i class="bx bxs-lock-alt field-icon"></i>
-                <input type="password" id="passwordMasuk" name="password" placeholder="Kata sandi" autocomplete="current-password" required>
-                <button type="button" class="toggle-pass" onclick="togglePasswordVisibility('passwordMasuk', this)" aria-label="Lihat kata sandi">
+                <input type="password" id="passwordMasuk" name="password" placeholder="Kata sandi"
+                  autocomplete="current-password" required>
+                <button type="button" class="toggle-pass" onclick="togglePasswordVisibility('passwordMasuk', this)"
+                  aria-label="Lihat kata sandi">
                   <i class="bx bx-show"></i>
                 </button>
               </div>
@@ -773,10 +791,10 @@
       if (!box) return;
       const textSpan = document.getElementById(elementId + 'Teks');
       const icon = box.querySelector('i');
-      
+
       textSpan.textContent = text;
       box.className = `pesan muncul ${type}`;
-      
+
       if (type === 'berhasil') {
         icon.className = 'bx bxs-check-circle';
       } else {
@@ -807,7 +825,7 @@
       const toastContainer = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       toast.className = `toast-item ${tipe}`;
-      
+
       const iconClass = tipe === 'sukses' ? 'bx bx-check-circle' : 'bx bx-info-circle';
       toast.innerHTML = `
         <i class="${iconClass}"></i>
@@ -854,7 +872,7 @@
       const btn = document.getElementById('tombolMasuk');
       const btnText = document.getElementById('tombolMasukTeks');
       const btnIcon = document.getElementById('tombolMasukIcon');
-      
+
       btn.disabled = true;
       btnText.textContent = 'Memverifikasi...';
       btnIcon.className = 'bx bx-loader-alt bx-spin';
@@ -1019,4 +1037,5 @@
     })();
   </script>
 </body>
+
 </html>

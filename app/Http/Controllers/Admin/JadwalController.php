@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\Jadwal;
+use App\Models\JadwalPembiasaan;
 use App\Models\JamPelajaran;
 use App\Models\Kelas;
 use App\Models\LogAktivitas;
@@ -15,9 +16,11 @@ use Illuminate\Http\Request;
 
 class JadwalController extends Controller
 {
+    private const DAFTAR_HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+
     public function index(Request $request)
     {
-        $daftarHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        $daftarHari = self::DAFTAR_HARI;
 
         $hariIniInggris = Carbon::now('Asia/Jakarta')->format('l');
         $petaHari = [
@@ -41,7 +44,32 @@ class JadwalController extends Controller
             ->get();
         $semuaJadwal = Jadwal::with(['kelas', 'mapel', 'guru', 'ruangan'])->get();
 
-        $daftarJamPelajaran = JamPelajaran::orderBy('urutan')->get();
+        $slotHari = JamPelajaran::slotHari($hariTerpilih);
+        $ringkasanHari = JamPelajaran::ringkasan($slotHari, $hariTerpilih);
+        $jamKeMap = $slotHari->where('jenis', JamPelajaran::JENIS_PELAJARAN)->keyBy('jam_ke');
+
+        $sesiMingguIni = JadwalPembiasaan::sesiMingguIni();
+        $sesiTerpilih = (int) $request->query('sesi', $sesiMingguIni);
+        if (!in_array($sesiTerpilih, [1, 2], true)) {
+            $sesiTerpilih = $sesiMingguIni;
+        }
+        $parameterSesi = $request->has('sesi') ? ['sesi' => $sesiTerpilih] : [];
+
+        $aturanRotasi = JadwalPembiasaan::aturanHari($hariTerpilih);
+        $adaRotasi = $aturanRotasi->isNotEmpty();
+        $namaPembiasaanHari = $ringkasanHari['pembiasaan']['nama'] ?? 'Pembiasaan';
+
+        $labelPembiasaan = [];
+        foreach ($daftarKelas as $k) {
+            $aturan = $aturanRotasi->first(function ($a) use ($sesiTerpilih, $k) {
+                return $a->sesi === $sesiTerpilih && $a->kelompok === $k->kelompok_pembiasaan;
+            });
+
+            $labelPembiasaan[$k->id] = $aturan
+                ? ['kegiatan' => $aturan->kegiatan, 'lokasi' => $aturan->lokasi, 'rotasi' => true]
+                : ['kegiatan' => $namaPembiasaanHari, 'lokasi' => null, 'rotasi' => false];
+        }
+
         $daftarMapel = Mapel::orderBy('nama')->get();
         $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
         $daftarRuangan = Ruangan::orderBy('kode')->get();
@@ -52,84 +80,41 @@ class JadwalController extends Controller
             'daftarKelas',
             'daftarJadwal',
             'semuaJadwal',
-            'daftarJamPelajaran',
+            'slotHari',
+            'ringkasanHari',
+            'jamKeMap',
+            'sesiTerpilih',
+            'sesiMingguIni',
+            'parameterSesi',
+            'aturanRotasi',
+            'adaRotasi',
+            'labelPembiasaan',
             'daftarMapel',
             'daftarGuru',
             'daftarRuangan'
         ));
     }
 
+    public function jamHari(string $hari)
+    {
+        abort_unless(in_array($hari, self::DAFTAR_HARI, true), 404);
+
+        return response()->json(JamPelajaran::ringkasanHari($hari));
+    }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
-            'id_kelas' => 'required|exists:kelas,id',
-            'id_mapel' => 'required|exists:mapel,id',
-            'id_guru' => 'required|exists:guru,id',
-            'id_ruangan' => 'required|exists:ruangan,id',
-            'jam_ke_mulai' => 'required|integer|min:1|max:7',
-            'jam_ke_selesai' => 'required|integer|min:1|max:7',
-        ]);
+        $request->validate($this->aturanValidasi());
 
-        if ($request->jam_ke_selesai < $request->jam_ke_mulai) {
-            return redirect()->back()->withInput()->with('error', 'Jam selesai tidak boleh lebih awal dari jam mulai.');
+        if ($kesalahan = $this->periksaStrukturJam($request)) {
+            return redirect()->back()->withInput()->with('error', $kesalahan);
         }
 
-        if (($request->jam_ke_mulai <= 3 && $request->jam_ke_selesai >= 4) ||
-            ($request->jam_ke_mulai <= 5 && $request->jam_ke_selesai >= 6)) {
-            return redirect()->back()->withInput()->with('error', 'Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.');
+        if ($kesalahan = $this->periksaBentrok($request)) {
+            return redirect()->back()->withInput()->with('error', $kesalahan);
         }
 
-        $bentrokGuru = Jadwal::where('hari', $request->hari)
-            ->where('id_guru', $request->id_guru)
-            ->where(function ($q) use ($request) {
-                $q->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
-                  ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai);
-            })
-            ->first();
-
-        if ($bentrokGuru) {
-            $guru = Guru::find($request->id_guru);
-            $kelas = Kelas::find($bentrokGuru->id_kelas);
-            return redirect()->back()->withInput()->with('error', "Guru {$guru->nama} sudah memiliki jadwal mengajar di kelas {$kelas->nama} pada jam tersebut.");
-        }
-
-        $bentrokKelas = Jadwal::where('hari', $request->hari)
-            ->where('id_kelas', $request->id_kelas)
-            ->where(function ($q) use ($request) {
-                $q->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
-                  ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai);
-            })
-            ->first();
-
-        if ($bentrokKelas) {
-            $kelas = Kelas::find($request->id_kelas);
-            return redirect()->back()->withInput()->with('error', "Kelas {$kelas->nama} sudah memiliki jadwal pelajaran lain pada jam tersebut.");
-        }
-
-        $bentrokRuangan = Jadwal::where('hari', $request->hari)
-            ->where('id_ruangan', $request->id_ruangan)
-            ->where(function ($q) use ($request) {
-                $q->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
-                  ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai);
-            })
-            ->first();
-
-        if ($bentrokRuangan) {
-            $ruangan = Ruangan::find($request->id_ruangan);
-            $kelas = Kelas::find($bentrokRuangan->id_kelas);
-            return redirect()->back()->withInput()->with('error', "Ruangan {$ruangan->nama} sudah digunakan oleh kelas {$kelas->nama} pada jam tersebut.");
-        }
-
-        $jadwal = Jadwal::create([
-            'hari' => $request->hari,
-            'id_kelas' => $request->id_kelas,
-            'id_mapel' => $request->id_mapel,
-            'id_guru' => $request->id_guru,
-            'id_ruangan' => $request->id_ruangan,
-            'jam_ke_mulai' => $request->jam_ke_mulai,
-            'jam_ke_selesai' => $request->jam_ke_selesai,
-        ]);
+        $jadwal = Jadwal::create($this->dataJadwal($request));
 
         $kelas = Kelas::find($request->id_kelas);
         $mapel = Mapel::find($request->id_mapel);
@@ -142,78 +127,17 @@ class JadwalController extends Controller
     {
         $jadwal = Jadwal::findOrFail($id);
 
-        $request->validate([
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
-            'id_kelas' => 'required|exists:kelas,id',
-            'id_mapel' => 'required|exists:mapel,id',
-            'id_guru' => 'required|exists:guru,id',
-            'id_ruangan' => 'required|exists:ruangan,id',
-            'jam_ke_mulai' => 'required|integer|min:1|max:7',
-            'jam_ke_selesai' => 'required|integer|min:1|max:7',
-        ]);
+        $request->validate($this->aturanValidasi());
 
-        if ($request->jam_ke_selesai < $request->jam_ke_mulai) {
-            return redirect()->back()->withInput()->with('error', 'Jam selesai tidak boleh lebih awal dari jam mulai.');
+        if ($kesalahan = $this->periksaStrukturJam($request)) {
+            return redirect()->back()->withInput()->with('error', $kesalahan);
         }
 
-        if (($request->jam_ke_mulai <= 3 && $request->jam_ke_selesai >= 4) ||
-            ($request->jam_ke_mulai <= 5 && $request->jam_ke_selesai >= 6)) {
-            return redirect()->back()->withInput()->with('error', 'Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.');
+        if ($kesalahan = $this->periksaBentrok($request, (int) $id)) {
+            return redirect()->back()->withInput()->with('error', $kesalahan);
         }
 
-        $bentrokGuru = Jadwal::where('hari', $request->hari)
-            ->where('id_guru', $request->id_guru)
-            ->where('id', '!=', $id)
-            ->where(function ($q) use ($request) {
-                $q->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
-                  ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai);
-            })
-            ->first();
-
-        if ($bentrokGuru) {
-            $guru = Guru::find($request->id_guru);
-            $kelas = Kelas::find($bentrokGuru->id_kelas);
-            return redirect()->back()->withInput()->with('error', "Guru {$guru->nama} sudah memiliki jadwal mengajar di kelas {$kelas->nama} pada jam tersebut.");
-        }
-
-        $bentrokKelas = Jadwal::where('hari', $request->hari)
-            ->where('id_kelas', $request->id_kelas)
-            ->where('id', '!=', $id)
-            ->where(function ($q) use ($request) {
-                $q->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
-                  ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai);
-            })
-            ->first();
-
-        if ($bentrokKelas) {
-            $kelas = Kelas::find($request->id_kelas);
-            return redirect()->back()->withInput()->with('error', "Kelas {$kelas->nama} sudah memiliki jadwal pelajaran lain pada jam tersebut.");
-        }
-
-        $bentrokRuangan = Jadwal::where('hari', $request->hari)
-            ->where('id_ruangan', $request->id_ruangan)
-            ->where('id', '!=', $id)
-            ->where(function ($q) use ($request) {
-                $q->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
-                  ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai);
-            })
-            ->first();
-
-        if ($bentrokRuangan) {
-            $ruangan = Ruangan::find($request->id_ruangan);
-            $kelas = Kelas::find($bentrokRuangan->id_kelas);
-            return redirect()->back()->withInput()->with('error', "Ruangan {$ruangan->nama} sudah digunakan oleh kelas {$kelas->nama} pada jam tersebut.");
-        }
-
-        $jadwal->update([
-            'hari' => $request->hari,
-            'id_kelas' => $request->id_kelas,
-            'id_mapel' => $request->id_mapel,
-            'id_guru' => $request->id_guru,
-            'id_ruangan' => $request->id_ruangan,
-            'jam_ke_mulai' => $request->jam_ke_mulai,
-            'jam_ke_selesai' => $request->jam_ke_selesai,
-        ]);
+        $jadwal->update($this->dataJadwal($request));
 
         $kelas = Kelas::find($request->id_kelas);
         $mapel = Mapel::find($request->id_mapel);
@@ -239,5 +163,89 @@ class JadwalController extends Controller
         LogAktivitas::catat('Hapus Jadwal', "Menghapus jadwal pelajaran {$kelas} - {$mapel} ({$hari})");
 
         return redirect()->route('admin.jadwal.index', ['hari' => $hari])->with('sukses', 'Jadwal pelajaran berhasil dihapus.');
+    }
+
+    private function aturanValidasi(): array
+    {
+        return [
+            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
+            'id_kelas' => 'required|exists:kelas,id',
+            'id_mapel' => 'required|exists:mapel,id',
+            'id_guru' => 'required|exists:guru,id',
+            'id_ruangan' => 'required|exists:ruangan,id',
+            'jam_ke_mulai' => 'required|integer|min:1',
+            'jam_ke_selesai' => 'required|integer|min:1',
+        ];
+    }
+
+    private function dataJadwal(Request $request): array
+    {
+        return [
+            'hari' => $request->hari,
+            'id_kelas' => $request->id_kelas,
+            'id_mapel' => $request->id_mapel,
+            'id_guru' => $request->id_guru,
+            'id_ruangan' => $request->id_ruangan,
+            'jam_ke_mulai' => $request->jam_ke_mulai,
+            'jam_ke_selesai' => $request->jam_ke_selesai,
+        ];
+    }
+
+    private function periksaStrukturJam(Request $request): ?string
+    {
+        $mulai = (int) $request->jam_ke_mulai;
+        $selesai = (int) $request->jam_ke_selesai;
+
+        if ($selesai < $mulai) {
+            return 'Jam selesai tidak boleh lebih awal dari jam mulai.';
+        }
+
+        $ringkasan = JamPelajaran::ringkasanHari($request->hari);
+        $maksimal = $ringkasan['maks_jam'];
+
+        if ($mulai > $maksimal || $selesai > $maksimal) {
+            return "Hari {$request->hari} hanya memiliki Jam 1 sampai Jam {$maksimal}. Jam yang dipilih tidak tersedia.";
+        }
+
+        if (JamPelajaran::melewatiIstirahat($ringkasan, $mulai, $selesai)) {
+            return 'Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.';
+        }
+
+        return null;
+    }
+
+    private function periksaBentrok(Request $request, ?int $kecualiId = null): ?string
+    {
+        $bentrokGuru = $this->cariBentrok($request, 'id_guru', $kecualiId);
+        if ($bentrokGuru) {
+            $guru = Guru::find($request->id_guru);
+            $kelas = Kelas::find($bentrokGuru->id_kelas);
+            return "Guru {$guru->nama} sudah memiliki jadwal mengajar di kelas {$kelas->nama} pada jam tersebut.";
+        }
+
+        $bentrokKelas = $this->cariBentrok($request, 'id_kelas', $kecualiId);
+        if ($bentrokKelas) {
+            $kelas = Kelas::find($request->id_kelas);
+            return "Kelas {$kelas->nama} sudah memiliki jadwal pelajaran lain pada jam tersebut.";
+        }
+
+        $bentrokRuangan = $this->cariBentrok($request, 'id_ruangan', $kecualiId);
+        if ($bentrokRuangan) {
+            $ruangan = Ruangan::find($request->id_ruangan);
+            $kelas = Kelas::find($bentrokRuangan->id_kelas);
+            return "Ruangan {$ruangan->nama} sudah digunakan oleh kelas {$kelas->nama} pada jam tersebut.";
+        }
+
+        return null;
+    }
+
+    private function cariBentrok(Request $request, string $kolom, ?int $kecualiId = null): ?Jadwal
+    {
+        return Jadwal::where('hari', $request->hari)
+            ->where($kolom, $request->input($kolom))
+            ->when($kecualiId, fn ($q) => $q->where('id', '!=', $kecualiId))
+            ->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
+            ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai)
+            ->first();
     }
 }

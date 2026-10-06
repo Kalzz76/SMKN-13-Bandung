@@ -9,6 +9,7 @@ use App\Models\LogAktivitas;
 use App\Models\Ruangan;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KelasController extends Controller
 {
@@ -140,14 +141,16 @@ class KelasController extends Controller
     {
         $kelas = Kelas::findOrFail($id);
 
-        if ($kelas->siswa()->count() > 0 || $kelas->jadwal()->count() > 0) {
-            return redirect()->route('admin.kelas.index')->with('error', 'Kelas tidak dapat dihapus karena masih memiliki data siswa atau jadwal pelajaran.');
+        if ($kelas->siswa()->count() > 0) {
+            return redirect()->route('admin.kelas.index')->with('error', 'Kelas tidak dapat dihapus karena masih memiliki data siswa. Harap hapus atau pindahkan siswa terlebih dahulu.');
         }
 
-        $nama = $kelas->nama;
-        $kelas->delete();
-
-        LogAktivitas::catat('Hapus Kelas', "Menghapus kelas '{$nama}'");
+        DB::transaction(function () use ($kelas) {
+            $kelas->jadwal()->delete();
+            $nama = $kelas->nama;
+            $kelas->delete();
+            LogAktivitas::catat('Hapus Kelas', "Menghapus kelas '{$nama}'");
+        });
 
         return redirect()->route('admin.kelas.index')->with('sukses', 'Data kelas berhasil dihapus.');
     }

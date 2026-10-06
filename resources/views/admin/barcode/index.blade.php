@@ -5,7 +5,7 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <h1 class="text-2xl font-black text-slate-900">Barcode Absensi Guru</h1>
-            <p class="text-sm text-slate-500 mt-1">Pembuatan QR Code acak 32-karakter dan kartu cetak kehadiran guru.</p>
+            <p class="text-sm text-slate-500 mt-1">Pembuatan QR Code acak 32-karakter dan cetak Kartu Tanda Guru SMKN 13 Bandung.</p>
         </div>
         <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto shrink-0">
             <a href="{{ route('admin.barcode.cetak', ['download' => 'pdf']) }}" target="_blank" class="col-span-1 sm:w-auto bg-rose-600 hover:bg-rose-500 text-white font-semibold px-3.5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center space-x-2 text-xs sm:text-sm whitespace-nowrap">
@@ -26,11 +26,11 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between space-y-6">
             <div>
                 <h3 class="font-bold text-slate-900 text-lg mb-2 flex items-center space-x-2">
-                    <i class="fa-solid fa-qrcode text-emerald-700"></i>
+                    <i class="fa-solid fa-qrcode text-[#0b6534]"></i>
                     <span>Generator QR Code Guru</span>
                 </h3>
                 <p class="text-slate-500 text-xs leading-relaxed">
@@ -42,18 +42,18 @@
                 @csrf
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru Pengajar</label>
-                    <select name="id_guru" id="selectGuru" onchange="window.location.href='{{ route('admin.barcode.index') }}?guru_id=' + this.value" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <select name="id_guru" id="selectGuru" onchange="window.location.href='{{ route('admin.barcode.index') }}?guru_id=' + this.value" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-[#0b6534] text-sm" required>
                         <option value="">-- Pilih Guru --</option>
                         @foreach($daftarGuru as $g)
                             <option value="{{ $g->id }}" {{ $guruTerpilih && $guruTerpilih->id == $g->id ? 'selected' : '' }}>
-                                {{ $g->nama }} ({{ $g->nip ?? 'No NIP' }})
+                                {{ $g->nama }} ({{ $g->nip ?? 'No NIP' }}) - {{ $g->kode_barcode ? 'Aktif' : 'Belum Ada Barcode' }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 text-sm">
+                <button type="submit" class="w-full bg-[#0b6534] hover:bg-[#09572c] text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 text-sm">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span>Buat Barcode Absensi</span>
+                    <span>{{ $guruTerpilih && $guruTerpilih->kode_barcode ? 'Generate Ulang Barcode' : 'Buat Barcode Absensi' }}</span>
                 </button>
             </form>
         </div>
@@ -151,32 +151,26 @@
                     </button>
                     <a href="{{ route('admin.barcode.cetak', ['id' => $guruTerpilih->id]) }}" target="_blank" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition flex items-center justify-center space-x-2 shadow">
                         <i class="fa-solid fa-print"></i>
-                        <span>Cetak Kartu</span>
+                        <span>Cetak Kartu Guru Ini</span>
                     </a>
-                </div>
-            @elseif($guruTerpilih)
-                <div class="w-36 h-36 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 p-4">
-                    <i class="fa-solid fa-qrcode text-3xl mb-2 text-slate-300"></i>
-                    <span class="text-xs">Belum ada barcode</span>
-                </div>
-                <div>
-                    <h4 class="text-base font-bold text-slate-900">{{ $guruTerpilih->nama }}</h4>
-                    <p class="text-xs text-slate-500 mt-1">Klik tombol "Buat Barcode Absensi" untuk membuat kode QR.</p>
                 </div>
             @else
                 <div class="w-36 h-36 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-300">
-                    <i class="fa-solid fa-qrcode text-4xl"></i>
+                    <i class="fa-solid fa-id-card text-4xl"></i>
                 </div>
-                <p class="text-sm text-slate-400">Pilih guru pengajar di sebelah kiri.</p>
+                <p class="text-sm text-slate-400 mt-3">Pilih guru pengajar di sebelah kiri untuk melihat kartu.</p>
             @endif
         </div>
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 class="font-bold text-slate-900 mb-4 flex items-center space-x-2">
-            <i class="fa-solid fa-table-list text-emerald-700"></i>
-            <span>Daftar Status Barcode Guru Pengajar</span>
-        </h3>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+            <h3 class="font-bold text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-table-list text-[#0b6534]"></i>
+                <span>Daftar Status Barcode Guru Pengajar</span>
+            </h3>
+            <span class="text-xs text-slate-500 font-medium">Total: {{ $daftarGuru->count() }} Guru</span>
+        </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm min-w-[680px]">
@@ -226,7 +220,7 @@
                                     <form method="POST" action="{{ route('admin.barcode.generate') }}">
                                         @csrf
                                         <input type="hidden" name="id_guru" value="{{ $g->id }}">
-                                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-[#0b6534] px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-rotate mr-1"></i> {{ $g->kode_barcode ? 'Generate Ulang' : 'Buat Barcode' }}
                                         </button>
                                     </form>
@@ -242,6 +236,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 @if($guruTerpilih && $guruTerpilih->kode_barcode)
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 function resizeCardPreview() {
     const scaler = document.getElementById('cardBarcodeScaler');

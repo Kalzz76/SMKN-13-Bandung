@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Barcode Absensi Guru - {{ $pengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -180,6 +179,36 @@
                                 </div>
                             </div>
                         </div>
+=======
+                <div class="card-cetak bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-[#0b6534] text-white font-black text-xs flex items-center justify-center flex-shrink-0">
+                            13
+                        </div>
+                        <div>
+                            <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-800 leading-none">SMK NEGERI 13 BANDUNG</h2>
+                            <p class="text-[9px] text-[#0b6534] font-bold uppercase tracking-wider mt-0.5">KARTU BARCODE KEHADIRAN GURU</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-4 py-1">
+                        <div class="space-y-1">
+                            <h3 class="font-bold text-slate-900 text-sm leading-tight">{{ $g->nama }}</h3>
+                            <p class="text-[10px] text-slate-400 font-mono">{{ $g->nip ?? '-' }}</p>
+                            <p class="text-[11px] text-slate-700 font-medium">{{ $g->mapel->nama ?? $g->mapel_utama ?? ($g->jabatan ?? 'Guru Pengajar') }}</p>
+                            <span class="inline-block text-[9px] bg-slate-50 text-slate-500 font-mono px-2 py-0.5 rounded border border-slate-200 mt-2">
+                                BARCODE-{{ strtoupper(\Illuminate\Support\Str::limit($g->kode_barcode, 10, '...')) }}
+                            </span>
+                        </div>
+                        <div class="flex-shrink-0 p-1.5 bg-white rounded-xl border border-slate-200">
+                            <div id="qr_{{ $g->id }}" data-code="{{ $g->kode_barcode }}" class="qrcode-item"></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between text-[9px] text-slate-400">
+                        <span>Gunakan saat presensi di area kampus</span>
+                        <span>SMKN 13 Bandung</span>
+>>>>>>> b623606903dcec2d6acdbae1f5f2cfc7056f2f73
                     </div>
                 </div>
             @endforeach

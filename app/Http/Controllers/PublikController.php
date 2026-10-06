@@ -60,7 +60,7 @@ class PublikController extends Controller
     public function galeri(Request $request)
     {
         $kategori = $request->query('kategori', 'Semua');
-        $query = Galeri::query();
+        $query = Galeri::query()->with('fotos');
 
         if ($kategori !== 'Semua' && in_array($kategori, ['Fasilitas', 'Kegiatan'])) {
             $query->where('kategori', $kategori);
