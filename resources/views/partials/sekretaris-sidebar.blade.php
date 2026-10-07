@@ -17,7 +17,7 @@
         </button>
     </div>
 
-    <div class="flex-grow overflow-y-auto py-4 px-3 space-y-4 text-sm">
+    <div class="flex-grow overflow-y-auto no-scrollbar py-4 px-3 space-y-4 text-sm" style="scrollbar-width: none; -ms-overflow-style: none;">
         <div>
             <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 sidebar-category-header">Akademik</p>
             <div class="sidebar-category-divider hidden border-t border-slate-800 my-2"></div>

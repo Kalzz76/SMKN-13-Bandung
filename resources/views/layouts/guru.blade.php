@@ -15,55 +15,30 @@
     <style>
         [x-cloak] { display: none !important; }
         body { font-family: 'Inter', sans-serif; }
+        /* Sembunyikan Scrollbar di Seluruh Halaman Guru & Sidebar */
+        ::-webkit-scrollbar {
+            width: 0px !important;
+            height: 0px !important;
+            display: none !important;
+        }
+        * {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+        .no-scrollbar::-webkit-scrollbar,
         #guruMainScroll::-webkit-scrollbar,
-        #guruSidebar::-webkit-scrollbar {
-            width: 6px;
+        #guruSidebar::-webkit-scrollbar,
+        #guruSidebar *::-webkit-scrollbar {
+            display: none !important;
+            width: 0px !important;
+            height: 0px !important;
         }
-        #guruMainScroll::-webkit-scrollbar-track,
-        #guruSidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #guruMainScroll::-webkit-scrollbar-thumb,
-        #guruSidebar::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 9999px;
-        }
-        #guruMainScroll::-webkit-scrollbar-thumb:hover,
-        #guruSidebar::-webkit-scrollbar-thumb:hover {
-            background-color: #94a3b8;
-        }
-        .overflow-x-auto,
-        .overflow-x-scroll,
-        .custom-scrollbar-x {
-            scrollbar-width: auto;
-            scrollbar-color: #047857 #f1f5f9;
-            -ms-overflow-style: auto;
-        }
-        .overflow-x-auto::-webkit-scrollbar,
-        .overflow-x-scroll::-webkit-scrollbar,
-        .custom-scrollbar-x::-webkit-scrollbar {
-            display: block;
-            height: 14px;
-            width: 14px;
-        }
-        .overflow-x-auto::-webkit-scrollbar-track,
-        .overflow-x-scroll::-webkit-scrollbar-track,
-        .custom-scrollbar-x::-webkit-scrollbar-track {
-            background-color: #f1f5f9;
-            border-radius: 9999px;
-            border: 1px solid #e2e8f0;
-        }
-        .overflow-x-auto::-webkit-scrollbar-thumb,
-        .overflow-x-scroll::-webkit-scrollbar-thumb,
-        .custom-scrollbar-x::-webkit-scrollbar-thumb {
-            background-color: #047857;
-            border-radius: 9999px;
-            border: 3px solid #f1f5f9;
-        }
-        .overflow-x-auto::-webkit-scrollbar-thumb:hover,
-        .overflow-x-scroll::-webkit-scrollbar-thumb:hover,
-        .custom-scrollbar-x::-webkit-scrollbar-thumb:hover {
-            background-color: #065f46;
+        .no-scrollbar,
+        #guruMainScroll,
+        #guruSidebar,
+        #guruSidebar * {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
         }
 
         /* Animasi Buka Tutup Mini Sidebar (Icon-Only Mode) */
@@ -129,7 +104,7 @@
     <div id="guruMainContent" class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden transition-all duration-200">
         @include('partials.guru-header')
 
-        <main id="guruMainScroll" class="flex-grow p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main id="guruMainScroll" class="flex-grow p-4 sm:p-6 lg:p-8 overflow-y-auto no-scrollbar" style="scrollbar-width: none; -ms-overflow-style: none;">
             @if($errors->any())
                 <div class="mb-6 p-4 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-sm">
                     <ul class="list-disc pl-5 space-y-1">
