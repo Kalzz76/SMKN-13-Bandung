@@ -15,6 +15,10 @@
                 SMK Negeri 13 <br><span class="text-teal-accent">Bandung.</span>
             </h1>
 
+            <p class="text-xs sm:text-sm font-semibold tracking-wider text-teal-accent mb-4 uppercase">
+                {{ $pengaturan->slogan ?? 'Terdepan dalam Karakter, Unggul dalam Kompetensi, Berdaya Saing Global.' }}
+            </p>
+
             <p class="text-base sm:text-xl lg:text-2xl text-teal-tint/90 max-w-2xl mx-auto font-medium leading-relaxed mb-8">
                 {{ $pengaturan->deskripsi_singkat ?? 'Pusat Keunggulan Vokasi yang berfokus pada akhlak mulia, kompetensi, dan daya saing internasional.' }}
             </p>

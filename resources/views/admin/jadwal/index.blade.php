@@ -159,7 +159,6 @@
             </div>
         </div>
 
-<<<<<<< HEAD
         <div id="topScrollContainer" class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 mb-3 shadow-xs">
             <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1.5 px-1">
                 <span class="flex items-center space-x-1.5 text-emerald-800">
@@ -169,16 +168,12 @@
                 <span class="text-slate-400 font-normal hidden sm:inline text-[10px]">Geser scrollbar ini untuk menggeser matriks jadwal secara langsung</span>
             </div>
             <div id="topScrollWrapper" class="overflow-x-auto overflow-y-hidden custom-scrollbar-x bg-white border border-slate-200 rounded-xl p-0.5">
-                <div id="topScrollDummy" class="h-2" style="min-width: {{ 340 + $jumlahKolom * 125 }}px; width: {{ 340 + $jumlahKolom * 125 }}px;"></div>
+                <div id="topScrollDummy" class="h-2" style="min-width: {{ 220 + $jumlahKolom * 180 }}px; width: {{ 220 + $jumlahKolom * 180 }}px;"></div>
             </div>
         </div>
 
-        <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs">
-            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 260 + $jumlahKolom * 125 }}px">
-=======
         <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs bg-white">
             <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 220 + $jumlahKolom * 180 }}px">
->>>>>>> 2798e98 (feat: auto-split jadwal melewati jam istirahat, modul jadwal flutter reference, dan update landing page)
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-200">
                         <th class="p-3.5 bg-slate-100 text-slate-800 font-extrabold border-r border-slate-200 min-w-[150px] w-40 text-center">

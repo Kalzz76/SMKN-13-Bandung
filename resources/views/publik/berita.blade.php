@@ -10,7 +10,7 @@
                 Informasi Terkini
             </span>
             <h1 class="text-3xl sm:text-5xl font-black text-white">Warta & Berita</h1>
-            <p class="mt-3 text-sm sm:text-base text-teal-tint/90">Kabar, prestasi, dan agenda terbaru SMKN 13 Bandung.</p>
+            <p class="mt-3 text-sm sm:text-base text-teal-tint/90">Berita, Kegiatan & Prestasi Sekolah SMKN 13 Bandung.</p>
         </div>
     </div>
 
