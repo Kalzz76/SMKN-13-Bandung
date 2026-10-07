@@ -12,12 +12,6 @@
 
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
         <div class="absolute left-1/3 -top-10 w-48 h-48 bg-cyan-400/20 rounded-full blur-xl pointer-events-none"></div>
-
-        <div class="absolute top-3 right-3 sm:top-4 sm:right-5 z-10">
-            <button type="button" onclick="showModalMsg('Informasi', 'Fitur ganti sampul akan segera hadir!', 'info')" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-900/40 hover:bg-slate-900/60 text-white backdrop-blur-md text-xs shadow-xs transition border border-white/10 cursor-pointer" title="Ganti Sampul">
-                <i class="fa-solid fa-camera"></i>
-            </button>
-        </div>
     </div>
 
     <div class="relative -mt-20 sm:-mt-24 px-3 sm:px-6 z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
@@ -36,6 +30,13 @@
                         <i class="fa-solid fa-camera"></i>
                     </label>
                     <input type="file" id="inputFotoProfil" name="foto" form="formProfil" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden" onchange="handleFotoProfilChange(this)">
+                </div>
+
+                <div id="btnHapusFotoTextContainer" class="{{ $user->foto_url ? '' : 'hidden' }} -mt-1">
+                    <button type="button" onclick="hapusFotoProfil()" class="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline inline-flex items-center space-x-1.5 cursor-pointer transition py-1 px-3 rounded-lg hover:bg-rose-50 border border-transparent hover:border-rose-100">
+                        <i class="fa-solid fa-trash-can text-[11px]"></i>
+                        <span>Hapus Foto Profil</span>
+                    </button>
                 </div>
 
                 <div class="space-y-1 w-full">
@@ -301,10 +302,71 @@ function handleFotoProfilChange(input) {
             document.querySelectorAll('.header-user-avatar').forEach(el => {
                 el.innerHTML = '<img src="' + data.foto_url + '" alt="Avatar" class="w-full h-full object-cover">';
             });
+            const btnText = document.getElementById('btnHapusFotoTextContainer');
+            if (btnText) btnText.classList.remove('hidden');
         }
     })
     .catch(err => {
         showModalMsg('Perhatian', err.message || 'Terjadi kesalahan saat mengunggah foto.', 'warning');
+    });
+}
+
+function hapusFotoProfil() {
+    if (typeof bukaKonfirmasi === 'function') {
+        bukaKonfirmasi('Apakah Anda yakin ingin menghapus foto profil dan kembali menggunakan inisial nama?', function() {
+            eksekusiHapusFotoProfil();
+        }, {
+            judul: 'Hapus Foto Profil',
+            warna: 'rose',
+            tombolTeks: 'Ya, Hapus'
+        });
+    } else {
+        eksekusiHapusFotoProfil();
+    }
+}
+
+function eksekusiHapusFotoProfil() {
+    const deleteUrl = "{{ $user->role === 'admin' ? route('admin.profil.foto.hapus') : route('profil.foto.hapus') }}";
+    const formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+
+    fetch(deleteUrl, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => { throw new Error(data.message || 'Gagal menghapus foto profil.'); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showModalMsg('Berhasil', data.message || 'Foto profil berhasil dihapus.', 'success');
+            
+            const initial = data.initial || '{{ strtoupper(substr($user->name ?? "U", 0, 1)) }}';
+            const container = document.getElementById('avatarPreviewContainer');
+            if (container) {
+                container.innerHTML = '<span id="avatarInitial">' + initial + '</span>';
+            }
+
+            const btnText = document.getElementById('btnHapusFotoTextContainer');
+            if (btnText) btnText.classList.add('hidden');
+
+            const fileInput = document.getElementById('inputFotoProfil');
+            if (fileInput) fileInput.value = '';
+
+            document.querySelectorAll('.header-user-avatar').forEach(el => {
+                el.innerHTML = initial;
+            });
+        }
+    })
+    .catch(err => {
+        showModalMsg('Perhatian', err.message || 'Terjadi kesalahan saat menghapus foto.', 'warning');
     });
 }
 </script>

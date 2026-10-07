@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfilController extends Controller
 {
@@ -81,5 +82,34 @@ class ProfilController extends Controller
             'message' => 'Foto profil berhasil diperbarui.',
             'foto_url' => asset('storage/' . $fotoPath),
         ]);
+    }
+
+    public function hapusFoto(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
+        }
+
+        $user->foto = null;
+        $user->save();
+
+        if ($user->guru) {
+            $user->guru->foto = null;
+            $user->guru->save();
+        }
+
+        LogAktivitas::catat('Hapus Foto Profil', "Menghapus foto profil pengguna '{$user->name}'");
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto profil berhasil dihapus.',
+                'initial' => strtoupper(substr($user->name ?? 'A', 0, 1)),
+            ]);
+        }
+
+        return redirect()->route('admin.profil')->with('sukses', 'Foto profil berhasil dihapus.');
     }
 }

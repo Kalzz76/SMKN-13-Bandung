@@ -115,4 +115,92 @@ class ProfilDanFotoTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['foto']);
     }
+
+    public function test_hapus_foto_profil_admin_via_ajax_berhasil()
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'role' => 'admin',
+            'foto' => 'profil/test_admin.jpg',
+        ]);
+        Storage::disk('public')->put('profil/test_admin.jpg', 'fake content');
+
+        $response = $this->actingAs($user)->deleteJson(route('admin.profil.foto.destroy'));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+        ]);
+
+        $user->refresh();
+        $this->assertNull($user->foto);
+        Storage::disk('public')->assertMissing('profil/test_admin.jpg');
+    }
+
+    public function test_hapus_foto_profil_user_biasa_via_ajax_berhasil()
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'role' => 'guru',
+            'foto' => 'profil/test_guru.jpg',
+        ]);
+        Storage::disk('public')->put('profil/test_guru.jpg', 'fake content');
+
+        $response = $this->actingAs($user)->deleteJson(route('profil.foto.destroy'));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+        ]);
+
+        $user->refresh();
+        $this->assertNull($user->foto);
+        Storage::disk('public')->assertMissing('profil/test_guru.jpg');
+    }
+
+    public function test_hapus_foto_profil_admin_via_post_hapus_berhasil()
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'role' => 'admin',
+            'foto' => 'profil/test_admin_post.jpg',
+        ]);
+        Storage::disk('public')->put('profil/test_admin_post.jpg', 'fake content');
+
+        $response = $this->actingAs($user)->postJson(route('admin.profil.foto.hapus'));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+        ]);
+
+        $user->refresh();
+        $this->assertNull($user->foto);
+        Storage::disk('public')->assertMissing('profil/test_admin_post.jpg');
+    }
+
+    public function test_hapus_foto_profil_user_biasa_via_post_hapus_berhasil()
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'role' => 'guru',
+            'foto' => 'profil/test_guru_post.jpg',
+        ]);
+        Storage::disk('public')->put('profil/test_guru_post.jpg', 'fake content');
+
+        $response = $this->actingAs($user)->postJson(route('profil.foto.hapus'));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+        ]);
+
+        $user->refresh();
+        $this->assertNull($user->foto);
+        Storage::disk('public')->assertMissing('profil/test_guru_post.jpg');
+    }
 }

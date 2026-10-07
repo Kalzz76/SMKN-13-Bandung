@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/akun/profil', [UserProfilController::class, 'index'])->name('profil.index');
     Route::put('/akun/profil', [UserProfilController::class, 'update'])->name('profil.update');
     Route::post('/akun/profil/foto', [UserProfilController::class, 'updateFoto'])->name('profil.foto.update');
+    Route::delete('/akun/profil/foto', [UserProfilController::class, 'hapusFoto'])->name('profil.foto.destroy');
+    Route::post('/akun/profil/foto/hapus', [UserProfilController::class, 'hapusFoto'])->name('profil.foto.hapus');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -162,6 +164,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
     Route::post('/profil/foto', [ProfilController::class, 'updateFoto'])->name('profil.foto.update');
+    Route::delete('/profil/foto', [ProfilController::class, 'hapusFoto'])->name('profil.foto.destroy');
+    Route::post('/profil/foto/hapus', [ProfilController::class, 'hapusFoto'])->name('profil.foto.hapus');
 });
 
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(function () {
