@@ -149,6 +149,19 @@
             </div>
         </div>
 
+        <div id="topScrollContainer" class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 mb-3 shadow-xs">
+            <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1.5 px-1">
+                <span class="flex items-center space-x-1.5 text-emerald-800">
+                    <i class="fa-solid fa-arrows-left-right text-xs"></i>
+                    <span>Scrollbar Horizontal (Bagian Atas)</span>
+                </span>
+                <span class="text-slate-400 font-normal hidden sm:inline text-[10px]">Geser scrollbar ini untuk menggeser matriks jadwal secara langsung</span>
+            </div>
+            <div id="topScrollWrapper" class="overflow-x-auto overflow-y-hidden custom-scrollbar-x bg-white border border-slate-200 rounded-xl p-0.5">
+                <div id="topScrollDummy" class="h-2" style="min-width: {{ 340 + $jumlahKolom * 125 }}px; width: {{ 340 + $jumlahKolom * 125 }}px;"></div>
+            </div>
+        </div>
+
         <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs">
             <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 260 + $jumlahKolom * 125 }}px">
                 <thead>
@@ -765,7 +778,6 @@ function rentangJam(dari, sampai) {
 }
 
 function renderKeterangan(sufiks, data) {
-    // Informasi pembiasaan dan istirahat ditiadakan di semua form
 }
 
 function melewatiIstirahat(data, mulai, selesai) {
@@ -812,6 +824,7 @@ function switchMatriksView(view) {
         btnKelas.className = aktifClass;
         btnRuang.className = nonAktifClass;
     }
+    syncTopScrollDimension();
 }
 
 function openTambahModal() {
@@ -1192,10 +1205,14 @@ function hapusJadwalAktif() {
     }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
 }
 
-function scrollMatriksHorizontal(direction) {
+function getActiveMatriksElement() {
     const vKelas = byId('viewMatriksKelas');
     const vRuang = byId('viewMatriksRuangan');
-    const target = (!vKelas || vKelas.classList.contains('hidden')) ? vRuang : vKelas;
+    return (!vKelas || vKelas.classList.contains('hidden')) ? vRuang : vKelas;
+}
+
+function scrollMatriksHorizontal(direction) {
+    const target = getActiveMatriksElement();
     if (!target) return;
     if (direction === 'start') {
         target.scrollTo({ left: 0, behavior: 'smooth' });
@@ -1205,5 +1222,53 @@ function scrollMatriksHorizontal(direction) {
         target.scrollBy({ left: direction, behavior: 'smooth' });
     }
 }
+
+const topScrollWrapper = byId('topScrollWrapper');
+const topScrollDummy = byId('topScrollDummy');
+let isSyncingScroll = false;
+
+function syncTopScrollDimension() {
+    const active = getActiveMatriksElement();
+    if (!active || !topScrollDummy) return;
+    const targetWidth = active.scrollWidth;
+    topScrollDummy.style.width = targetWidth + 'px';
+    topScrollDummy.style.minWidth = targetWidth + 'px';
+    if (topScrollWrapper) {
+        topScrollWrapper.scrollLeft = active.scrollLeft;
+    }
+}
+
+if (topScrollWrapper) {
+    topScrollWrapper.addEventListener('scroll', function() {
+        if (isSyncingScroll) return;
+        isSyncingScroll = true;
+        const active = getActiveMatriksElement();
+        if (active) {
+            active.scrollLeft = topScrollWrapper.scrollLeft;
+        }
+        isSyncingScroll = false;
+    });
+}
+
+function attachMatriksScrollListener(el) {
+    if (!el) return;
+    el.addEventListener('scroll', function() {
+        if (isSyncingScroll) return;
+        isSyncingScroll = true;
+        if (topScrollWrapper) {
+            topScrollWrapper.scrollLeft = el.scrollLeft;
+        }
+        isSyncingScroll = false;
+    });
+}
+
+attachMatriksScrollListener(byId('viewMatriksKelas'));
+attachMatriksScrollListener(byId('viewMatriksRuangan'));
+
+window.addEventListener('resize', syncTopScrollDimension);
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(syncTopScrollDimension, 60);
+});
+setTimeout(syncTopScrollDimension, 120);
 </script>
 @endsection
