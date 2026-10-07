@@ -2,11 +2,11 @@
 
 @section('content')
     <div class="relative bg-navy-dark py-24 sm:py-40 px-4 overflow-hidden min-h-[75vh] flex items-center text-white">
-        <div class="absolute inset-0" data-slider data-offset="0" data-dots="1"></div>
+        <div class="absolute inset-0" data-slider="home" data-offset="0" data-dots="1"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-navy-dark/75 via-navy-dark/55 to-navy-dark/85"></div>
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#9ED6CF_1px,transparent_1px)] [background-size:24px_24px]"></div>
         
-        <div class="max-w-4xl mx-auto w-full relative z-10 text-center [text-shadow:0_2px_16px_rgba(0,0,0,.35)]">
+        <div class="hero-anim max-w-4xl mx-auto w-full relative z-10 text-center [text-shadow:0_2px_16px_rgba(0,0,0,.35)]">
             <span class="inline-block mb-5 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/20 text-xs font-bold uppercase tracking-[.25em] text-teal-accent">
                 Selamat Datang di
             </span>
@@ -40,8 +40,8 @@
 
     <section class="py-12 sm:py-20 max-w-7xl mx-auto px-4 text-center w-full">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
-            <a href="{{ route('publik.jurusan') }}" class="flex flex-col items-center btn-animate group cursor-pointer">
-                <div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
+            <a href="{{ route('publik.jurusan') }}" class="rv flex flex-col items-center btn-animate group cursor-pointer">
+                <div class="feat-ico w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-flask"></i>
                 </div>
                 <h4 class="font-bold text-navy-dark text-lg uppercase mb-2 group-hover:text-teal-primary transition-colors">
@@ -50,8 +50,8 @@
                 <p class="text-sm text-text-muted">Kurikulum mendalam dengan standar industri nasional dan global.</p>
             </a>
 
-            <a href="{{ route('publik.galeri') }}" class="flex flex-col items-center btn-animate group cursor-pointer">
-                <div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
+            <a href="{{ route('publik.galeri') }}" class="rv flex flex-col items-center btn-animate group cursor-pointer">
+                <div class="feat-ico w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-building-columns"></i>
                 </div>
                 <h4 class="font-bold text-navy-dark text-lg uppercase mb-2 group-hover:text-teal-primary transition-colors">
@@ -60,8 +60,8 @@
                 <p class="text-sm text-text-muted">Laboratorium & sarana prasarana penunjang pembelajaran abad ke-21.</p>
             </a>
 
-            <a href="{{ route('publik.berita') }}?kategori=Prestasi" class="flex flex-col items-center btn-animate group cursor-pointer">
-                <div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
+            <a href="{{ route('publik.berita') }}?kategori=Prestasi" class="rv flex flex-col items-center btn-animate group cursor-pointer">
+                <div class="feat-ico w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-award"></i>
                 </div>
                 <h4 class="font-bold text-navy-dark text-lg uppercase mb-2 group-hover:text-teal-primary transition-colors">
@@ -70,8 +70,8 @@
                 <p class="text-sm text-text-muted">Evaluasi otentik berkesinambungan mencetak juara di berbagai bidang.</p>
             </a>
 
-            <a href="{{ route('publik.profil') }}#sejarah" class="flex flex-col items-center btn-animate group cursor-pointer">
-                <div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
+            <a href="{{ route('publik.profil') }}#sejarah" class="rv flex flex-col items-center btn-animate group cursor-pointer">
+                <div class="feat-ico w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-handshake"></i>
                 </div>
                 <h4 class="font-bold text-navy-dark text-lg uppercase mb-2 group-hover:text-teal-primary transition-colors">
@@ -84,7 +84,7 @@
 
     <section class="py-20 bg-bg-card border-y border-teal-tint/50 w-full">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
-            <div class="w-full md:w-5/12 flex justify-center">
+            <div class="rv w-full md:w-5/12 flex justify-center" data-rv="left">
                 @if(!empty($pengaturan->foto_kepsek) && file_exists(public_path('storage/' . $pengaturan->foto_kepsek)))
                     <img src="{{ asset('storage/' . $pengaturan->foto_kepsek) }}"
                         alt="{{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}"
@@ -96,7 +96,7 @@
                 @endif
             </div>
 
-            <div class="w-full md:w-7/12 space-y-6">
+            <div class="rv w-full md:w-7/12 space-y-6" data-rv="right">
                 <div class="inline-block bg-teal-tint text-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
                     Sambutan Pimpinan
                 </div>
@@ -127,10 +127,10 @@
 
     <section class="py-20 w-full">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-3xl sm:text-4xl font-black text-navy-dark mb-12">Warta & Berita Terkini</h3>
+            <h3 class="rv text-3xl sm:text-4xl font-black text-navy-dark mb-12">Warta & Berita Terkini</h3>
 
             @if($beritaTerbaru->isEmpty())
-                <div class="bg-bg-card p-12 rounded-3xl text-center text-text-muted border border-teal-tint max-w-lg mx-auto">
+                <div class="rv bg-bg-card p-12 rounded-3xl text-center text-text-muted border border-teal-tint max-w-lg mx-auto">
                     <i class="fa-solid fa-newspaper text-4xl text-teal-primary/50 mb-3"></i>
                     <p class="font-medium">Belum ada warta berita yang dipublikasikan.</p>
                 </div>
@@ -138,10 +138,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
                     @foreach($beritaTerbaru as $b)
                         <a href="{{ route('publik.detail-berita', $b->id) }}"
-                            class="bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col hover:shadow-lg transition-all hover:-translate-y-1 group">
+                            class="rv bcard bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col hover:shadow-lg transition-shadow group">
                             @if(!empty($b->gambar_url))
                                 <div class="overflow-hidden relative">
-                                    <img src="{{ $b->gambar_url }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
+                                    <img src="{{ $b->gambar_url }}" class="bcard-img h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
                                     @if(!empty($b->is_prestasi))
                                         <div class="absolute top-4 right-4 bg-amber-500 text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5">
                                             <i class="fa-solid fa-trophy text-xs"></i>
@@ -186,7 +186,7 @@
             @endif
 
             <a href="{{ route('publik.berita') }}"
-                class="mt-12 inline-block btn-animate bg-navy-dark hover:bg-navy-mid text-white font-bold py-3.5 px-8 rounded-full shadow-md transition">
+                class="rv mt-12 inline-block btn-animate bg-navy-dark hover:bg-navy-mid text-white font-bold py-3.5 px-8 rounded-full shadow-md transition">
                 Lihat Semua Berita
             </a>
         </div>

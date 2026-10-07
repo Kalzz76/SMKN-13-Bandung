@@ -4,68 +4,159 @@
     <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24 w-full flex-grow">
         <!-- 1. VISI & MISI -->
         <div id="visi-misi" class="scroll-mt-32 space-y-12">
-            <div class="text-center max-w-3xl mx-auto">
+            <div class="rv text-center max-w-3xl mx-auto">
                 <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Identitas Sekolah</span>
                 <h3 class="text-3xl sm:text-5xl font-black text-navy-dark mt-1 mb-4">Profil & Visi Misi</h3>
                 <p class="text-base sm:text-lg text-text-muted">Landasan, arah kebijakan, dan penggerak mutu pendidikan SMK Negeri 13 Bandung.</p>
             </div>
 
-            <div class="bg-bg-card p-6 sm:p-10 rounded-3xl shadow-sm border-t-8 border-teal-primary border-x border-b border-teal-tint text-center max-w-4xl mx-auto">
-                <span class="bg-teal-tint text-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">VISI SEKOLAH</span>
-                <h4 class="text-2xl sm:text-3xl font-black text-navy-dark leading-relaxed italic">
-                    "{{ $pengaturan->visi ?? 'Terwujudnya lulusan yang berakhlak mulia, kompeten dan berdaya suai di tingkat internasional pada tahun 2030' }}"
-                </h4>
+            <!-- Kartu Visi Terbaru -->
+            <div class="rv relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy-dark via-navy-mid to-teal-primary text-white shadow-xl max-w-5xl mx-auto" data-rv="zoom">
+                <div class="orb orb-a"></div>
+                <div class="orb orb-b"></div>
+                <div class="absolute inset-0 opacity-[.07] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px]"></div>
+                <span class="absolute -top-6 left-4 sm:left-10 text-[9rem] sm:text-[13rem] leading-none font-black text-white/[.06] select-none pointer-events-none">&ldquo;</span>
+                <div class="relative z-10 p-7 sm:p-14 text-center">
+                    <span class="inline-block bg-white/10 border border-white/20 backdrop-blur text-teal-accent text-xs font-black uppercase tracking-[.25em] px-4 py-1.5 rounded-full mb-6">
+                        Visi Sekolah
+                    </span>
+                    @php
+                        $rawVisi = !empty($pengaturan?->visi) 
+                            ? $pengaturan->visi 
+                            : 'Terwujudnya lulusan yang berakhlak mulia, kompeten dan berdaya suai di tingkat internasional pada tahun 2030';
+                        
+                        $escapedVisi = e($rawVisi);
+                        $formattedVisi = str_ireplace(
+                            ['berakhlak mulia', 'kompeten', 'berdaya suai di tingkat internasional', '2030'],
+                            [
+                                '<span class="text-teal-accent">berakhlak mulia</span>',
+                                '<span class="underline decoration-teal-accent decoration-2 underline-offset-8">kompeten</span>',
+                                '<span class="text-teal-accent">berdaya suai di tingkat internasional</span>',
+                                '<span class="inline-block bg-white/15 border border-white/20 px-3 rounded-lg">2030</span>'
+                            ],
+                            $escapedVisi
+                        );
+                    @endphp
+                    <h4 class="text-xl sm:text-3xl lg:text-4xl font-extrabold leading-snug sm:leading-relaxed">
+                        {!! $formattedVisi !!}
+                    </h4>
+
+                    <!-- Pilar Keunggulan Visi (Dinamis dari Dashboard Admin) -->
+                    @php
+                        if (is_array($pengaturan?->pilar_visi)) {
+                            $activePilarVisi = $pengaturan->pilar_visi;
+                        } else {
+                            $activePilarVisi = \App\Models\PengaturanSekolah::defaultPilarVisi();
+                        }
+                        $pilarCount = count($activePilarVisi);
+
+                        $gridClass = 'grid-cols-1 sm:grid-cols-3';
+                        if ($pilarCount === 1) {
+                            $gridClass = 'grid-cols-1 max-w-md mx-auto';
+                        } elseif ($pilarCount === 2) {
+                            $gridClass = 'grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto';
+                        } elseif ($pilarCount === 4) {
+                            $gridClass = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+                        } elseif ($pilarCount >= 5) {
+                            $gridClass = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+                        }
+                    @endphp
+                    @if($pilarCount > 0)
+                        <div class="mt-10 grid {{ $gridClass }} gap-4 text-left">
+                            @foreach($activePilarVisi as $pilar)
+                                <div class="rv rounded-2xl bg-white/[.07] border border-white/15 backdrop-blur p-5 flex sm:flex-col items-start gap-4 hover:bg-white/[.12] transition-colors">
+                                    <div class="w-11 h-11 rounded-xl bg-white/10 text-teal-accent flex items-center justify-center text-lg flex-shrink-0">
+                                        <i class="fa-solid {{ $pilar['icon'] ?? 'fa-award' }}"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-white">{{ $pilar['judul'] ?? '' }}</h5>
+                                        <p class="text-sm text-teal-tint/80 mt-1 leading-relaxed">{{ $pilar['deskripsi'] ?? '' }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
             </div>
 
+            <!-- Kartu Misi Terbaru -->
             <div class="bg-bg-card p-5 sm:p-10 md:p-14 rounded-3xl shadow-sm border border-teal-tint space-y-8">
-                <div class="text-center">
-                    <span class="bg-navy-dark text-teal-accent text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-2">MISI SEKOLAH</span>
+                <div class="rv text-center">
+                    <span class="bg-navy-dark text-teal-accent text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-2">
+                        MISI SEKOLAH
+                    </span>
                     <h4 class="text-3xl font-black text-navy-dark">Langkah Strategis Pencapaian</h4>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                    @php
-                        $defaultMisi = [
-                            ['Penguatan Karakter', 'Menyelenggarakan program penguatan pendidikan karakter Gapura Panca Waluya dan 8 Dimensi Profil Lulusan.'],
-                            ['Pembelajaran Mendalam', 'Mengembangkan keterampilan abad ke-21: berpikir kritis, kreatif, komunikatif, dan kolaboratif.'],
-                            ['Profesionalisme GTK', 'Meningkatkan profesionalisme Guru dan Tenaga Kependidikan secara berkelanjutan.'],
-                            ['Sarana Prasarana', 'Meningkatkan sarana prasarana mengacu pada Standar Nasional Pendidikan dan Dunia Industri.'],
-                            ['Digitalisasi Sekolah', 'Pengelolaan pendidikan berbasis Teknologi Informasi dan Komunikasi (TIK).'],
-                            ['Kemitraan Luas', 'Kemitraan strategis dengan Dunia Industri dan Institusi Pendidikan di dalam maupun luar negeri.'],
-                            ['Asesmen Berkualitas', 'Melaksanakan asesmen yang berkelanjutan dan otentik.'],
-                            ['Budaya Lingkungan', 'Budaya ramah lingkungan melalui pengolahan limbah, pengelolaan sampah dan hemat energi.']
-                        ];
-                    @endphp
-                    @if(!empty($daftarMisi))
-                        @foreach($daftarMisi as $index => $misi)
-                            @php
-                                $parts = explode(':', $misi, 2);
-                                $judulMisi = count($parts) === 2 ? trim($parts[0]) : 'Langkah ' . ($index + 1);
-                                $isiMisi = count($parts) === 2 ? trim($parts[1]) : trim($misi);
-                            @endphp
-                            <div class="p-6 rounded-2xl bg-bg-page border border-teal-tint flex items-start space-x-4">
-                                <span class="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow">{{ $index + 1 }}</span>
-                                <p class="leading-relaxed text-text-main"><strong class="text-navy-dark">{{ $judulMisi }}:</strong> {{ $isiMisi }}</p>
+
+                @php
+                    $misiIcons = [
+                        'fa-shield-heart',
+                        'fa-lightbulb',
+                        'fa-user-graduate',
+                        'fa-building',
+                        'fa-laptop-code',
+                        'fa-handshake',
+                        'fa-clipboard-check',
+                        'fa-leaf'
+                    ];
+
+                    $defaultMisiItems = [
+                        ['Penguatan Karakter', 'Menyelenggarakan program penguatan pendidikan karakter Gapura Panca Waluya dan 8 Dimensi Profil Lulusan.'],
+                        ['Pembelajaran Mendalam', 'Mengembangkan keterampilan abad ke-21: berpikir kritis, kreatif, komunikatif, dan kolaboratif.'],
+                        ['Profesionalisme GTK', 'Meningkatkan profesionalisme Guru dan Tenaga Kependidikan secara berkelanjutan.'],
+                        ['Sarana Prasarana', 'Meningkatkan sarana prasarana mengacu pada Standar Nasional Pendidikan dan Dunia Industri.'],
+                        ['Digitalisasi Sekolah', 'Pengelolaan pendidikan berbasis Teknologi Informasi dan Komunikasi (TIK).'],
+                        ['Kemitraan Luas', 'Kemitraan strategis dengan Dunia Industri dan Institusi Pendidikan di dalam maupun luar negeri.'],
+                        ['Asesmen Berkualitas', 'Melaksanakan asesmen yang berkelanjutan dan otentik.'],
+                        ['Budaya Lingkungan', 'Budaya ramah lingkungan melalui pengolahan limbah, pengelolaan sampah dan hemat energi.']
+                    ];
+
+                    $misiList = [];
+                    if (!empty($daftarMisi)) {
+                        foreach ($daftarMisi as $index => $misiLine) {
+                            $parts = explode(':', $misiLine, 2);
+                            if (count($parts) === 2) {
+                                $misiList[] = [trim($parts[0]), trim($parts[1])];
+                            } else {
+                                $misiList[] = ['Misi ' . ($index + 1), trim($misiLine)];
+                            }
+                        }
+                    } else {
+                        $misiList = $defaultMisiItems;
+                    }
+                @endphp
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 text-sm">
+                    @foreach($misiList as $index => $item)
+                        <div class="rv group relative overflow-hidden p-6 rounded-2xl bg-bg-page border border-teal-tint transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:bg-white hover:border-teal-light/60 flex flex-col justify-between">
+                            <span class="absolute -right-1 -top-3 text-7xl font-black text-teal-tint select-none transition-colors group-hover:text-teal-accent/40 pointer-events-none">
+                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                            </span>
+                            <div>
+                                <div class="relative w-12 h-12 rounded-xl bg-teal-tint text-teal-primary flex items-center justify-center text-xl mb-4 transition-colors group-hover:bg-teal-primary group-hover:text-white">
+                                    <i class="fa-solid {{ $misiIcons[$index % count($misiIcons)] }}"></i>
+                                </div>
+                                <h5 class="relative font-bold text-navy-dark mb-1.5 text-base">
+                                    {{ $item[0] }}
+                                </h5>
+                                <p class="relative text-text-muted leading-relaxed">
+                                    {{ $item[1] }}
+                                </p>
                             </div>
-                        @endforeach
-                    @else
-                        @foreach($defaultMisi as $index => $item)
-                            <div class="p-6 rounded-2xl bg-bg-page border border-teal-tint flex items-start space-x-4">
-                                <span class="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow">{{ $index + 1 }}</span>
-                                <p class="leading-relaxed text-text-main"><strong class="text-navy-dark">{{ $item[0] }}:</strong> {{ $item[1] }}</p>
-                            </div>
-                        @endforeach
-                    @endif
+                            <span class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-teal-primary to-teal-accent transition-all duration-500 group-hover:w-full"></span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
 
         <div id="sejarah" class="scroll-mt-32 bg-bg-card p-6 sm:p-10 lg:p-14 rounded-3xl shadow-sm border border-teal-tint">
-            <h4 class="text-2xl sm:text-3xl font-black text-navy-dark mb-10 text-center">Sejarah Singkat SMKN 13 Bandung</h4>
+            <h4 class="rv text-2xl sm:text-3xl font-black text-navy-dark mb-10 text-center">Sejarah Singkat SMKN 13 Bandung</h4>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
                 <!-- Kolom Kiri: Garis Waktu Sejarah -->
                 <div class="order-2 lg:order-1">
                     <div class="relative timeline-line space-y-8 pl-12 pr-2">
-                        <div class="relative z-10">
+                        <div class="rv relative z-10" data-rv="left">
                             <div class="absolute -left-12 mt-1 w-8 h-8 bg-teal-primary rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
                                 <i class="fa-solid fa-flask text-xs"></i>
                             </div>
@@ -76,7 +167,7 @@
                             </p>
                         </div>
 
-                        <div class="relative z-10">
+                        <div class="rv relative z-10" data-rv="left">
                             <div class="absolute -left-12 mt-1 w-8 h-8 bg-navy-mid rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
                                 <i class="fa-solid fa-building-columns text-xs"></i>
                             </div>
@@ -87,7 +178,7 @@
                             </p>
                         </div>
 
-                        <div class="relative z-10">
+                        <div class="rv relative z-10" data-rv="left">
                             <div class="absolute -left-12 mt-1 w-8 h-8 bg-brick-red rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
                                 <i class="fa-solid fa-school text-xs"></i>
                             </div>
@@ -98,7 +189,7 @@
                             </p>
                         </div>
 
-                        <div class="relative z-10">
+                        <div class="rv relative z-10" data-rv="left">
                             <div class="absolute -left-12 mt-1 w-8 h-8 bg-teal-light rounded-full border-4 border-bg-page flex items-center justify-center text-white shadow">
                                 <i class="fa-solid fa-award text-xs"></i>
                             </div>
@@ -112,7 +203,7 @@
                 </div>
 
                 <!-- Kolom Kanan: Galeri Dokumentasi Sejarah Slider -->
-                <div class="order-1 lg:order-2 lg:sticky lg:top-28 self-start min-w-0" id="sejGallery">
+                <div class="rv order-1 lg:order-2 lg:sticky lg:top-28 self-start min-w-0" id="sejGallery" data-rv="right">
                     <figure class="m-0">
                         <div class="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border border-teal-tint bg-teal-tint">
                             <img id="sejImgA" src="{{ asset('Assets/sejarah1.jpg.jpeg') }}" alt="Dokumentasi sejarah SMKN 13 Bandung 1"

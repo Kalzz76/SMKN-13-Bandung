@@ -15,7 +15,29 @@ class PengaturanSekolah extends Model
 
     protected $casts = [
         'struktur_organisasi' => 'array',
+        'pilar_visi' => 'array',
     ];
+
+    public static function defaultPilarVisi(): array
+    {
+        return [
+            [
+                'judul' => 'Berakhlak Mulia',
+                'deskripsi' => 'Berkarakter dan berintegritas dalam setiap tindakan.',
+                'icon' => 'fa-hand-holding-heart'
+            ],
+            [
+                'judul' => 'Kompeten',
+                'deskripsi' => 'Menguasai keahlian sesuai standar dunia industri.',
+                'icon' => 'fa-award'
+            ],
+            [
+                'judul' => 'Berdaya Suai Internasional',
+                'deskripsi' => 'Siap beradaptasi dan bersaing di tingkat global.',
+                'icon' => 'fa-earth-asia'
+            ]
+        ];
+    }
 
     public static function defaultStruktur(): array
     {

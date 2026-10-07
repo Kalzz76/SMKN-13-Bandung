@@ -37,8 +37,117 @@
             </h2>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Visi Sekolah</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Visi Sekolah (Kalimat Utama)</label>
                 <textarea name="visi" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">{{ old('visi', $pengaturan->visi) }}</textarea>
+                <p class="text-xs text-slate-400 mt-1">Kalimat visi utama yang ditampilkan di kartu visi halaman profil.</p>
+            </div>
+
+            <!-- Pilar Penjabaran Visi (Dinamis: Tambah & Hapus) -->
+            @php
+                $availableIcons = [
+                    'fa-award' => 'Piala / Prestasi (fa-award)',
+                    'fa-hand-holding-heart' => 'Akhlak / Karakter (fa-hand-holding-heart)',
+                    'fa-earth-asia' => 'Internasional / Global (fa-earth-asia)',
+                    'fa-lightbulb' => 'Inovasi / Kreativitas (fa-lightbulb)',
+                    'fa-shield-heart' => 'Integritas / Nilai (fa-shield-heart)',
+                    'fa-laptop-code' => 'Teknologi / IT (fa-laptop-code)',
+                    'fa-user-graduate' => 'Pendidikan / Lulusan (fa-user-graduate)',
+                    'fa-star' => 'Bintang / Keunggulan (fa-star)',
+                    'fa-compass' => 'Kompas / Visi (fa-compass)',
+                    'fa-handshake' => 'Kerjasama / Kemitraan (fa-handshake)',
+                    'fa-bolt' => 'Daya Saing / Kecepatan (fa-bolt)',
+                    'fa-bullseye' => 'Target / Fokus (fa-bullseye)',
+                ];
+
+                $pilarData = old('pilar_visi');
+                if ($pilarData === null) {
+                    if (is_array($pengaturan->pilar_visi)) {
+                        $pilarData = $pengaturan->pilar_visi;
+                    } else {
+                        $pilarData = \App\Models\PengaturanSekolah::defaultPilarVisi();
+                    }
+                }
+                if (!is_array($pilarData)) {
+                    $pilarData = [];
+                }
+            @endphp
+            <div class="pt-2">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 pb-2 border-b border-slate-100">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700">
+                            Pilar Penjabaran Visi (Kartu di Bawah Visi)
+                        </label>
+                        <p class="text-xs text-slate-400 mt-0.5">Jumlah kartu fleksibel — Anda bebas menambah atau menghapus kartu pilar sesuai kebutuhan sekolah.</p>
+                    </div>
+                    <button type="button" onclick="tambahPilar()" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 font-bold text-xs transition self-start sm:self-auto shadow-sm cursor-pointer">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Tambah Pilar</span>
+                    </button>
+                </div>
+
+                <input type="hidden" name="pilar_visi_submitted" value="1">
+
+                <div id="pilarVisiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($pilarData as $i => $curPilar)
+                        @php
+                            $selectedIcon = $curPilar['icon'] ?? 'fa-award';
+                        @endphp
+                        <div class="pilar-card relative p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-3 transition-all hover:border-slate-300">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+                                <div class="flex items-center space-x-2">
+                                    <span class="pilar-nomor-badge w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs">{{ $loop->iteration }}</span>
+                                    <span class="pilar-label text-xs font-bold text-emerald-800 uppercase tracking-wider">Pilar {{ $loop->iteration }}</span>
+                                </div>
+                                <button type="button" onclick="hapusPilar(this)" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 px-2.5 py-1 rounded-lg transition cursor-pointer" title="Hapus Pilar ini">
+                                    <i class="fa-solid fa-trash-can text-rose-500 text-xs"></i>
+                                    <span>Hapus</span>
+                                </button>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Pilar</label>
+                                <input type="text" name="pilar_visi[{{ $i }}][judul]" 
+                                    value="{{ $curPilar['judul'] ?? '' }}"
+                                    class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm bg-white"
+                                    placeholder="Contoh: Berakhlak Mulia">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Deskripsi Singkat</label>
+                                <textarea name="pilar_visi[{{ $i }}][deskripsi]" rows="2"
+                                    class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-xs bg-white"
+                                    placeholder="Penjelasan pilar...">{{ $curPilar['deskripsi'] ?? '' }}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Ikon Pilar</label>
+                                <div class="flex items-center space-x-2">
+                                    <div class="pilar-icon-preview w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm border border-emerald-100 flex-shrink-0">
+                                        <i class="fa-solid {{ $selectedIcon }}"></i>
+                                    </div>
+                                    <select name="pilar_visi[{{ $i }}][icon]" onchange="updatePilarIconPreview(this)" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-xs bg-white">
+                                        @if(!array_key_exists($selectedIcon, $availableIcons))
+                                            <option value="{{ $selectedIcon }}" selected>{{ $selectedIcon }}</option>
+                                        @endif
+                                        @foreach($availableIcons as $val => $lbl)
+                                            <option value="{{ $val }}" {{ $selectedIcon === $val ? 'selected' : '' }}>{{ $lbl }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div id="pilarEmptyState" class="{{ count($pilarData) === 0 ? '' : 'hidden' }} text-center py-8 px-4 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 text-slate-500 text-sm space-y-2 mt-2">
+                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-200 text-slate-400 flex items-center justify-center">
+                        <i class="fa-solid fa-layer-group text-lg"></i>
+                    </div>
+                    <p class="font-medium text-slate-600">Belum ada kartu pilar visi.</p>
+                    <p class="text-xs text-slate-400">Klik tombol "Tambah Pilar" di atas untuk menambahkan kartu baru, atau simpan untuk menampilkan visi tanpa kartu sub-pilar.</p>
+                </div>
+
+                <p class="text-xs text-slate-400 mt-2">Kartu-kartu di atas akan tampil secara interaktif dan otomatis tertata rapi di dalam bingkai visi pada halaman Profil publik.</p>
             </div>
 
             <div>
@@ -516,4 +625,124 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    renumberPilar();
+});
+
+const PILAR_ICON_OPTIONS = [
+    { value: 'fa-award', label: 'Piala / Prestasi' },
+    { value: 'fa-hand-holding-heart', label: 'Akhlak / Karakter' },
+    { value: 'fa-earth-asia', label: 'Internasional / Global' },
+    { value: 'fa-lightbulb', label: 'Inovasi / Kreativitas' },
+    { value: 'fa-shield-heart', label: 'Integritas / Nilai' },
+    { value: 'fa-laptop-code', label: 'Teknologi / IT' },
+    { value: 'fa-user-graduate', label: 'Pendidikan / Lulusan' },
+    { value: 'fa-star', label: 'Bintang / Keunggulan' },
+    { value: 'fa-compass', label: 'Kompas / Visi' },
+    { value: 'fa-handshake', label: 'Kerjasama / Kemitraan' },
+    { value: 'fa-bolt', label: 'Daya Saing / Kecepatan' },
+    { value: 'fa-bullseye', label: 'Target / Fokus' }
+];
+
+function tambahPilar() {
+    const container = document.getElementById('pilarVisiContainer');
+    const emptyState = document.getElementById('pilarEmptyState');
+    if (!container) return;
+
+    const uniqueId = 'new_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+
+    let iconOptionsHtml = '';
+    PILAR_ICON_OPTIONS.forEach((item, idx) => {
+        const selected = idx === 0 ? 'selected' : '';
+        iconOptionsHtml += `<option value="${item.value}" ${selected}>${item.label} (${item.value})</option>`;
+    });
+
+    const card = document.createElement('div');
+    card.className = 'pilar-card relative p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-3 transition-all hover:border-slate-300';
+    card.innerHTML = `
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+            <div class="flex items-center space-x-2">
+                <span class="pilar-nomor-badge w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs">?</span>
+                <span class="pilar-label text-xs font-bold text-emerald-800 uppercase tracking-wider">Pilar ?</span>
+            </div>
+            <button type="button" onclick="hapusPilar(this)" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 px-2.5 py-1 rounded-lg transition cursor-pointer" title="Hapus Pilar ini">
+                <i class="fa-solid fa-trash-can text-rose-500 text-xs"></i>
+                <span>Hapus</span>
+            </button>
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Pilar</label>
+            <input type="text" name="pilar_visi[${uniqueId}][judul]" 
+                value=""
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm bg-white"
+                placeholder="Contoh: Berakhlak Mulia">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Deskripsi Singkat</label>
+            <textarea name="pilar_visi[${uniqueId}][deskripsi]" rows="2"
+                class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-xs bg-white"
+                placeholder="Penjelasan pilar..."></textarea>
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Ikon Pilar</label>
+            <div class="flex items-center space-x-2">
+                <div class="pilar-icon-preview w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm border border-emerald-100 flex-shrink-0">
+                    <i class="fa-solid ${PILAR_ICON_OPTIONS[0].value}"></i>
+                </div>
+                <select name="pilar_visi[${uniqueId}][icon]" onchange="updatePilarIconPreview(this)" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-xs bg-white">
+                    ${iconOptionsHtml}
+                </select>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(card);
+    if (emptyState) emptyState.classList.add('hidden');
+    renumberPilar();
+
+    // Auto-focus the new title input
+    const inputTitle = card.querySelector('input[type="text"]');
+    if (inputTitle) inputTitle.focus();
+}
+
+function hapusPilar(buttonEl) {
+    const card = buttonEl.closest('.pilar-card');
+    if (card) {
+        card.remove();
+        renumberPilar();
+    }
+}
+
+function renumberPilar() {
+    const cards = document.querySelectorAll('.pilar-card');
+    const emptyState = document.getElementById('pilarEmptyState');
+    cards.forEach((card, index) => {
+        const num = index + 1;
+        const badge = card.querySelector('.pilar-nomor-badge');
+        const label = card.querySelector('.pilar-label');
+        if (badge) badge.textContent = num;
+        if (label) label.textContent = 'Pilar ' + num;
+    });
+
+    if (emptyState) {
+        if (cards.length === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+        }
+    }
+}
+
+function updatePilarIconPreview(selectEl) {
+    const previewContainer = selectEl.closest('.flex')?.querySelector('.pilar-icon-preview i');
+    if (previewContainer) {
+        previewContainer.className = 'fa-solid ' + selectEl.value;
+    }
+}
+</script>
 @endsection

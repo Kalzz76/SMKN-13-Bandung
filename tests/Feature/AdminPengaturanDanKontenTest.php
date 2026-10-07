@@ -85,10 +85,17 @@ class AdminPengaturanDanKontenTest extends TestCase
         Storage::fake('public');
         $fotoKepsek = UploadedFile::fake()->image('kepsek.jpg');
 
+        $pilarVisiData = [
+            ['judul' => 'Pilar Akhlak Mulia', 'deskripsi' => 'Deskripsi karakter siswa.', 'icon' => 'fa-hand-holding-heart'],
+            ['judul' => 'Pilar Kompetensi Tinggi', 'deskripsi' => 'Deskripsi standar industri.', 'icon' => 'fa-award'],
+            ['judul' => 'Pilar Berdaya Saing', 'deskripsi' => 'Deskripsi siap global.', 'icon' => 'fa-earth-asia'],
+        ];
+
         $response = $this->actingAs($this->admin)->put('/admin/profil-sambutan', [
             'slogan' => 'Cerdas & Berkarakter',
             'deskripsi_singkat' => 'Pusat kejuruan teknologi.',
             'visi' => 'Menjadi SMK Unggul Nasional.',
+            'pilar_visi' => $pilarVisiData,
             'misi' => "Mendidik siswa berkarakter\nMenjalin kerja sama industri",
             'sejarah' => 'Berdiri sejak tahun 1963...',
             'nama_kepsek' => 'Dr. H. Ahmad Supriyadi, M.Pd.',
@@ -104,6 +111,62 @@ class AdminPengaturanDanKontenTest extends TestCase
             'slogan' => 'Cerdas & Berkarakter',
             'nama_kepsek' => 'Dr. H. Ahmad Supriyadi, M.Pd.',
         ]);
+
+        $publicResponse = $this->get('/profil');
+        $publicResponse->assertSee('Pilar Akhlak Mulia');
+        $publicResponse->assertSee('Deskripsi karakter siswa.');
+    }
+
+    public function test_admin_bisa_tambah_dan_kurang_pilar_visi_secara_dinamis(): void
+    {
+        // 1. Tambah menjadi 4 pilar (lebih dari 3 pilar)
+        $empatPilar = [
+            ['judul' => 'Inovasi Digital', 'deskripsi' => 'Pengembangan teknologi tepat guna.', 'icon' => 'fa-laptop-code'],
+            ['judul' => 'Integritas Luhur', 'deskripsi' => 'Kejujuran dan etika kerja.', 'icon' => 'fa-shield-heart'],
+            ['judul' => 'Kemitraan Global', 'deskripsi' => 'Jejaring industri dunia.', 'icon' => 'fa-earth-asia'],
+            ['judul' => 'Prestasi Juara', 'deskripsi' => 'Kompetisi tingkat internasional.', 'icon' => 'fa-award'],
+        ];
+
+        $res1 = $this->actingAs($this->admin)->put('/admin/profil-sambutan', [
+            'visi' => 'Visi SMKN 13 Maju Mandiri',
+            'pilar_visi_submitted' => '1',
+            'pilar_visi' => $empatPilar,
+        ]);
+        $res1->assertRedirect('/admin/profil-sambutan');
+
+        $profilPage1 = $this->get('/profil');
+        $profilPage1->assertSee('Inovasi Digital');
+        $profilPage1->assertSee('Prestasi Juara');
+
+        // 2. Kurang menjadi 2 pilar saja (kurang dari 3 pilar)
+        $duaPilar = [
+            ['judul' => 'Inovasi Digital', 'deskripsi' => 'Pengembangan teknologi tepat guna.', 'icon' => 'fa-laptop-code'],
+            ['judul' => 'Prestasi Juara', 'deskripsi' => 'Kompetisi tingkat internasional.', 'icon' => 'fa-award'],
+        ];
+
+        $res2 = $this->actingAs($this->admin)->put('/admin/profil-sambutan', [
+            'visi' => 'Visi SMKN 13 Maju Mandiri',
+            'pilar_visi_submitted' => '1',
+            'pilar_visi' => $duaPilar,
+        ]);
+        $res2->assertRedirect('/admin/profil-sambutan');
+
+        $profilPage2 = $this->get('/profil');
+        $profilPage2->assertSee('Inovasi Digital');
+        $profilPage2->assertSee('Prestasi Juara');
+        $profilPage2->assertDontSee('Integritas Luhur');
+
+        // 3. Hapus semua pilar (0 pilar)
+        $res3 = $this->actingAs($this->admin)->put('/admin/profil-sambutan', [
+            'visi' => 'Visi SMKN 13 Maju Mandiri',
+            'pilar_visi_submitted' => '1',
+            'pilar_visi' => [],
+        ]);
+        $res3->assertRedirect('/admin/profil-sambutan');
+
+        $profilPage3 = $this->get('/profil');
+        $profilPage3->assertOk();
+        $profilPage3->assertDontSee('Inovasi Digital');
     }
 
     public function test_crud_berita_berhasil(): void

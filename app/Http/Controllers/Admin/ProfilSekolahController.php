@@ -34,6 +34,7 @@ class ProfilSekolahController extends Controller
             'slogan' => 'nullable|string|max:255',
             'deskripsi_singkat' => 'nullable|string',
             'visi' => 'nullable|string',
+            'pilar_visi' => 'nullable|array',
             'misi' => 'nullable|string',
             'sejarah' => 'nullable|string',
             'nama_kepsek' => 'nullable|string|max:255',
@@ -53,6 +54,16 @@ class ProfilSekolahController extends Controller
         $pengaturan->slogan = $request->slogan;
         $pengaturan->deskripsi_singkat = $request->deskripsi_singkat;
         $pengaturan->visi = $request->visi;
+        if ($request->has('pilar_visi_submitted') || $request->has('pilar_visi')) {
+            $rawPilar = $request->input('pilar_visi', []);
+            $filteredPilar = [];
+            if (is_array($rawPilar)) {
+                $filteredPilar = array_values(array_filter($rawPilar, function ($item) {
+                    return !empty(trim($item['judul'] ?? '')) || !empty(trim($item['deskripsi'] ?? ''));
+                }));
+            }
+            $pengaturan->pilar_visi = $filteredPilar;
+        }
         $pengaturan->misi = $request->misi;
         $pengaturan->sejarah = $request->sejarah;
         $pengaturan->nama_kepsek = $request->nama_kepsek;

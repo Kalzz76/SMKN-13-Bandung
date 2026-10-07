@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'SMKN 13 Bandung - Official Portal & CMS Sekolah' }}</title>
+    <script>document.documentElement.classList.add("js")</script>
 
     @if(!empty($sitePengaturan?->logo_url))
         <link rel="icon" type="image/png" href="{{ $sitePengaturan->logo_url }}">
@@ -55,8 +56,131 @@
         .btn-animate {
             transition: all 0.2s;
         }
+        button.btn-animate:hover, a.btn-animate:hover {
+            transform: translateY(-2px);
+        }
         .btn-animate:active {
-            transform: scale(0.96);
+            transform: scale(0.95);
+        }
+
+        /* ===== ANIMASI ===== */
+        .js .rv {
+            opacity: 0;
+        }
+        .rv.in {
+            animation: rvUp 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+            animation-delay: var(--d, 0ms);
+        }
+        .rv[data-rv=left].in { animation-name: rvLeft; }
+        .rv[data-rv=right].in { animation-name: rvRight; }
+        .rv[data-rv=zoom].in { animation-name: rvZoom; }
+
+        @keyframes rvUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: none; }
+        }
+        @keyframes rvLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: none; }
+        }
+        @keyframes rvRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: none; }
+        }
+        @keyframes rvZoom {
+            from { opacity: 0; transform: scale(0.95) translateY(16px); }
+            to { opacity: 1; transform: none; }
+        }
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(26px); filter: blur(6px); }
+            to { opacity: 1; transform: none; filter: none; }
+        }
+        .hero-anim > * {
+            opacity: 0;
+            animation: heroIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+        }
+        .hero-anim > :nth-child(1) { animation-delay: 0.15s; }
+        .hero-anim > :nth-child(2) { animation-delay: 0.3s; }
+        .hero-anim > :nth-child(3) { animation-delay: 0.45s; }
+        .hero-anim > :nth-child(4) { animation-delay: 0.6s; }
+        .hero-anim > :nth-child(5) { animation-delay: 0.75s; }
+
+        @keyframes accIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: none; }
+        }
+        .accordion-content.expanded > * {
+            animation: accIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+        }
+        .accordion-content.expanded > :nth-child(2) { animation-delay: 0.1s; }
+        .accordion-content.expanded > :nth-child(3) { animation-delay: 0.2s; }
+
+        #mainNav.scrolled {
+            background: rgba(15, 42, 71, 0.92);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.45);
+        }
+        .nav-item {
+            position: relative;
+        }
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            height: 2px;
+            width: 0;
+            background: #9ED6CF;
+            transition: width 0.3s;
+        }
+        .nav-item:hover::after, .nav-item.text-teal-accent::after {
+            width: 100%;
+        }
+        .feat-ico {
+            transition: all 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+        .btn-animate:hover .feat-ico {
+            background: #1D6F6A;
+            color: #fff;
+            transform: translateY(-6px) rotate(-4deg) scale(1.06);
+            box-shadow: 0 14px 28px -10px rgba(29, 111, 106, 0.55);
+        }
+        .bcard-img, .ek-img {
+            transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+        .bcard:hover .bcard-img, .ekc:hover .ek-img {
+            transform: scale(1.06);
+        }
+        .orb {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(60px);
+            opacity: 0.35;
+            animation: orbDrift 16s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        .orb-a {
+            width: 18rem;
+            height: 18rem;
+            background: #3A9189;
+            top: -5rem;
+            right: -4rem;
+        }
+        .orb-b {
+            width: 16rem;
+            height: 16rem;
+            background: #17476B;
+            bottom: -6rem;
+            left: -3rem;
+            animation-delay: -8s;
+        }
+        @keyframes orbDrift {
+            to { transform: translate(-30px, 24px) scale(1.15); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .js .rv { opacity: 1; }
+            .rv.in, .hero-anim > *, .accordion-content.expanded > *, .orb { animation: none !important; }
+            .hero-anim > * { opacity: 1; }
         }
 
         .accordion-content {
@@ -202,7 +326,9 @@
 </head>
 
 <body class="bg-bg-page text-text-main antialiased min-h-screen flex flex-col overflow-x-hidden">
-    <nav class="bg-navy-dark text-white shadow-md sticky top-0 z-50 border-b border-navy-mid">
+    <div id="scrollBar" class="fixed top-0 left-0 h-1 w-0 bg-gradient-to-r from-teal-accent to-teal-primary z-[90] pointer-events-none"></div>
+
+    <nav id="mainNav" class="bg-navy-dark text-white shadow-md sticky top-0 z-50 border-b border-navy-mid transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <a href="{{ route('beranda') }}" class="flex items-center space-x-3 btn-animate">
@@ -451,57 +577,83 @@
             if (window.innerWidth >= 1024) toggleMobileMenu(false);
         });
 
-        const HOME_SLIDER_FILES = [
-            '{{ asset("Assets/home1.webp") }}',
-            '{{ asset("Assets/home2.webp") }}',
-            '{{ asset("Assets/home3.jpg") }}',
-            '{{ asset("Assets/home4.jpg") }}'
-        ];
-        const FALLBACK_SLIDER_FILES = [
-            'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80',
-            'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=80',
-            'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=80',
-            'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1600&q=80'
-        ];
+        /* ===== SLIDER BACKGROUND ===== */
+        const ASSET_BASE = "{{ asset('') }}".replace(/\/$/, '');
+        const SLIDER_SETS = {
+            home: ['home1.webp', 'home2.webp', 'home3.jpg', 'home4.jpg', 'home5.jpg', 'home6.jpeg', 'home7.jpg', 'home8.jpg', 'home9.jpg', 'home10.jpg', 'home11.jpg', 'home12.jpeg'],
+            jurusan: ['jurusan1.webp', 'jurusan2.jpg', 'jurusan3.jpg', 'jurusan4.jpeg', 'jurusan5.jpeg', 'jurusan6.jpeg']
+        };
+        const EXT_TRY = ['jpg', 'jpeg', 'webp', 'png', 'jfif', 'avif'];
+
+        function resolveImg(file, cb) {
+            const m = file.match(/^(.*)\.([a-z0-9]+)$/i) || [null, file, ''];
+            const base = m[1], ext = (m[2] || '').toLowerCase(), c = [];
+            const dirs = ['Assets', 'assets'];
+            const exts = ext ? [ext, ...EXT_TRY.filter(x => x !== ext)] : EXT_TRY;
+
+            exts.forEach(x => dirs.forEach(d => {
+                c.push(ASSET_BASE + '/' + d + '/' + encodeURIComponent(base + '.' + x));
+                c.push('/' + d + '/' + encodeURIComponent(base + '.' + x));
+            }));
+            dirs.forEach(d => {
+                c.push(ASSET_BASE + '/' + d + '/' + encodeURIComponent(base));
+                c.push('/' + d + '/' + encodeURIComponent(base));
+            });
+            c.push('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80');
+
+            let i = 0;
+            const t = () => {
+                if (i >= c.length) return;
+                const im = new Image(), u = c[i];
+                im.onload = () => cb(u);
+                im.onerror = () => { i++; t(); };
+                im.src = u;
+            };
+            t();
+        }
 
         function initSliders() {
             document.querySelectorAll('[data-slider]').forEach(box => {
-                const off = (+box.dataset.offset || 0) % HOME_SLIDER_FILES.length;
-                const files = HOME_SLIDER_FILES.slice(off).concat(HOME_SLIDER_FILES.slice(0, off));
-                const fallbacks = FALLBACK_SLIDER_FILES.slice(off).concat(FALLBACK_SLIDER_FILES.slice(0, off));
+                const sliderKey = box.dataset.slider || 'home';
+                const set = SLIDER_SETS[sliderKey] || SLIDER_SETS.home;
+                const off = (+box.dataset.offset || 0) % set.length;
+                const files = set.slice(off).concat(set.slice(0, off));
 
-                box.innerHTML = files.map((f, i) => `<div class="hero-slide ${i ? '' : 'active'}" style="background-image:url('${f}')"></div>`).join('') +
-                    (box.dataset.dots ? `<div class="absolute bottom-5 inset-x-0 flex justify-center gap-2 z-20">${files.map((_, i) => `<button type="button" aria-label="Slide ${i+1}" class="slider-dot ${i ? '' : 'active'}"></button>`).join('')}</div>` : '');
+                box.innerHTML = files.map((f, i) => `<div class="hero-slide ${i ? '' : 'active'}"></div>`).join('') +
+                    (box.dataset.dots ? `<div class="absolute bottom-5 inset-x-0 flex justify-center gap-1.5 sm:gap-2 z-20 px-4 flex-wrap">${files.map((_, i) => `<button type="button" aria-label="Slide ${i+1}" class="slider-dot ${i ? '' : 'active'}"></button>`).join('')}</div>` : '');
 
                 const slides = [...box.querySelectorAll('.hero-slide')];
                 const dots = [...box.querySelectorAll('.slider-dot')];
 
-                files.forEach((f, i) => {
-                    const t = new Image();
-                    t.onerror = () => {
-                        if (slides[i]) slides[i].style.backgroundImage = `url('${fallbacks[i]}')`;
-                    };
-                    t.src = f;
-                });
+                const load = i => {
+                    i = (i + slides.length) % slides.length;
+                    const sl = slides[i];
+                    if (!sl || sl.dataset.loaded) return;
+                    sl.dataset.loaded = '1';
+                    resolveImg(files[i], u => { sl.style.backgroundImage = `url('${u}')`; });
+                };
 
-                let cur = 0;
-                let timer;
+                let cur = 0, timer;
+                load(0);
+                load(1);
+
                 const go = n => {
                     if (!slides[cur]) return;
                     slides[cur].classList.remove('active');
                     if (dots[cur]) dots[cur].classList.remove('active');
                     cur = (n + slides.length) % slides.length;
-                    slides[cur].classList.add('active');
+                    load(cur);
+                    load(cur + 1);
+                    if (slides[cur]) slides[cur].classList.add('active');
                     if (dots[cur]) dots[cur].classList.add('active');
                 };
+
                 const start = () => {
                     clearInterval(timer);
                     timer = setInterval(() => go(cur + 1), 5500);
                 };
-                dots.forEach((d, i) => d.addEventListener('click', () => {
-                    go(i);
-                    start();
-                }));
+
+                dots.forEach((d, i) => d.addEventListener('click', () => { go(i); start(); }));
                 start();
             });
         }
@@ -565,6 +717,52 @@
             else if (e.key === 'ArrowLeft') galLbStep(-1);
             else if (e.key === 'ArrowRight') galLbStep(1);
         });
+
+        /* ===== ANIMASI: reveal on scroll, progress bar, navbar ===== */
+        let rvIO;
+        function initReveal() {
+            const els = [...document.querySelectorAll('.rv:not([data-rvq])')].filter(e => e.getClientRects().length);
+            if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion:reduce)').matches) {
+                els.forEach(e => e.classList.remove('rv'));
+                return;
+            }
+            rvIO = rvIO || new IntersectionObserver(es => es.forEach(en => {
+                if (!en.isIntersecting) return;
+                const el = en.target;
+                rvIO.unobserve(el);
+                el.classList.add('in');
+                el.addEventListener('animationend', ev => {
+                    if (ev.target !== el) return;
+                    el.classList.remove('rv', 'in');
+                    el.style.removeProperty('--d');
+                });
+            }), { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+            const cnt = new Map();
+            els.forEach(el => {
+                el.dataset.rvq = '1';
+                const p = el.parentElement, n = cnt.get(p) || 0;
+                cnt.set(p, n + 1);
+                el.style.setProperty('--d', (n % 4) * 100 + 'ms');
+                rvIO.observe(el);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(initReveal));
+        document.addEventListener('DOMContentLoaded', () => {
+            let t;
+            new MutationObserver(() => {
+                cancelAnimationFrame(t);
+                t = requestAnimationFrame(initReveal);
+            }).observe(document.body, { childList: true, subtree: true });
+        });
+
+        window.addEventListener('scroll', () => {
+            const d = document.documentElement;
+            const max = d.scrollHeight - d.clientHeight;
+            const n = document.getElementById('mainNav');
+            const sb = document.getElementById('scrollBar');
+            if (sb) sb.style.width = (max > 0 ? (window.scrollY / max * 100) : 0) + '%';
+            if (n) n.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
     </script>
 </body>
 
