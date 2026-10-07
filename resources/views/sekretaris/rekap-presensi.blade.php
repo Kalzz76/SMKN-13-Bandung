@@ -9,24 +9,53 @@
                 <p class="text-xs text-slate-500 mt-1">Laporan kehadiran siswa per kelas dan mata pelajaran.</p>
             </div>
 
-            <form method="GET" action="{{ route('sekretaris.rekap-presensi') }}" class="flex flex-wrap items-center gap-2">
-                <span class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
-                    Kelas {{ $kelasAktif->nama ?? '-' }}
-                </span>
-
-                <select name="bulan" onchange="this.form.submit()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600 bg-white">
-                    @foreach($daftarBulan as $bKey => $bVal)
-                        <option value="{{ $bKey }}" {{ $bulan == $bKey ? 'selected' : '' }}>{{ $bVal }}</option>
-                    @endforeach
-                </select>
-
-                <select name="tahun" onchange="this.form.submit()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-600 bg-white">
-                    @foreach($daftarTahun as $tVal)
-                        <option value="{{ $tVal }}" {{ $tahun == $tVal ? 'selected' : '' }}>{{ $tVal }}</option>
-                    @endforeach
-                </select>
-            </form>
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="{{ route('sekretaris.rekap-presensi', array_merge(request()->query(), ['export' => 'excel'])) }}"
+                   class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition">
+                    <i class="fa-solid fa-file-excel"></i>
+                    <span>Unduh Excel</span>
+                </a>
+            </div>
         </div>
+        <form method="GET" action="{{ route('sekretaris.rekap-presensi') }}" class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs items-end">
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">Kelas</label>
+                <select name="kelas_id" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                    @foreach($daftarKelas as $k)
+                        <option value="{{ $k->id }}" {{ ($kelasAktif && $kelasAktif->id == $k->id) ? 'selected' : '' }}>{{ $k->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">Mata Pelajaran</label>
+                <select name="id_mapel" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                    <option value="">Semua Mata Pelajaran</option>
+                    @foreach($daftarMapel as $m)
+                        <option value="{{ $m->id }}" {{ ($idMapelPilihan ?? '') == $m->id ? 'selected' : '' }}>{{ $m->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">Tanggal Mulai</label>
+                <input type="date" name="tanggal_mulai" value="{{ $tanggalMulai }}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">Tanggal Selesai</label>
+                <input type="date" name="tanggal_selesai" value="{{ $tanggalSelesai }}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button type="submit" class="flex-1 py-2 px-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl transition text-center shadow-xs cursor-pointer">
+                    <i class="fa-solid fa-filter text-[11px] mr-1"></i> Filter
+                </button>
+                <a href="{{ route('sekretaris.rekap-presensi') }}" class="py-2 px-3 bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold rounded-xl transition text-center">
+                    Reset
+                </a>
+            </div>
+        </form>
 
         @if(empty($rekapSiswa))
             <div class="text-center py-12 text-slate-400">

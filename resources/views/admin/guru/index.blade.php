@@ -19,120 +19,134 @@
                 <input type="hidden" name="jenis" value="{{ request('jenis') }}">
             @endif
             <div class="relative flex-grow">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-sm leading-none"></i>
+                </div>
                 <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama, NIP, mapel..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
             </div>
             <div class="flex items-center space-x-2">
                 <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm flex-1 sm:flex-initial">
                     Cari
                 </button>
-                @if(request('cari'))
-                    <a href="{{ route('admin.guru.index', array_filter(['jenis' => request('jenis')])) }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center">
-                        Reset
-                    </a>
-                @endif
+                <button type="button" id="liveResetBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center {{ request('cari') ? '' : 'hidden' }}">
+                    Reset
+                </button>
             </div>
         </form>
 
         <div class="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:space-x-2">
             <a href="{{ route('admin.guru.index', array_filter(['cari' => request('cari')])) }}"
-               class="h-11 sm:h-9 sm:px-4 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ !request('jenis') ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="jenis" data-filter-value=""
+               class="live-filter-tab h-11 sm:h-9 sm:px-4 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ !request('jenis') ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Semua
             </a>
             <a href="{{ route('admin.guru.index', array_filter(['jenis' => 'Guru', 'cari' => request('cari')])) }}"
-               class="h-11 sm:h-9 sm:px-4 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center text-center leading-tight {{ request('jenis') === 'Guru' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="jenis" data-filter-value="Guru"
+               class="live-filter-tab h-11 sm:h-9 sm:px-4 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center text-center leading-tight {{ request('jenis') === 'Guru' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Guru Pengajar
             </a>
             <a href="{{ route('admin.guru.index', array_filter(['jenis' => 'Staff', 'cari' => request('cari')])) }}"
-               class="h-11 sm:h-9 sm:px-4 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center text-center leading-tight {{ request('jenis') === 'Staff' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="jenis" data-filter-value="Staff"
+               class="live-filter-tab h-11 sm:h-9 sm:px-4 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center text-center leading-tight {{ request('jenis') === 'Staff' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Staff Tata Usaha
             </a>
         </div>
 
-        @if($daftarGuru->isEmpty())
-            <div class="p-12 text-center text-slate-400">
-                <i class="fa-solid fa-chalkboard-user text-4xl mb-3 text-slate-300"></i>
-                <p class="text-sm">Belum ada data guru/staff yang sesuai.</p>
-            </div>
-        @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                @foreach($daftarGuru as $g)
-                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition">
-                        <div class="absolute top-4 right-4 flex space-x-1">
-                            <button type="button"
-                                data-id="{{ $g->id }}"
-                                data-nama="{{ $g->nama }}"
-                                data-nip="{{ $g->nip }}"
-                                data-jenis="{{ $g->jenis }}"
-                                data-idmapel="{{ $g->id_mapel }}"
-                                data-publik="{{ $g->tampil_publik }}"
-                                onclick="openEditModal(this)"
-                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs transition">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <form method="POST" action="{{ route('admin.guru.destroy', $g->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus guru ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition">
-                                    <i class="fa-solid fa-trash"></i>
+        <div id="liveDataContainer">
+            @if($daftarGuru->isEmpty())
+                <div class="p-12 text-center text-slate-400">
+                    <i class="fa-solid fa-chalkboard-user text-4xl mb-3 text-slate-300"></i>
+                    <p class="text-sm">Belum ada data guru/staff yang sesuai.</p>
+                </div>
+            @else
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach($daftarGuru as $g)
+                        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition">
+                            <div class="absolute top-4 right-4 flex space-x-1">
+                                <button type="button"
+                                    data-id="{{ $g->id }}"
+                                    data-nama="{{ $g->nama }}"
+                                    data-nip="{{ $g->nip }}"
+                                    data-jenis="{{ $g->jenis }}"
+                                    data-idmapel="{{ $g->id_mapel }}"
+                                    data-mapelids="{{ json_encode($g->mapels->pluck('id')) }}"
+                                    data-publik="{{ $g->tampil_publik }}"
+                                    onclick="openEditModal(this)"
+                                    class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs transition">
+                                    <i class="fa-solid fa-pen"></i>
                                 </button>
-                            </form>
-                        </div>
+                                <form method="POST" action="{{ route('admin.guru.destroy', $g->id) }}" data-confirm="Apakah Anda yakin ingin menghapus guru ini?">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition cursor-pointer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
 
-                        <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-600/30 mb-4 bg-slate-50 flex items-center justify-center flex-shrink-0 shadow-inner">
-                            @if($g->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($g->foto))
-                                <img src="{{ asset('storage/' . $g->foto) }}" alt="{{ $g->nama }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xl">
-                                    {{ \Illuminate\Support\Str::substr($g->nama, 0, 2) }}
+                            <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-600/30 mb-4 bg-slate-50 flex items-center justify-center flex-shrink-0 shadow-inner">
+                                @if($g->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($g->foto))
+                                    <img src="{{ asset('storage/' . $g->foto) }}" alt="{{ $g->nama }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xl">
+                                        {{ \Illuminate\Support\Str::substr($g->nama, 0, 2) }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="space-y-1 w-full">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full {{ $g->jenis === 'Guru' ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800' }}">
+                                    {{ $g->jenis }}
+                                </span>
+                                <h3 class="font-bold text-slate-900 text-sm mt-1 line-clamp-1" title="{{ $g->nama }}">{{ $g->nama }}</h3>
+                                <p class="text-xs text-slate-400 font-mono">{{ $g->nip ?? 'NIP: -' }}</p>
+                            </div>
+
+                            <div class="w-full my-3 pt-3 border-t border-slate-100 text-xs text-slate-600 space-y-1">
+                                @if($g->mapels && $g->mapels->count() > 0)
+                                    <div class="flex flex-wrap gap-1 justify-center max-h-16 overflow-y-auto">
+                                        @foreach($g->mapels as $m)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200" title="{{ $m->nama }}">
+                                                {{ $m->kode ?: $m->nama }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @elseif($g->mapel || $g->mapel_utama)
+                                    <div class="line-clamp-1"><strong class="text-slate-800">Mapel:</strong> {{ $g->mapel ? $g->mapel->nama : $g->mapel_utama }}</div>
+                                @else
+                                    <div class="text-slate-400 italic">Belum ada mapel</div>
+                                @endif
+                            </div>
+
+                            <div class="w-full pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-50">
+                                <div>
+                                    @if($g->user)
+                                        <span class="text-emerald-700 font-semibold" title="Akun: {{ $g->user->username }}">
+                                            <i class="fa-solid fa-circle-check mr-1"></i> {{ $g->user->username }}
+                                        </span>
+                                    @else
+                                        <span class="text-slate-400">
+                                            <i class="fa-solid fa-circle-xmark mr-1"></i> No Akun
+                                        </span>
+                                    @endif
                                 </div>
-                            @endif
-                        </div>
-
-                        <div class="space-y-1 w-full">
-                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full {{ $g->jenis === 'Guru' ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800' }}">
-                                {{ $g->jenis }}
-                            </span>
-                            <h3 class="font-bold text-slate-900 text-sm mt-1 line-clamp-1" title="{{ $g->nama }}">{{ $g->nama }}</h3>
-                            <p class="text-xs text-slate-400 font-mono">{{ $g->nip ?? 'NIP: -' }}</p>
-                        </div>
-
-                        <div class="w-full my-3 pt-3 border-t border-slate-100 text-xs text-slate-600 space-y-1">
-                            @if($g->mapel || $g->mapel_utama)
-                                <div class="line-clamp-1"><strong class="text-slate-800">Mapel:</strong> {{ $g->mapel ? $g->mapel->nama : $g->mapel_utama }}</div>
-                            @else
-                                <div class="text-slate-400 italic">Belum ada mapel</div>
-                            @endif
-                        </div>
-
-                        <div class="w-full pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-50">
-                            <div>
-                                @if($g->user)
-                                    <span class="text-emerald-700 font-semibold" title="Akun: {{ $g->user->username }}">
-                                        <i class="fa-solid fa-circle-check mr-1"></i> {{ $g->user->username }}
-                                    </span>
-                                @else
-                                    <span class="text-slate-400">
-                                        <i class="fa-solid fa-circle-xmark mr-1"></i> No Akun
-                                    </span>
-                                @endif
-                            </div>
-                            <div>
-                                @if($g->tampil_publik)
-                                    <span class="text-emerald-600" title="Tampil di web publik"><i class="fa-solid fa-globe"></i> Publik</span>
-                                @else
-                                    <span class="text-slate-400" title="Tersembunyi dari publik"><i class="fa-solid fa-eye-slash"></i> Privat</span>
-                                @endif
+                                <div>
+                                    @if($g->tampil_publik)
+                                        <span class="text-emerald-600" title="Tampil di web publik"><i class="fa-solid fa-globe"></i> Publik</span>
+                                    @else
+                                        <span class="text-slate-400" title="Tersembunyi dari publik"><i class="fa-solid fa-eye-slash"></i> Privat</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
 
-            <div class="mt-6">
-                {{ $daftarGuru->links() }}
-            </div>
-        @endif
+                <div class="mt-6">
+                    {{ $daftarGuru->links() }}
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 
@@ -146,7 +160,7 @@
             @csrf
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar <span class="text-rose-500">*</span></label>
-                <input type="text" name="nama" placeholder="Contoh: Refky, M.Kom." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                <input type="text" name="nama" placeholder="Contoh: Budi Santoso, S.Kom." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -162,13 +176,25 @@
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran Utama</label>
-                <select name="id_mapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                    <option value="">-- Pilih Mata Pelajaran --</option>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-sm font-semibold text-slate-700">Mata Pelajaran yang Diampu</label>
+                    <span class="text-xs text-slate-400 font-normal">{{ $daftarMapel->count() }} mapel &bull; bisa pilih >1</span>
+                </div>
+                <div class="relative mb-2">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs leading-none"></i>
+                    </div>
+                    <input type="text" placeholder="Cari mapel..." oninput="filterMapel('tambah', this.value)" class="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-emerald-600 bg-white">
+                </div>
+                <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-xl p-2.5 space-y-1 bg-slate-50/50">
                     @foreach($daftarMapel as $m)
-                        <option value="{{ $m->id }}">{{ $m->nama }} ({{ $m->kode }})</option>
+                        <label class="flex items-center space-x-2 text-xs text-slate-700 hover:bg-white p-1.5 rounded-lg cursor-pointer transition mapel-item-tambah" data-nama="{{ strtolower($m->nama . ' ' . $m->kode) }}">
+                            <input type="checkbox" name="mapel_ids[]" value="{{ $m->id }}" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                            <span class="font-medium text-slate-800">{{ $m->nama }}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">({{ $m->kode }})</span>
+                        </label>
                     @endforeach
-                </select>
+                </div>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Foto Formal</label>
@@ -213,13 +239,25 @@
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran Utama</label>
-                <select id="editIdMapel" name="id_mapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                    <option value="">-- Pilih Mata Pelajaran --</option>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-sm font-semibold text-slate-700">Mata Pelajaran yang Diampu</label>
+                    <span class="text-xs text-slate-400 font-normal">{{ $daftarMapel->count() }} mapel &bull; bisa pilih >1</span>
+                </div>
+                <div class="relative mb-2">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs leading-none"></i>
+                    </div>
+                    <input type="text" id="searchMapelEdit" placeholder="Cari mapel..." oninput="filterMapel('edit', this.value)" class="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-emerald-600 bg-white">
+                </div>
+                <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-xl p-2.5 space-y-1 bg-slate-50/50">
                     @foreach($daftarMapel as $m)
-                        <option value="{{ $m->id }}">{{ $m->nama }} ({{ $m->kode }})</option>
+                        <label class="flex items-center space-x-2 text-xs text-slate-700 hover:bg-white p-1.5 rounded-lg cursor-pointer transition mapel-item-edit" data-nama="{{ strtolower($m->nama . ' ' . $m->kode) }}">
+                            <input type="checkbox" name="mapel_ids[]" value="{{ $m->id }}" class="edit-mapel-checkbox w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                            <span class="font-medium text-slate-800">{{ $m->nama }}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">({{ $m->kode }})</span>
+                        </label>
                     @endforeach
-                </select>
+                </div>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Ganti Foto Formal (Opsional)</label>
@@ -244,20 +282,54 @@ function openTambahModal() {
 function closeTambahModal() {
     document.getElementById('tambahModal').classList.add('hidden');
 }
+function filterMapel(type, query) {
+    const q = query.toLowerCase().trim();
+    const items = document.querySelectorAll('.mapel-item-' + type);
+    items.forEach(item => {
+        const text = item.getAttribute('data-nama') || '';
+        if (text.includes(q)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
 function openEditModal(button) {
     const id = button.getAttribute('data-id');
     const nama = button.getAttribute('data-nama');
     const nip = button.getAttribute('data-nip');
     const jenis = button.getAttribute('data-jenis');
-    const idmapel = button.getAttribute('data-idmapel');
     const publik = button.getAttribute('data-publik');
+    const mapelIdsRaw = button.getAttribute('data-mapelids');
+    const idmapel = button.getAttribute('data-idmapel');
 
     document.getElementById('editForm').action = '/admin/guru/' + id;
     document.getElementById('editNama').value = nama;
     document.getElementById('editNip').value = nip || '';
     document.getElementById('editJenis').value = jenis;
-    document.getElementById('editIdMapel').value = idmapel || '';
     document.getElementById('editTampilPublik').checked = publik == '1';
+
+    // Reset search filter
+    const searchEdit = document.getElementById('searchMapelEdit');
+    if (searchEdit) {
+        searchEdit.value = '';
+        filterMapel('edit', '');
+    }
+
+    let mapelIds = [];
+    try {
+        mapelIds = mapelIdsRaw ? JSON.parse(mapelIdsRaw) : [];
+    } catch (e) {
+        mapelIds = [];
+    }
+    if (mapelIds.length === 0 && idmapel) {
+        mapelIds = [parseInt(idmapel)];
+    }
+
+    const editCheckboxes = document.querySelectorAll('.edit-mapel-checkbox');
+    editCheckboxes.forEach(cb => {
+        cb.checked = mapelIds.includes(parseInt(cb.value));
+    });
 
     document.getElementById('editModal').classList.remove('hidden');
 }

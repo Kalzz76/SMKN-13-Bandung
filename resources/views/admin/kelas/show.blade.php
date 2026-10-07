@@ -199,10 +199,10 @@
                                         @endif
                                     </td>
                                     <td class="p-3.5 sm:p-4 text-right whitespace-nowrap">
-                                        <form method="POST" action="{{ route('admin.siswa.destroy', $s->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data siswa ini?')">
+                                        <form method="POST" action="{{ route('admin.siswa.destroy', $s->id) }}" data-confirm="Apakah Anda yakin ingin menghapus data siswa ini?">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="w-8 h-8 rounded-lg hover:bg-rose-50 text-rose-500 hover:text-rose-700 transition inline-flex items-center justify-center text-xs">
+                                            <button type="submit" class="w-8 h-8 rounded-lg hover:bg-rose-50 text-rose-500 hover:text-rose-700 transition inline-flex items-center justify-center text-xs cursor-pointer">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>

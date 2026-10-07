@@ -114,16 +114,11 @@
                     @endif
                 </div>
 
-                <div class="pt-4 border-t border-teal-tint flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-xl text-navy-dark">
-                            {{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}
-                        </h4>
-                        <p class="text-sm font-semibold text-teal-primary">Kepala SMK Negeri 13 Bandung</p>
-                    </div>
-                    <div class="text-teal-primary font-serif italic text-2xl hidden sm:block opacity-60">
+                <div class="pt-4 border-t border-teal-tint">
+                    <h4 class="font-bold text-xl text-navy-dark">
                         {{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}
-                    </div>
+                    </h4>
+                    <p class="text-sm font-semibold text-teal-primary">Kepala SMK Negeri 13 Bandung</p>
                 </div>
             </div>
         </div>

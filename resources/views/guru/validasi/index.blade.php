@@ -58,19 +58,19 @@
                     </div>
                 </div>
 
-                <!-- Status Kehadiran Guru Banner -->
-                <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 flex items-center justify-between gap-4">
+                <!-- Info Diisi Oleh Sekretaris Banner -->
+                <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg shrink-0">
-                            <i class="fa-solid fa-user-check"></i>
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-user-pen"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">STATUS KEHADIRAN GURU</p>
-                            <h4 class="text-sm font-bold text-slate-900 mt-0.5">Anda diabsenkan HADIR</h4>
+                            <p class="text-[10px] font-bold tracking-wider text-amber-600 uppercase">LAPORAN DARI SEKRETARIS KELAS</p>
+                            <h4 class="text-sm font-bold text-slate-900 mt-0.5">Absensi ini dicatat oleh sekretaris kelas karena Anda berhalangan hadir di kelas.</h4>
                         </div>
                     </div>
-                    <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">
-                        Hadir
+                    <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-xs shrink-0">
+                        Menunggu Validasi
                     </span>
                 </div>
 
@@ -81,7 +81,7 @@
                         <span class="w-24 text-center">STATUS</span>
                     </div>
 
-                    <div class="divide-y divide-slate-100">
+                    <div class="divide-y divide-slate-100 max-h-96 overflow-y-auto">
                         <template x-if="selectedSession && selectedSession.students">
                             <template x-for="student in selectedSession.students" :key="student.nis">
                                 <div class="px-6 py-3.5 flex items-center justify-between hover:bg-slate-50/50 transition">
@@ -90,7 +90,13 @@
                                         <p class="text-xs text-slate-400 font-mono mt-0.5" x-text="student.nis"></p>
                                     </div>
                                     <div class="w-24 flex justify-center">
-                                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                              :class="{
+                                                  'bg-emerald-50 text-emerald-700 border border-emerald-200': student.status === 'Hadir',
+                                                  'bg-amber-50 text-amber-700 border border-amber-200': student.status === 'Izin',
+                                                  'bg-blue-50 text-blue-700 border border-blue-200': student.status === 'Sakit',
+                                                  'bg-rose-50 text-rose-700 border border-rose-200': student.status === 'Alpa'
+                                              }"
                                               x-text="student.status">
                                         </span>
                                     </div>
@@ -100,16 +106,29 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons: Tolak & Konfirmasi Saja -->
+                <!-- Action Buttons: Tolak & Konfirmasi/Setujui Real Forms -->
                 <div class="grid grid-cols-2 gap-4 pt-2">
-                    <button @click="confirmAction('tolak')"
-                            class="w-full py-3 px-5 rounded-xl border border-rose-400 text-rose-600 font-bold text-sm hover:bg-rose-50 transition text-center shadow-xs">
-                        Tolak
-                    </button>
-                    <button @click="confirmAction('konfirmasi')"
-                            class="w-full py-3 px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition text-center shadow-xs">
-                        Konfirmasi
-                    </button>
+                    <form method="POST" action="{{ route('guru.validasi.tolak') }}" data-confirm="Apakah Anda yakin ingin menolak laporan absensi ini? Data yang diisi sekretaris akan dibersihkan.">
+                        @csrf
+                        <input type="hidden" name="id_jadwal" :value="selectedSession ? selectedSession.id_jadwal : ''">
+                        <input type="hidden" name="tanggal" :value="selectedSession ? selectedSession.tanggal : ''">
+                        <button type="submit"
+                                class="w-full py-3 px-5 rounded-xl border border-rose-300 text-rose-600 font-bold text-sm hover:bg-rose-50 transition text-center shadow-xs cursor-pointer flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                            <span>Tolak Laporan</span>
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ route('guru.validasi.setujui') }}" data-confirm="Apakah Anda yakin ingin menyetujui dan mengesahkan absensi kelas ini? Data akan masuk ke rekap absensi.">
+                        @csrf
+                        <input type="hidden" name="id_jadwal" :value="selectedSession ? selectedSession.id_jadwal : ''">
+                        <input type="hidden" name="tanggal" :value="selectedSession ? selectedSession.tanggal : ''">
+                        <button type="submit"
+                                class="w-full py-3 px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition text-center shadow-xs cursor-pointer flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-check text-xs"></i>
+                            <span>Setujui & Sahkan Absensi</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

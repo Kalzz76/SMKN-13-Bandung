@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BarcodeController;
 use App\Http\Controllers\Admin\BeritaController;
+use App\Http\Controllers\Admin\ChronosController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EkskulController;
 use App\Http\Controllers\Admin\GaleriController;
@@ -24,6 +25,8 @@ use App\Http\Controllers\Guru\AbsensiSiswaController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfilController as UserProfilController;
+use App\Http\Controllers\Admin\PengajuanIzinController as AdminPengajuanIzinController;
+use App\Http\Controllers\Guru\PengajuanIzinController as GuruPengajuanIzinController;
 use App\Http\Controllers\PublikController;
 use App\Http\Controllers\Sekretaris\DashboardController as SekretarisDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -133,6 +136,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/barcode/generate-semua', [BarcodeController::class, 'generateSemua'])->name('barcode.generate-semua');
     Route::get('/barcode/cetak', [BarcodeController::class, 'cetak'])->name('barcode.cetak');
 
+    Route::get('/izin', [AdminPengajuanIzinController::class, 'index'])->name('izin.index');
+    Route::post('/izin/{id}/setujui', [AdminPengajuanIzinController::class, 'setujui'])->name('izin.setujui');
+    Route::post('/izin/{id}/tolak', [AdminPengajuanIzinController::class, 'tolak'])->name('izin.tolak');
+    Route::post('/izin/catat-manual', [AdminPengajuanIzinController::class, 'catatManual'])->name('izin.catat-manual');
+
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/guru/csv', [LaporanController::class, 'exportGuruCsv'])->name('laporan.guru.csv');
     Route::get('/laporan/guru/cetak', [LaporanController::class, 'cetakGuru'])->name('laporan.guru.cetak');
@@ -140,6 +148,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/laporan/siswa/cetak', [LaporanController::class, 'cetakSiswa'])->name('laporan.siswa.cetak');
 
     Route::get('/log', [LogAktivitasController::class, 'index'])->name('log.index');
+
+    Route::get('/chronos', [ChronosController::class, 'index'])->name('chronos.index');
+    Route::post('/chronos/update', [ChronosController::class, 'update'])->name('chronos.update');
+    Route::post('/chronos/toggle', [ChronosController::class, 'toggle'])->name('chronos.toggle');
+    Route::post('/chronos/preset', [ChronosController::class, 'preset'])->name('chronos.preset');
+    Route::post('/chronos/reset', [ChronosController::class, 'reset'])->name('chronos.reset');
 
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
@@ -149,9 +163,13 @@ Route::middleware(['auth', 'role:guru'])->prefix('guru')->name('guru.')->group(f
     Route::get('/', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::get('/jadwal', [GuruDashboardController::class, 'jadwal'])->name('jadwal');
     Route::get('/validasi', [GuruDashboardController::class, 'validasi'])->name('validasi');
+    Route::post('/validasi/setujui', [GuruDashboardController::class, 'setujuiValidasi'])->name('validasi.setujui');
+    Route::post('/validasi/tolak', [GuruDashboardController::class, 'tolakValidasi'])->name('validasi.tolak');
     Route::get('/rekap', [GuruDashboardController::class, 'rekap'])->name('rekap');
     Route::get('/absensi-saya', [GuruDashboardController::class, 'absensiSaya'])->name('absensi-saya');
     Route::post('/absensi-scan', [AbsensiGuruController::class, 'simpan'])->name('absensi-scan');
+    Route::get('/izin', [GuruPengajuanIzinController::class, 'index'])->name('izin.index');
+    Route::post('/izin', [GuruPengajuanIzinController::class, 'store'])->name('izin.store');
     Route::get('/absensi-siswa/{id}', [AbsensiSiswaController::class, 'index'])->name('absensi-siswa');
     Route::post('/absensi-siswa/{id}', [AbsensiSiswaController::class, 'simpan'])->name('absensi-siswa.simpan');
 });

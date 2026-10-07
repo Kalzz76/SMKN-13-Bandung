@@ -1,6 +1,6 @@
 <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between flex-shrink-0 sticky top-0 z-30 shadow-xs">
     <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-2">
-        <button type="button" onclick="toggleGuruSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition shrink-0 cursor-pointer">
+        <button type="button" onclick="toggleGuruSidebar()" class="text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition shrink-0 cursor-pointer" title="Buka / Tutup Sidebar">
             <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <span class="text-xs sm:text-sm font-bold text-slate-800 truncate">{{ $title ?? 'Portal Guru SMKN 13 Bandung' }}</span>

@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [
+            \App\Http\Middleware\ApplyChronosMiddleware::class,
+        ]);
         $middleware->redirectGuestsTo(function () {
             session()->flash('error', 'Silakan login terlebih dahulu.');
             return '/';

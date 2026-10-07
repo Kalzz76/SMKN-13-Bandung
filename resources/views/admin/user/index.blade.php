@@ -36,40 +36,46 @@
                 <input type="hidden" name="role" value="{{ request('role') }}">
             @endif
             <div class="relative flex-grow">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-sm leading-none"></i>
+                </div>
                 <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama atau username..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
             </div>
             <div class="flex items-center space-x-2">
                 <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm flex-1 sm:flex-initial cursor-pointer">
                     Cari
                 </button>
-                @if(request('cari'))
-                    <a href="{{ route('admin.user.index', array_filter(['role' => request('role')])) }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center">
-                        Reset
-                    </a>
-                @endif
+                <button type="button" id="liveResetBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center {{ request('cari') ? '' : 'hidden' }}">
+                    Reset
+                </button>
             </div>
         </form>
 
         <!-- Filter Role (Di Bawah Search) -->
         <div class="grid grid-cols-4 gap-2 sm:flex sm:items-center sm:space-x-2">
             <a href="{{ route('admin.user.index', array_filter(['cari' => request('cari')])) }}"
-               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ !request('role') ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="role" data-filter-value=""
+               class="live-filter-tab h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ !request('role') ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Semua
             </a>
             <a href="{{ route('admin.user.index', array_filter(['role' => 'admin', 'cari' => request('cari')])) }}"
-               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'admin' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="role" data-filter-value="admin"
+               class="live-filter-tab h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'admin' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Admin
             </a>
             <a href="{{ route('admin.user.index', array_filter(['role' => 'guru', 'cari' => request('cari')])) }}"
-               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'guru' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="role" data-filter-value="guru"
+               class="live-filter-tab h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'guru' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Guru
             </a>
             <a href="{{ route('admin.user.index', array_filter(['role' => 'sekretaris', 'cari' => request('cari')])) }}"
-               class="h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'sekretaris' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+               data-filter-name="role" data-filter-value="sekretaris"
+               class="live-filter-tab h-10 sm:h-9 sm:px-4 px-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center text-center {{ request('role') === 'sekretaris' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Sekretaris
             </a>
         </div>
+
+        <div id="liveDataContainer">
 
         @if($daftarUser->isEmpty())
             <div class="p-12 text-center text-slate-400">
@@ -159,16 +165,16 @@
                                             <span>Edit</span>
                                         </button>
 
-                                        <form method="POST" action="{{ route('admin.user.reset-password', $u->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset password akun {{ $u->name }} ({{ $u->username }}) ke default?\n\nPassword baru: {{ $u->role === 'guru' ? 'guru123' : ($u->role === 'sekretaris' ? 'sekretaris123' : 'admin123') }}')">
+                                        <form method="POST" action="{{ route('admin.user.reset-password', $u->id) }}" data-confirm="Apakah Anda yakin ingin mereset password akun {{ $u->name }} ({{ $u->username }}) ke default? Password baru: {{ $u->role === 'guru' ? 'guru123' : ($u->role === 'sekretaris' ? 'sekretaris123' : 'admin123') }}">
                                             @csrf
-                                            <button type="submit" title="Reset Password ke Default" class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap border border-amber-200/60 shadow-sm">
+                                            <button type="submit" title="Reset Password ke Default" class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap border border-amber-200/60 shadow-sm cursor-pointer">
                                                 <i class="fa-solid fa-arrows-rotate text-amber-600"></i>
                                                 <span>Reset</span>
                                             </button>
                                         </form>
 
                                         @if(auth()->id() != $u->id)
-                                            <form method="POST" action="{{ route('admin.user.destroy', $u->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun pengguna ini?')">
+                                            <form method="POST" action="{{ route('admin.user.destroy', $u->id) }}" data-confirm="Apakah Anda yakin ingin menghapus akun pengguna ini?">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap border border-rose-200/60 shadow-sm cursor-pointer">
@@ -189,6 +195,7 @@
                 {{ $daftarUser->links() }}
             </div>
         @endif
+        </div>
     </div>
 </div>
 
@@ -422,7 +429,7 @@
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Username (Huruf Kecil Tanpa Spasi)</label>
-                <input type="text" id="tambahUsername" name="username" placeholder="Contoh: refky, admin, staf1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
+                <input type="text" id="tambahUsername" name="username" placeholder="Contoh: uli, admin, staf1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-mono" required>
             </div>
 
             <div>

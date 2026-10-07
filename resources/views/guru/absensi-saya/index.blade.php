@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         html5QrcodeScanner.render(function(decodedText) {
             if (!userLatitude || !userLongitude) {
-                alert('Menunggu koordinat lokasi GPS Anda. Pastikan lokasi aktif dan diizinkan di peramban.');
+                showModalMsg('Perhatian', 'Menunggu koordinat lokasi GPS Anda. Pastikan lokasi aktif dan diizinkan di peramban.', 'error');
                 dapatkanLokasi();
                 return;
             }

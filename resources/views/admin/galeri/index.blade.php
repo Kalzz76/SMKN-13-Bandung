@@ -16,13 +16,19 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-2 w-full sm:w-auto">
-                <a href="{{ route('admin.galeri.index') }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ !request('kategori') ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                <a href="{{ route('admin.galeri.index') }}"
+                   data-filter-name="kategori" data-filter-value=""
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition {{ !request('kategori') ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     Semua
                 </a>
-                <a href="{{ route('admin.galeri.index', ['kategori' => 'Fasilitas']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ request('kategori') === 'Fasilitas' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                <a href="{{ route('admin.galeri.index', ['kategori' => 'Fasilitas']) }}"
+                   data-filter-name="kategori" data-filter-value="Fasilitas"
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition {{ request('kategori') === 'Fasilitas' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     Fasilitas
                 </a>
-                <a href="{{ route('admin.galeri.index', ['kategori' => 'Kegiatan']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition {{ request('kategori') === 'Kegiatan' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                <a href="{{ route('admin.galeri.index', ['kategori' => 'Kegiatan']) }}"
+                   data-filter-name="kategori" data-filter-value="Kegiatan"
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition {{ request('kategori') === 'Kegiatan' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     Kegiatan
                 </a>
             </div>
@@ -35,8 +41,13 @@
                 <button type="submit" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-700 transition">
                     Cari
                 </button>
+                <button type="button" id="liveResetBtn" class="bg-slate-100 text-slate-600 px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-200 transition {{ request('cari') ? '' : 'hidden' }}">
+                    Reset
+                </button>
             </form>
         </div>
+
+        <div id="liveDataContainer">
 
         @if($daftarGaleri->isEmpty())
             <div class="p-12 text-center text-slate-400">
@@ -106,10 +117,10 @@
                                     <i class="fa-solid fa-pen text-[10px]"></i>
                                     <span>Edit</span>
                                 </button>
-                                <form method="POST" action="{{ route('admin.galeri.destroy', $g->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus seluruh album foto ini?')">
+                                <form method="POST" action="{{ route('admin.galeri.destroy', $g->id) }}" data-confirm="Apakah Anda yakin ingin menghapus seluruh album foto ini?">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="bg-rose-600/80 hover:bg-rose-600 text-white px-2 py-1 rounded-lg text-xs font-semibold backdrop-blur transition flex items-center" title="Hapus Seluruh Album">
+                                    <button type="submit" class="bg-rose-600/80 hover:bg-rose-600 text-white px-2 py-1 rounded-lg text-xs font-semibold backdrop-blur transition flex items-center cursor-pointer" title="Hapus Seluruh Album">
                                         <i class="fa-solid fa-trash text-[10px]"></i>
                                     </button>
                                 </form>
@@ -123,6 +134,7 @@
                 {{ $daftarGaleri->links() }}
             </div>
         @endif
+        </div>
     </div>
 </div>
 
@@ -361,11 +373,11 @@ function closeKelolaModal() {
 }
 
 function hapusFotoSatuan(fotoId) {
-    if (confirm('Apakah Anda yakin ingin menghapus foto ini dari album?')) {
+    bukaKonfirmasi('Apakah Anda yakin ingin menghapus foto ini dari album?', function() {
         const form = document.getElementById('deleteFotoForm');
         form.action = '/admin/galeri/foto/' + fotoId;
         form.submit();
-    }
+    }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
 }
 </script>
 @endsection

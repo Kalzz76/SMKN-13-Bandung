@@ -171,7 +171,7 @@ class JadwalController extends Controller
             'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
             'id_kelas' => 'required|exists:kelas,id',
             'id_mapel' => 'required|exists:mapel,id',
-            'id_guru' => 'required|exists:guru,id',
+            'id_guru' => 'nullable|exists:guru,id',
             'id_ruangan' => 'required|exists:ruangan,id',
             'jam_ke_mulai' => 'required|integer|min:1',
             'jam_ke_selesai' => 'required|integer|min:1',
@@ -184,7 +184,7 @@ class JadwalController extends Controller
             'hari' => $request->hari,
             'id_kelas' => $request->id_kelas,
             'id_mapel' => $request->id_mapel,
-            'id_guru' => $request->id_guru,
+            'id_guru' => $request->id_guru ?: null,
             'id_ruangan' => $request->id_ruangan,
             'jam_ke_mulai' => $request->jam_ke_mulai,
             'jam_ke_selesai' => $request->jam_ke_selesai,
@@ -216,11 +216,13 @@ class JadwalController extends Controller
 
     private function periksaBentrok(Request $request, ?int $kecualiId = null): ?string
     {
-        $bentrokGuru = $this->cariBentrok($request, 'id_guru', $kecualiId);
-        if ($bentrokGuru) {
-            $guru = Guru::find($request->id_guru);
-            $kelas = Kelas::find($bentrokGuru->id_kelas);
-            return "Guru {$guru->nama} sudah memiliki jadwal mengajar di kelas {$kelas->nama} pada jam tersebut.";
+        if ($request->id_guru) {
+            $bentrokGuru = $this->cariBentrok($request, 'id_guru', $kecualiId);
+            if ($bentrokGuru) {
+                $guru = Guru::find($request->id_guru);
+                $kelas = Kelas::find($bentrokGuru->id_kelas);
+                return "Guru {$guru->nama} sudah memiliki jadwal mengajar di kelas {$kelas->nama} pada jam tersebut.";
+            }
         }
 
         $bentrokKelas = $this->cariBentrok($request, 'id_kelas', $kecualiId);
@@ -241,8 +243,13 @@ class JadwalController extends Controller
 
     private function cariBentrok(Request $request, string $kolom, ?int $kecualiId = null): ?Jadwal
     {
+        $nilai = $request->input($kolom);
+        if (!$nilai) {
+            return null;
+        }
+
         return Jadwal::where('hari', $request->hari)
-            ->where($kolom, $request->input($kolom))
+            ->where($kolom, $nilai)
             ->when($kecualiId, fn ($q) => $q->where('id', '!=', $kecualiId))
             ->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
             ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai)

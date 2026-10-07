@@ -16,7 +16,7 @@
                 <i class="fa-solid fa-print"></i>
                 <span>Cetak Barcode</span>
             </a>
-            <form method="POST" action="{{ route('admin.barcode.generate-semua') }}" onsubmit="return confirm('Apakah Anda yakin ingin membuat ulang semua barcode guru? Barcode lama tidak akan berlaku.')" class="col-span-2 sm:col-span-1 m-0 w-full sm:w-auto">
+            <form method="POST" action="{{ route('admin.barcode.generate-semua') }}" data-confirm="Apakah Anda yakin ingin membuat ulang semua barcode guru? Barcode lama tidak akan berlaku." class="col-span-2 sm:col-span-1 m-0 w-full sm:w-auto">
                 @csrf
                 <button type="submit" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-500 text-white font-semibold px-3.5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center space-x-2 text-xs sm:text-sm whitespace-nowrap cursor-pointer">
                     <i class="fa-solid fa-arrows-rotate"></i>
@@ -58,7 +58,7 @@
             </form>
         </div>
 
-        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4">
+        <div class="lg:col-span-7 bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4">
             @if($guruTerpilih && $guruTerpilih->kode_barcode)
                 @php
                     $pengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
@@ -68,73 +68,73 @@
                     $nama2 = $parts[1] ?? '';
                 @endphp
                 <div class="w-full flex flex-col items-center justify-center overflow-hidden">
-                    <div id="cardScaleContainer" class="w-full max-w-[480px] flex justify-center items-start overflow-hidden">
-                        <div id="cardBarcodeScaler" class="origin-top transition-transform duration-150" style="width: 480px; height: 276px; flex-shrink: 0;">
-                            <div id="cardBarcodePreview" style="background-image: url('{{ asset('images/desain-card.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 480px; height: 276px; min-width: 480px; min-height: 276px; border-radius: 16px; border: 1px solid #cbd5e1; position: relative; overflow: hidden; display: flex; box-sizing: border-box; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                    <div id="cardScaleContainer" class="w-full max-w-[428px] flex justify-center items-start overflow-hidden">
+                        <div id="cardBarcodeScaler" class="origin-top transition-transform duration-150" style="width: 428px; height: 270px; flex-shrink: 0;">
+                            <div id="cardBarcodePreview" style="background-image: url('{{ asset('images/desain-card.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 428px; height: 270px; min-width: 428px; min-height: 270px; border-radius: 14px; border: 1px solid #cbd5e1; position: relative; overflow: hidden; display: flex; box-sizing: border-box; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
                                 <!-- Left Section: Dark Navy Area -->
-                                <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 8px 14px 14px; box-sizing: border-box; position: relative; z-index: 2;">
+                                <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 12px 6px 12px 12px; box-sizing: border-box; position: relative; z-index: 2;">
                                     <!-- Top Left: Logo & School Title -->
-                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 7px;">
                                         @if(!empty($pengaturan?->logo_url))
-                                            <img src="{{ $pengaturan->logo_url }}" alt="Logo" style="width: 34px; height: 34px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0;">
+                                            <img src="{{ $pengaturan->logo_url }}" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0;">
                                         @else
-                                            <div style="width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fbbf24; background: #0f172a; color: #ffffff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <div style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fbbf24; background: #0f172a; color: #ffffff; font-weight: 900; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                                 13
                                             </div>
                                         @endif
                                         <div style="min-width: 0; flex: 1;">
-                                            <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; color: #ffffff; line-height: 1.15; margin: 0; font-family: 'Inter', sans-serif;">
+                                            <h2 style="font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; color: #ffffff; line-height: 1.15; margin: 0; font-family: 'Inter', sans-serif;">
                                                 {{ $pengaturan->nama_sekolah ?? 'SMK Negeri 13 Bandung' }}
                                             </h2>
-                                            <p style="font-size: 7.5px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1; margin: 3px 0 0 0; font-family: 'Inter', sans-serif;">
+                                            <p style="font-size: 7px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1; margin: 2px 0 0 0; font-family: 'Inter', sans-serif;">
                                                 KARTU PRESENSI GURU
                                             </p>
                                         </div>
                                     </div>
 
                                     <!-- Bottom Left: Contact Info from Pengaturan Sekolah -->
-                                    <div style="max-width: 175px; font-size: 8px; color: #f1f5f9; line-height: 1.35; margin-top: 6px; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif;">
+                                    <div style="max-width: 170px; font-size: 7.5px; color: #f1f5f9; line-height: 1.3; margin-top: 4px; display: flex; flex-direction: column; gap: 3px; font-family: 'Inter', sans-serif;">
                                         <div style="display: flex; align-items: flex-start; gap: 5px;">
-                                            <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 8px;"></i>
-                                            <span style="color: #f1f5f9; line-height: 1.25; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
+                                            <i class="fa-solid fa-house" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; margin-top: 1px; font-size: 7.5px;"></i>
+                                            <span style="color: #f1f5f9; line-height: 1.2; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
-                                            <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
-                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 155px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
+                                            <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
+                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 145px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
-                                            <i class="fa-solid fa-phone" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                            <i class="fa-solid fa-phone" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
                                             <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->telepon ?? '(022) 7801234 / 7805678' }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
-                                            <i class="fa-solid fa-globe" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                            <i class="fa-solid fa-globe" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
                                             <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->social_media ?? 'smkn13bdg.sch.id' }}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Right Section: White Area -->
-                                <div style="width: 54%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; padding: 14px 14px 14px 8px; box-sizing: border-box; position: relative; z-index: 2;">
+                                <div style="width: 54%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; padding: 12px 12px 12px 6px; box-sizing: border-box; position: relative; z-index: 2;">
                                     <!-- Top Right: Name & Role -->
-                                    <div style="max-width: 210px; display: flex; flex-direction: column; gap: 2px;">
-                                        <h3 style="font-size: 14px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; text-transform: uppercase; margin: 0; font-family: 'Inter', sans-serif;">
+                                    <div style="max-width: 200px; display: flex; flex-direction: column; gap: 2px;">
+                                        <h3 style="font-size: 13px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; text-transform: uppercase; margin: 0; font-family: 'Inter', sans-serif;">
                                             <span style="color: #f59e0b;">{{ $nama1 }}</span>
                                             <span style="color: #0f172a;">{{ $nama2 }}</span>
                                         </h3>
-                                        <p style="font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e293b; margin: 0; font-family: 'Inter', sans-serif;">
+                                        <p style="font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e293b; margin: 0; font-family: 'Inter', sans-serif;">
                                             {{ $guruTerpilih->jabatan ?? 'GURU PENGAJAR' }}
                                         </p>
-                                        <p style="font-size: 8.5px; color: #64748b; font-family: monospace; margin: 0;">
+                                        <p style="font-size: 8px; color: #64748b; font-family: monospace; margin: 0;">
                                             NIP. {{ $guruTerpilih->nip ?? '-' }}
                                         </p>
                                     </div>
 
                                     <!-- Bottom Right: QR Code -->
                                     <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                        <div style="padding: 4px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; display: inline-block;">
+                                        <div style="padding: 3px; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0; display: inline-block;">
                                             <div id="qrcode"></div>
                                         </div>
-                                        <span style="font-size: 7.5px; font-family: monospace; color: #94a3b8; margin-top: 3px; text-transform: uppercase; letter-spacing: -0.02em;">
+                                        <span style="font-size: 7px; font-family: monospace; color: #94a3b8; margin-top: 2px; text-transform: uppercase; letter-spacing: -0.02em;">
                                             {{ Str::substr($guruTerpilih->kode_barcode, 0, 16) }}...
                                         </span>
                                     </div>
@@ -144,7 +144,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2.5 pt-2 w-full max-w-[480px]">
+                <div class="grid grid-cols-2 gap-2.5 pt-2 w-full max-w-[428px]">
                     <button type="button" id="btnDownloadCardPdf" onclick="downloadCardPDF('{{ Str::slug($guruTerpilih->nama) }}')" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition flex items-center justify-center space-x-2 shadow cursor-pointer">
                         <i class="fa-solid fa-file-pdf"></i>
                         <span>Download PDF</span>
@@ -234,7 +234,8 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 @if($guruTerpilih && $guruTerpilih->kode_barcode)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -242,8 +243,8 @@ function resizeCardPreview() {
     const scaler = document.getElementById('cardBarcodeScaler');
     const container = document.getElementById('cardScaleContainer');
     if (!scaler || !container) return;
-    const baseW = 480;
-    const baseH = 276;
+    const baseW = 428;
+    const baseH = 270;
     const containerW = container.clientWidth;
 
     if (containerW > 0 && containerW < baseW) {
@@ -261,8 +262,8 @@ window.addEventListener('resize', resizeCardPreview);
 document.addEventListener('DOMContentLoaded', function() {
     new QRCode(document.getElementById("qrcode"), {
         text: "{{ $guruTerpilih->kode_barcode }}",
-        width: 76,
-        height: 76,
+        width: 68,
+        height: 68,
         colorDark : "#0f172a",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.M
@@ -274,7 +275,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     setTimeout(resizeCardPreview, 50);
 }
 
-function downloadCardPDF(namaSlug) {
+async function downloadCardPDF(namaSlug) {
     const cardEl = document.getElementById('cardBarcodePreview');
     const btn = document.getElementById('btnDownloadCardPdf');
     if (!cardEl) return;
@@ -283,32 +284,36 @@ function downloadCardPDF(namaSlug) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Membuat PDF...</span>';
     btn.disabled = true;
 
-    const opt = {
-        margin: [3, 3, 3, 3],
-        filename: 'Kartu-Barcode-' + (namaSlug || 'Guru') + '.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
+    try {
+        if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
+        }
+
+        const canvas = await html2canvas(cardEl, {
             scale: 3,
             useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff'
-        },
-        jsPDF: {
-            unit: 'mm',
-            format: [100, 62],
-            orientation: 'landscape'
-        }
-    };
+            backgroundColor: '#ffffff',
+            logging: false
+        });
 
-    html2pdf().set(opt).from(cardEl).save().then(function() {
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
-    }).catch(function(err) {
+        const { jsPDF } = window.jspdf;
+        // Ukuran standar ISO/IEC 7810 ID-1: 85.6 mm x 54 mm
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: [85.6, 54]
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        pdf.addImage(imgData, 'JPEG', 0, 0, 85.6, 54);
+        pdf.save('Kartu-Barcode-' + (namaSlug || 'Guru') + '.pdf');
+    } catch (err) {
         console.error('Error generating PDF:', err);
+        showModalMsg('Gagal Cetak PDF', 'Terjadi kesalahan saat membuat file PDF: ' + err.message, 'error');
+    } finally {
         btn.innerHTML = originalContent;
         btn.disabled = false;
-        alert('Terjadi kesalahan saat membuat file PDF: ' + err.message);
-    });
+    }
 }
 </script>
 @endif

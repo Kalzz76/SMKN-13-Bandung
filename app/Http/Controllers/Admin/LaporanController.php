@@ -38,11 +38,19 @@ class LaporanController extends Controller
             $queryGuru->where('id_guru', $request->guru_id);
         }
 
+        if ($request->filled('status')) {
+            $queryGuru->where('status', $request->status);
+        }
+
         $riwayatGuru = $queryGuru->paginate(15, ['*'], 'halaman_guru')->withQueryString();
 
         $semuaGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $daftarGuruRekap = $request->filled('guru_id')
+            ? Guru::where('id', $request->guru_id)->where('jenis', 'Guru')->get()
+            : $semuaGuru;
+
         $rekapGuru = [];
-        foreach ($semuaGuru as $g) {
+        foreach ($daftarGuruRekap as $g) {
             $absensiList = AbsensiGuru::where('id_guru', $g->id)
                 ->whereMonth('tanggal', $bulan)
                 ->whereYear('tanggal', $tahun)
@@ -133,12 +141,21 @@ class LaporanController extends Controller
         $bulan = (int) $request->get('bulan', Carbon::now()->month);
         $tahun = (int) $request->get('tahun', Carbon::now()->year);
 
-        $daftarAbsensi = AbsensiGuru::with(['guru', 'userInput'])
+        $daftarAbsensiQuery = AbsensiGuru::with(['guru', 'userInput'])
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->orderBy('tanggal', 'asc')
-            ->orderBy('jam_masuk', 'asc')
-            ->get();
+            ->orderBy('jam_masuk', 'asc');
+
+        if ($request->filled('guru_id')) {
+            $daftarAbsensiQuery->where('id_guru', $request->guru_id);
+        }
+
+        if ($request->filled('status')) {
+            $daftarAbsensiQuery->where('status', $request->status);
+        }
+
+        $daftarAbsensi = $daftarAbsensiQuery->get();
 
         $filename = "laporan_absensi_guru_{$tahun}_{$bulan}.csv";
 
@@ -196,16 +213,29 @@ class LaporanController extends Controller
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
         ];
 
-        $daftarAbsensi = AbsensiGuru::with(['guru', 'userInput'])
+        $daftarAbsensiQuery = AbsensiGuru::with(['guru', 'userInput'])
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->orderBy('tanggal', 'asc')
-            ->orderBy('jam_masuk', 'asc')
-            ->get();
+            ->orderBy('jam_masuk', 'asc');
+
+        if ($request->filled('guru_id')) {
+            $daftarAbsensiQuery->where('id_guru', $request->guru_id);
+        }
+
+        if ($request->filled('status')) {
+            $daftarAbsensiQuery->where('status', $request->status);
+        }
+
+        $daftarAbsensi = $daftarAbsensiQuery->get();
 
         $semuaGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $daftarGuruRekap = $request->filled('guru_id')
+            ? Guru::where('id', $request->guru_id)->where('jenis', 'Guru')->get()
+            : $semuaGuru;
+
         $rekapGuru = [];
-        foreach ($semuaGuru as $g) {
+        foreach ($daftarGuruRekap as $g) {
             $absensiList = AbsensiGuru::where('id_guru', $g->id)
                 ->whereMonth('tanggal', $bulan)
                 ->whereYear('tanggal', $tahun)

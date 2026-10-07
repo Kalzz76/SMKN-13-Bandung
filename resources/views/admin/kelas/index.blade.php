@@ -16,18 +16,20 @@
     <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
         <form method="GET" action="{{ route('admin.kelas.index') }}" class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
             <div class="relative flex-grow">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-sm leading-none"></i>
+                </div>
                 <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama kelas, ruangan, atau wali kelas..." class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
             </div>
             <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm">
                 Cari
             </button>
-            @if(request('cari'))
-                <a href="{{ route('admin.kelas.index') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center">
-                    Reset
-                </a>
-            @endif
+            <button type="button" id="liveResetBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center {{ request('cari') ? '' : 'hidden' }}">
+                Reset
+            </button>
         </form>
+
+        <div id="liveDataContainer">
 
         @if($daftarKelas->isEmpty())
             <div class="p-12 text-center text-slate-400">
@@ -82,10 +84,10 @@
                                             class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
                                         </button>
-                                        <form method="POST" action="{{ route('admin.kelas.destroy', $k->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas ini?')">
+                                        <form method="POST" action="{{ route('admin.kelas.destroy', $k->id) }}" data-confirm="Apakah Anda yakin ingin menghapus kelas ini?">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                            <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                                 <i class="fa-solid fa-trash mr-1"></i> Hapus
                                             </button>
                                         </form>
@@ -101,6 +103,7 @@
                 {{ $daftarKelas->links() }}
             </div>
         @endif
+        </div>
     </div>
 </div>
 

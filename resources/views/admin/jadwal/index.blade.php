@@ -77,22 +77,33 @@
         @endif
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <div>
-                <h3 class="font-bold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-table-cells text-emerald-700"></i>
-                    <span>Matriks Jadwal Pelajaran - Hari {{ $hariTerpilih }}</span>
-                    <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">{{ $ringkasanHari['maks_jam'] }} Jam Pelajaran</span>
-                </h3>
-                <span class="text-xs text-slate-400">Klik sel jadwal untuk mengedit, atau klik sel kosong di matriks ruangan untuk menjadwalkan</span>
+    <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-2 border-b border-slate-100">
+            <div class="flex items-start sm:items-center space-x-3.5">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0 border border-emerald-100 shadow-xs">
+                    <i class="fa-solid fa-table-cells text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                            Matriks Jadwal Pelajaran - Hari {{ $hariTerpilih }}
+                        </h3>
+                        <span class="inline-flex items-center text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full whitespace-nowrap shadow-xs">
+                            {{ $ringkasanHari['maks_jam'] }} Jam Pelajaran
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                        Klik sel jadwal untuk mengedit, atau klik sel kosong di matriks ruangan untuk menjadwalkan
+                    </p>
+                </div>
             </div>
-            <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                <button type="button" id="tabBtnKelas" onclick="switchMatriksView('kelas')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-emerald-700 text-white shadow">
+
+            <div class="w-full sm:w-auto grid grid-cols-2 sm:flex sm:items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                <button type="button" id="tabBtnKelas" onclick="switchMatriksView('kelas')" class="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-emerald-700 text-white shadow-sm">
                     <i class="fa-solid fa-chalkboard-user"></i>
                     <span>Matriks Kelas</span>
                 </button>
-                <button type="button" id="tabBtnRuang" onclick="switchMatriksView('ruang')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-slate-200">
+                <button type="button" id="tabBtnRuang" onclick="switchMatriksView('ruang')" class="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-white/60">
                     <i class="fa-solid fa-door-open"></i>
                     <span>Matriks Ruangan (PDF)</span>
                 </button>
@@ -347,16 +358,16 @@
                 <p class="text-sm">Belum ada jadwal pelajaran yang diatur untuk hari {{ $hariTerpilih }}.</p>
             </div>
         @else
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-sm min-w-[820px]">
+                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs font-bold">
                         <tr>
-                            <th class="p-3.5 rounded-l-xl">Kelas</th>
-                            <th class="p-3.5">Mata Pelajaran</th>
-                            <th class="p-3.5">Guru Pengajar</th>
-                            <th class="p-3.5">Ruangan</th>
-                            <th class="p-3.5">Jam Ke</th>
-                            <th class="p-3.5 rounded-r-xl text-right">Aksi</th>
+                            <th class="p-3.5 rounded-tl-xl whitespace-nowrap min-w-[120px]">Kelas</th>
+                            <th class="p-3.5 whitespace-nowrap min-w-[160px]">Mata Pelajaran</th>
+                            <th class="p-3.5 whitespace-nowrap min-w-[180px]">Guru Pengajar</th>
+                            <th class="p-3.5 whitespace-nowrap min-w-[140px]">Ruangan</th>
+                            <th class="p-3.5 whitespace-nowrap min-w-[150px]">Jam Ke</th>
+                            <th class="p-3.5 rounded-tr-xl text-right whitespace-nowrap min-w-[120px]">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -366,18 +377,28 @@
                                 $waktuSelesai = $jamKeMap[$j->jam_ke_selesai]->jam_selesai ?? null;
                             @endphp
                             <tr class="hover:bg-slate-50/50 transition">
-                                <td class="p-3.5 font-bold text-slate-900">
-                                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">
+                                <td class="p-3.5 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap shadow-xs">
                                         {{ $j->kelas ? $j->kelas->nama : '-' }}
                                     </span>
                                 </td>
-                                <td class="p-3.5 font-bold text-slate-900">{{ $j->mapel ? $j->mapel->nama : '-' }}</td>
-                                <td class="p-3.5 text-slate-700 text-xs font-semibold">{{ $j->guru ? $j->guru->nama : '-' }}</td>
-                                <td class="p-3.5 text-slate-600 text-xs">{{ $j->ruangan ? $j->ruangan->nama : '-' }}</td>
-                                <td class="p-3.5 font-mono text-emerald-700 font-bold text-xs">
-                                    Jam {{ $j->jam_ke_mulai }} s/d {{ $j->jam_ke_selesai }}
+                                <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">{{ $j->mapel ? $j->mapel->nama : '-' }}</td>
+                                <td class="p-3.5 text-slate-700 text-xs font-semibold whitespace-nowrap">
+                                    @if($j->guru)
+                                        {{ $j->guru->nama }}
+                                    @else
+                                        <span class="text-slate-400 italic font-normal">Tanpa Guru / -</span>
+                                    @endif
+                                </td>
+                                <td class="p-3.5 text-slate-600 text-xs whitespace-nowrap">{{ $j->ruangan ? $j->ruangan->nama : '-' }}</td>
+                                <td class="p-3.5 font-mono whitespace-nowrap">
+                                    <div class="text-xs font-bold text-emerald-700 whitespace-nowrap">
+                                        Jam {{ $j->jam_ke_mulai }} s/d {{ $j->jam_ke_selesai }}
+                                    </div>
                                     @if($waktuMulai && $waktuSelesai)
-                                        <span class="block text-[10px] text-slate-400 font-medium">{{ $formatWaktu($waktuMulai) }} - {{ $formatWaktu($waktuSelesai) }}</span>
+                                        <div class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-0.5">
+                                            {{ $formatWaktu($waktuMulai) }} - {{ $formatWaktu($waktuSelesai) }}
+                                        </div>
                                     @endif
                                 </td>
                                 <td class="p-3.5 text-right whitespace-nowrap">
@@ -388,17 +409,17 @@
                                             data-kelas="{{ $j->id_kelas }}"
                                             data-mapel="{{ $j->id_mapel }}"
                                             data-ruang="{{ $j->id_ruangan }}"
-                                            data-guru="{{ $j->id_guru }}"
+                                            data-guru="{{ $j->id_guru ?? '' }}"
                                             data-mulai="{{ $j->jam_ke_mulai }}"
                                             data-selesai="{{ $j->jam_ke_selesai }}"
                                             onclick="openEditModalFromCell(this)"
                                             class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
                                         </button>
-                                        <form method="POST" action="{{ route('admin.jadwal.destroy', $j->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal ini?')">
+                                        <form method="POST" action="{{ route('admin.jadwal.destroy', $j->id) }}" data-confirm="Apakah Anda yakin ingin menghapus jadwal ini?">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                            <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                                 <i class="fa-solid fa-trash mr-1"></i> Hapus
                                             </button>
                                         </form>
@@ -456,10 +477,6 @@
                         </select>
                     </div>
                 </div>
-                <div class="text-[11px] text-slate-500 pt-0.5 space-y-1">
-                    <div id="keteranganBagianTambah" class="flex flex-wrap items-center gap-x-3 gap-y-0.5"></div>
-                    <div id="keteranganIstirahatTambah" class="text-amber-700 font-medium"></div>
-                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -501,9 +518,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Guru Pengajar</label>
-                <select name="id_guru" id="tambahGuru" onchange="evaluasiFormJadwal()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                    <option value="">-- Pilih Guru --</option>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Guru Pengajar <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
+                <select name="id_guru" id="tambahGuru" onchange="evaluasiFormJadwal()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <option value="">-- Tanpa Guru / Belum Ditentukan --</option>
                     @foreach($daftarGuru as $g)
                         <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->mapel_utama ?? 'Guru' }})</option>
                     @endforeach
@@ -565,10 +582,6 @@
                         </select>
                     </div>
                 </div>
-                <div class="text-[11px] text-slate-500 pt-0.5 space-y-1">
-                    <div id="keteranganBagianEdit" class="flex flex-wrap items-center gap-x-3 gap-y-0.5"></div>
-                    <div id="keteranganIstirahatEdit" class="text-amber-700 font-medium"></div>
-                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -601,8 +614,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Guru Pengajar</label>
-                <select id="editGuru" name="id_guru" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Guru Pengajar <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
+                <select id="editGuru" name="id_guru" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                    <option value="">-- Tanpa Guru / Belum Ditentukan --</option>
                     @foreach($daftarGuru as $g)
                         <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->mapel_utama ?? 'Guru' }})</option>
                     @endforeach
@@ -685,23 +699,7 @@ function rentangJam(dari, sampai) {
 }
 
 function renderKeterangan(sufiks, data) {
-    const pembiasaan = data.pembiasaan
-        ? `<span class="text-amber-700 font-semibold"><i class="fa-solid fa-sun mr-1"></i>${data.pembiasaan.nama} ${formatWaktu(data.pembiasaan.mulai)}-${formatWaktu(data.pembiasaan.selesai)}</span>`
-        : '';
-
-    const bagian = data.bagian.map(b =>
-        `<span><i class="fa-solid fa-clock mr-1 text-slate-400"></i>${b.label}: Jam ${rentangJam(b.dari, b.sampai)}</span>`
-    ).join('');
-
-    byId('keteranganBagian' + sufiks).innerHTML = pembiasaan + bagian;
-
-    const istirahat = data.istirahat.map(i =>
-        `Jam ${i.setelah_jam} (${formatWaktu(i.mulai)}-${formatWaktu(i.selesai)})`
-    ).join(' &amp; ');
-
-    byId('keteranganIstirahat' + sufiks).innerHTML = istirahat
-        ? `<i class="fa-solid fa-mug-hot mr-1"></i>Istirahat setelah ${istirahat}`
-        : '';
+    // Informasi pembiasaan dan istirahat ditiadakan di semua form
 }
 
 function melewatiIstirahat(data, mulai, selesai) {
@@ -734,16 +732,19 @@ function switchMatriksView(view) {
     const btnKelas = byId('tabBtnKelas');
     const btnRuang = byId('tabBtnRuang');
 
+    const aktifClass = 'w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 bg-emerald-700 text-white shadow-sm';
+    const nonAktifClass = 'w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-white/60';
+
     if (view === 'ruang') {
         vKelas.classList.add('hidden');
         vRuang.classList.remove('hidden');
-        btnRuang.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-emerald-700 text-white shadow';
-        btnKelas.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-slate-200';
+        btnRuang.className = aktifClass;
+        btnKelas.className = nonAktifClass;
     } else {
         vRuang.classList.add('hidden');
         vKelas.classList.remove('hidden');
-        btnKelas.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-emerald-700 text-white shadow';
-        btnRuang.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:bg-slate-200';
+        btnKelas.className = aktifClass;
+        btnRuang.className = nonAktifClass;
     }
 }
 
@@ -770,7 +771,7 @@ async function onTambahHariChange() {
         renderKeterangan('Tambah', data);
         onJamMulaiChange();
     } catch (e) {
-        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+        showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
     }
 }
 
@@ -802,7 +803,7 @@ async function tambahJadwalUntukRuangan(hari, idRuangan, jam) {
         isiOpsiJam('tambahSelesai', data, jam);
         renderKeterangan('Tambah', data);
     } catch (e) {
-        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+        showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
         return;
     }
 
@@ -917,7 +918,7 @@ function renderDropdownGuru() {
     selectGuru.innerHTML = '';
     const defaultOpt = document.createElement('option');
     defaultOpt.value = '';
-    defaultOpt.textContent = '-- Pilih Guru --';
+    defaultOpt.textContent = '-- Tanpa Guru / Belum Ditentukan --';
     selectGuru.appendChild(defaultOpt);
 
     if (guruTersedia.length > 0) {
@@ -1034,7 +1035,7 @@ function evaluasiFormJadwal() {
     const selesai = parseInt(byId('tambahSelesai').value) || mulai;
     const idKelas = parseInt(byId('tambahKelas').value);
     const idRuang = parseInt(byId('tambahRuangan').value);
-    const idGuru = parseInt(byId('tambahGuru').value);
+    const idGuru = parseInt(byId('tambahGuru').value) || null;
 
     const errors = kumpulkanKesalahanJam(CACHE_JAM[hari], hari, mulai, selesai)
         .concat(kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, null));
@@ -1058,7 +1059,7 @@ async function openEditModalFromCell(sel) {
         isiOpsiJam('editSelesai', data, selesai);
         renderKeterangan('Edit', data);
     } catch (e) {
-        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+        showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
         return;
     }
 
@@ -1068,7 +1069,7 @@ async function openEditModalFromCell(sel) {
     byId('editKelas').value = kelas;
     byId('editMapel').value = mapel;
     byId('editRuang').value = ruang;
-    byId('editGuru').value = guru;
+    byId('editGuru').value = guru || '';
 
     byId('editModal').classList.remove('hidden');
     evaluasiEditForm();
@@ -1092,7 +1093,7 @@ async function onEditHariChange() {
         renderKeterangan('Edit', data);
         onEditJamMulaiChange();
     } catch (e) {
-        alert('Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.');
+        showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
     }
 }
 
@@ -1111,7 +1112,7 @@ function evaluasiEditForm() {
     const selesai = parseInt(byId('editSelesai').value) || mulai;
     const idKelas = parseInt(byId('editKelas').value);
     const idRuang = parseInt(byId('editRuang').value);
-    const idGuru = parseInt(byId('editGuru').value);
+    const idGuru = parseInt(byId('editGuru').value) || null;
 
     const errors = kumpulkanKesalahanJam(CACHE_JAM[hari], hari, mulai, selesai)
         .concat(kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, currentEditId));
@@ -1120,9 +1121,9 @@ function evaluasiEditForm() {
 }
 
 function hapusJadwalAktif() {
-    if (confirm('Apakah Anda yakin ingin menghapus jadwal ini?')) {
+    bukaKonfirmasi('Apakah Anda yakin ingin menghapus jadwal ini?', function() {
         byId('deleteForm').submit();
-    }
+    }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
 }
 </script>
 @endsection
