@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24 w-full flex-grow">
-        <!-- 1. VISI & MISI -->
         <div id="visi-misi" class="scroll-mt-32 space-y-12">
             <div class="text-center max-w-3xl mx-auto">
                 <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Identitas Sekolah</span>
@@ -62,7 +61,6 @@
         <div id="sejarah" class="scroll-mt-32 bg-bg-card p-6 sm:p-10 lg:p-14 rounded-3xl shadow-sm border border-teal-tint">
             <h4 class="text-2xl sm:text-3xl font-black text-navy-dark mb-10 text-center">Sejarah Singkat SMKN 13 Bandung</h4>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
-                <!-- Kolom Kiri: Garis Waktu Sejarah -->
                 <div class="order-2 lg:order-1">
                     <div class="relative timeline-line space-y-8 pl-12 pr-2">
                         <div class="relative z-10">
@@ -111,7 +109,6 @@
                     </div>
                 </div>
 
-                <!-- Kolom Kanan: Galeri Dokumentasi Sejarah Slider -->
                 <div class="order-1 lg:order-2 lg:sticky lg:top-28 self-start min-w-0" id="sejGallery">
                     <figure class="m-0">
                         <div class="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border border-teal-tint bg-teal-tint">
@@ -146,7 +143,6 @@
             </div>
         </div>
 
-        <!-- 3. STRUKTUR ORGANISASI SEKOLAH (DIPERTAHANKAN UTUH SESUAI INSTRUKSI) -->
         <div id="struktur" class="scroll-mt-32">
 
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
@@ -1087,11 +1083,10 @@
         </div>
         </div>
 
-        <!-- 4. TENAGA PENDIDIK PROFESIONAL -->
         <div id="pengajar" class="scroll-mt-32 text-center w-full space-y-4">
             <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Guru & Tenaga Kependidikan</span>
             <h4 class="text-3xl sm:text-4xl font-black text-navy-dark mt-1 mb-2">Tenaga Pendidik & Staff Pengajar</h4>
-            <p class="text-text-muted text-sm max-w-xl mx-auto">Guru dan tenaga kependidikan SMKN 13 Bandung berdedikasi tinggi membimbing generasi masa depan. Arahkan kursor untuk menjeda animasi.</p>
+            <p class="text-text-muted text-sm max-w-xl mx-auto">Guru dan tenaga kependidikan SMKN 13 Bandung berdedikasi tinggi membimbing generasi masa depan. Arahkan kursor ke kartu untuk menjeda animasi.</p>
 
             @if($daftarGuru->isEmpty())
                 <div class="bg-bg-card p-10 rounded-3xl border border-teal-tint max-w-md mx-auto text-text-muted shadow-sm mt-6">
@@ -1099,83 +1094,144 @@
                     <p class="font-medium">Belum ada data tenaga pendidik yang ditampilkan.</p>
                 </div>
             @else
-                <div class="marquee mt-8">
-                    <div class="marquee-track" style="animation-duration: {{ max(120, count($daftarGuru) * 2.5) }}s;">
-                        <!-- Group 1 -->
-                        <div class="marquee-group">
-                            @foreach($daftarGuru as $guru)
-                                @php
-                                    $fotoGuru = null;
-                                    if (!empty($guru->foto)) {
-                                        if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
-                                            $fotoGuru = $guru->foto;
-                                        } elseif (file_exists(public_path('storage/' . $guru->foto))) {
-                                            $fotoGuru = asset('storage/' . $guru->foto);
-                                        } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
-                                            $fotoGuru = asset('Assets/' . basename($guru->foto));
-                                        } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
-                                            $fotoGuru = asset('assets/' . basename($guru->foto));
+                @php
+                    $guruBaris1 = $daftarGuru->filter(fn($g, $i) => $i % 2 === 0)->values();
+                    $guruBaris2 = $daftarGuru->filter(fn($g, $i) => $i % 2 === 1)->values();
+                    if ($guruBaris2->isEmpty()) {
+                        $guruBaris2 = $guruBaris1;
+                    }
+                    $durasi1 = max(40, $guruBaris1->count() * 3);
+                    $durasi2 = max(40, $guruBaris2->count() * 3);
+                @endphp
+
+                <div class="space-y-4 sm:space-y-6 mt-8">
+                    <div class="marquee">
+                        <div class="marquee-track" style="animation-duration: {{ $durasi1 }}s;">
+                            <div class="marquee-group">
+                                @foreach($guruBaris1 as $guru)
+                                    @php
+                                        $fotoGuru = null;
+                                        if (!empty($guru->foto)) {
+                                            if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
+                                                $fotoGuru = $guru->foto;
+                                            } elseif (file_exists(public_path('storage/' . $guru->foto))) {
+                                                $fotoGuru = asset('storage/' . $guru->foto);
+                                            } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('Assets/' . basename($guru->foto));
+                                            } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('assets/' . basename($guru->foto));
+                                            }
                                         }
-                                    }
-                                @endphp
-                                <div class="w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer">
-                                    @if($fotoGuru)
-                                        <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}"
-                                            class="w-28 h-28 mx-auto rounded-full mb-4 object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                                    @else
-                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 bg-teal-tint text-teal-primary flex items-center justify-center text-4xl border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                                            <i class="fa-solid fa-user-graduate"></i>
+                                    @endphp
+                                    <div class="w-56 sm:w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer shadow-xs">
+                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 border-4 border-white shadow-md relative overflow-hidden bg-teal-primary text-white font-black flex items-center justify-center flex-shrink-0">
+                                            <span class="text-3xl select-none">{{ strtoupper(substr($guru->nama ?? 'G', 0, 1)) }}</span>
+                                            @if($fotoGuru)
+                                                <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}" class="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500">
+                                            @endif
                                         </div>
-                                    @endif
-                                    <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
-                                    <div class="flex flex-wrap justify-center items-center gap-1.5 mt-2.5">
-                                        @foreach($guru->daftar_badge_mapel as $b)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-teal-700 border border-teal-300 shadow-2xs hover:bg-teal-50 transition-colors"
-                                                  title="{{ $b['nama'] }}">
-                                                {{ $b['kode'] }}
-                                            </span>
-                                        @endforeach
+                                        <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
+                                        <p class="text-xs text-text-muted font-bold mt-2 bg-teal-tint py-1 px-3 rounded-full inline-block truncate max-w-[180px] border border-teal-light/20">
+                                            {{ !empty($guru->daftar_badge_mapel) ? $guru->daftar_badge_mapel[0]['nama'] : ($guru->mapel?->nama_mapel ?? 'Tenaga Pendidik') }}
+                                        </p>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
+                            <div class="marquee-group">
+                                @foreach($guruBaris1 as $guru)
+                                    @php
+                                        $fotoGuru = null;
+                                        if (!empty($guru->foto)) {
+                                            if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
+                                                $fotoGuru = $guru->foto;
+                                            } elseif (file_exists(public_path('storage/' . $guru->foto))) {
+                                                $fotoGuru = asset('storage/' . $guru->foto);
+                                            } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('Assets/' . basename($guru->foto));
+                                            } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('assets/' . basename($guru->foto));
+                                            }
+                                        }
+                                    @endphp
+                                    <div class="w-56 sm:w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer shadow-xs">
+                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 border-4 border-white shadow-md relative overflow-hidden bg-teal-primary text-white font-black flex items-center justify-center flex-shrink-0">
+                                            <span class="text-3xl select-none">{{ strtoupper(substr($guru->nama ?? 'G', 0, 1)) }}</span>
+                                            @if($fotoGuru)
+                                                <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}" class="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500">
+                                            @endif
+                                        </div>
+                                        <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
+                                        <p class="text-xs text-text-muted font-bold mt-2 bg-teal-tint py-1 px-3 rounded-full inline-block truncate max-w-[180px] border border-teal-light/20">
+                                            {{ !empty($guru->daftar_badge_mapel) ? $guru->daftar_badge_mapel[0]['nama'] : ($guru->mapel?->nama_mapel ?? 'Tenaga Pendidik') }}
+                                        </p>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <!-- Group 2 for smooth continuous loop -->
-                        <div class="marquee-group">
-                            @foreach($daftarGuru as $guru)
-                                @php
-                                    $fotoGuru = null;
-                                    if (!empty($guru->foto)) {
-                                        if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
-                                            $fotoGuru = $guru->foto;
-                                        } elseif (file_exists(public_path('storage/' . $guru->foto))) {
-                                            $fotoGuru = asset('storage/' . $guru->foto);
-                                        } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
-                                            $fotoGuru = asset('Assets/' . basename($guru->foto));
-                                        } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
-                                            $fotoGuru = asset('assets/' . basename($guru->foto));
+                    </div>
+
+                    <div class="marquee">
+                        <div class="marquee-track-reverse" style="animation-duration: {{ $durasi2 }}s;">
+                            <div class="marquee-group">
+                                @foreach($guruBaris2 as $guru)
+                                    @php
+                                        $fotoGuru = null;
+                                        if (!empty($guru->foto)) {
+                                            if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
+                                                $fotoGuru = $guru->foto;
+                                            } elseif (file_exists(public_path('storage/' . $guru->foto))) {
+                                                $fotoGuru = asset('storage/' . $guru->foto);
+                                            } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('Assets/' . basename($guru->foto));
+                                            } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('assets/' . basename($guru->foto));
+                                            }
                                         }
-                                    }
-                                @endphp
-                                <div class="w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer">
-                                    @if($fotoGuru)
-                                        <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}"
-                                            class="w-28 h-28 mx-auto rounded-full mb-4 object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                                    @else
-                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 bg-teal-tint text-teal-primary flex items-center justify-center text-4xl border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                                            <i class="fa-solid fa-user-graduate"></i>
+                                    @endphp
+                                    <div class="w-56 sm:w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer shadow-xs">
+                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 border-4 border-white shadow-md relative overflow-hidden bg-teal-primary text-white font-black flex items-center justify-center flex-shrink-0">
+                                            <span class="text-3xl select-none">{{ strtoupper(substr($guru->nama ?? 'G', 0, 1)) }}</span>
+                                            @if($fotoGuru)
+                                                <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}" class="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500">
+                                            @endif
                                         </div>
-                                    @endif
-                                    <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
-                                    <div class="flex flex-wrap justify-center items-center gap-1.5 mt-2.5">
-                                        @foreach($guru->daftar_badge_mapel as $b)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-teal-700 border border-teal-300 shadow-2xs hover:bg-teal-50 transition-colors"
-                                                  title="{{ $b['nama'] }}">
-                                                {{ $b['kode'] }}
-                                            </span>
-                                        @endforeach
+                                        <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
+                                        <p class="text-xs text-text-muted font-bold mt-2 bg-teal-tint py-1 px-3 rounded-full inline-block truncate max-w-[180px] border border-teal-light/20">
+                                            {{ !empty($guru->daftar_badge_mapel) ? $guru->daftar_badge_mapel[0]['nama'] : ($guru->mapel?->nama_mapel ?? 'Tenaga Pendidik') }}
+                                        </p>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
+                            <div class="marquee-group">
+                                @foreach($guruBaris2 as $guru)
+                                    @php
+                                        $fotoGuru = null;
+                                        if (!empty($guru->foto)) {
+                                            if (\Illuminate\Support\Str::startsWith($guru->foto, ['http://', 'https://'])) {
+                                                $fotoGuru = $guru->foto;
+                                            } elseif (file_exists(public_path('storage/' . $guru->foto))) {
+                                                $fotoGuru = asset('storage/' . $guru->foto);
+                                            } elseif (file_exists(public_path('Assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('Assets/' . basename($guru->foto));
+                                            } elseif (file_exists(public_path('assets/' . basename($guru->foto)))) {
+                                                $fotoGuru = asset('assets/' . basename($guru->foto));
+                                            }
+                                        }
+                                    @endphp
+                                    <div class="w-56 sm:w-60 flex-shrink-0 bg-bg-card p-6 rounded-3xl border border-teal-tint text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group cursor-pointer shadow-xs">
+                                        <div class="w-28 h-28 mx-auto rounded-full mb-4 border-4 border-white shadow-md relative overflow-hidden bg-teal-primary text-white font-black flex items-center justify-center flex-shrink-0">
+                                            <span class="text-3xl select-none">{{ strtoupper(substr($guru->nama ?? 'G', 0, 1)) }}</span>
+                                            @if($fotoGuru)
+                                                <img src="{{ $fotoGuru }}" alt="{{ $guru->nama }}" class="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500">
+                                            @endif
+                                        </div>
+                                        <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
+                                        <p class="text-xs text-text-muted font-bold mt-2 bg-teal-tint py-1 px-3 rounded-full inline-block truncate max-w-[180px] border border-teal-light/20">
+                                            {{ !empty($guru->daftar_badge_mapel) ? $guru->daftar_badge_mapel[0]['nama'] : ($guru->mapel?->nama_mapel ?? 'Tenaga Pendidik') }}
+                                        </p>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1184,7 +1240,6 @@
     </div>
 
     <script>
-        // SCRIPT STRUKTUR ORGANISASI (DIPERTAHANKAN)
         function setTampilanStruktur(mode) {
             const cBagan = document.getElementById('kontainerBaganDiagram');
             const cKartu = document.getElementById('kontainerKartuRuntun');
@@ -1214,7 +1269,6 @@
             }
         }
 
-        // SCRIPT SLIDER SEJARAH
         const sejImages = [
             "{{ asset('Assets/sejarah1.jpg.jpeg') }}",
             "{{ asset('Assets/sejarah2.jpg.jpeg') }}",
