@@ -1100,7 +1100,7 @@
                 </div>
             @else
                 <div class="marquee mt-8">
-                    <div class="marquee-track">
+                    <div class="marquee-track" style="animation-duration: {{ max(120, count($daftarGuru) * 2.5) }}s;">
                         <!-- Group 1 -->
                         <div class="marquee-group">
                             @foreach($daftarGuru as $guru)
@@ -1128,7 +1128,14 @@
                                         </div>
                                     @endif
                                     <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
-                                    <span class="text-xs text-text-muted font-bold mt-2 bg-teal-tint text-teal-primary py-1 px-3 rounded-full inline-block">{{ $guru->mapel_utama ?? $guru->jabatan ?? 'Tenaga Pengajar' }}</span>
+                                    <div class="flex flex-wrap justify-center items-center gap-1.5 mt-2.5">
+                                        @foreach($guru->daftar_badge_mapel as $b)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-teal-700 border border-teal-300 shadow-2xs hover:bg-teal-50 transition-colors"
+                                                  title="{{ $b['nama'] }}">
+                                                {{ $b['kode'] }}
+                                            </span>
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -1159,7 +1166,14 @@
                                         </div>
                                     @endif
                                     <h5 class="font-bold text-navy-dark text-base group-hover:text-teal-primary transition-colors line-clamp-1">{{ $guru->nama }}</h5>
-                                    <span class="text-xs text-text-muted font-bold mt-2 bg-teal-tint text-teal-primary py-1 px-3 rounded-full inline-block">{{ $guru->mapel_utama ?? $guru->jabatan ?? 'Tenaga Pengajar' }}</span>
+                                    <div class="flex flex-wrap justify-center items-center gap-1.5 mt-2.5">
+                                        @foreach($guru->daftar_badge_mapel as $b)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-teal-700 border border-teal-300 shadow-2xs hover:bg-teal-50 transition-colors"
+                                                  title="{{ $b['nama'] }}">
+                                                {{ $b['kode'] }}
+                                            </span>
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endforeach
                         </div>

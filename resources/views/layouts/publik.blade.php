@@ -96,7 +96,7 @@
         .marquee-track {
             display: flex;
             width: max-content;
-            animation: marquee 30s linear infinite;
+            animation: marquee 180s linear infinite;
         }
         .marquee:hover .marquee-track {
             animation-play-state: paused;

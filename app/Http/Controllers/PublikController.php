@@ -59,7 +59,7 @@ class PublikController extends Controller
     public function profil()
     {
         $pengaturan = PengaturanSekolah::first();
-        $daftarGuru = Guru::where('tampil_publik', true)->get();
+        $daftarGuru = Guru::where('tampil_publik', true)->with('mapels', 'mapel')->get();
         $struktur = $pengaturan ? $pengaturan->struktur : PengaturanSekolah::defaultStruktur();
 
         $daftarMisi = [];

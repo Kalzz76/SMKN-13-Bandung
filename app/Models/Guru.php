@@ -42,4 +42,53 @@ class Guru extends Model
     {
         return $this->hasMany(AbsensiGuru::class, 'id_guru');
     }
+
+    public function getDaftarBadgeMapelAttribute(): array
+    {
+        $badges = [];
+
+        if ($this->relationLoaded('mapels') ? $this->mapels->isNotEmpty() : $this->mapels()->exists()) {
+            foreach ($this->mapels as $m) {
+                $badges[] = [
+                    'kode' => $m->kode ?: $m->nama,
+                    'nama' => $m->nama
+                ];
+            }
+        } elseif ($this->relationLoaded('mapel') ? $this->mapel : $this->mapel()->first()) {
+            $m = $this->mapel;
+            $badges[] = [
+                'kode' => $m->kode ?: $m->nama,
+                'nama' => $m->nama
+            ];
+        } elseif (!empty($this->mapel_utama)) {
+            static $mapelsCache = null;
+            if ($mapelsCache === null) {
+                $mapelsCache = Mapel::all()->keyBy(function($m) {
+                    return strtolower(trim($m->nama));
+                });
+            }
+            $parts = explode(',', $this->mapel_utama);
+            foreach ($parts as $p) {
+                $trimmed = trim($p);
+                if (!$trimmed) continue;
+                $matched = $mapelsCache->get(strtolower($trimmed));
+                $badges[] = [
+                    'kode' => $matched?->kode ?: $trimmed,
+                    'nama' => $matched?->nama ?: $trimmed
+                ];
+            }
+        } elseif (!empty($this->jabatan)) {
+            $badges[] = [
+                'kode' => $this->jabatan,
+                'nama' => $this->jabatan
+            ];
+        } else {
+            $badges[] = [
+                'kode' => 'Pengajar',
+                'nama' => 'Tenaga Pengajar'
+            ];
+        }
+
+        return $badges;
+    }
 }
