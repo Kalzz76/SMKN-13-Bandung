@@ -22,11 +22,6 @@
             <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 sidebar-category-header">Utama</p>
             <div class="sidebar-category-divider hidden border-t border-slate-800 my-2"></div>
             <div class="space-y-1">
-                <a href="{{ url('/') }}" title="Beranda Website"
-                    class="sidebar-menu-link w-full text-left px-3 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-house w-5 text-center flex-shrink-0 text-emerald-400"></i>
-                    <span class="sidebar-text truncate">Beranda Website</span>
-                </a>
                 <a href="{{ route('admin.dashboard') }}" title="Dashboard"
                     class="sidebar-menu-link w-full text-left px-3 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
                     <i class="fa-solid fa-chart-pie w-5 text-center flex-shrink-0"></i>

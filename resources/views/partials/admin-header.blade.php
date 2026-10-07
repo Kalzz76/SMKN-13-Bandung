@@ -22,11 +22,6 @@
             <span class="hidden sm:inline">Beranda</span>
         </a>
 
-        <button type="button" onclick="openLogoutModal()" title="Keluar Akun" class="flex items-center space-x-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2.5 sm:px-3 py-1.5 rounded-xl border border-rose-200 hover:border-rose-300 transition shrink-0 cursor-pointer">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span class="hidden sm:inline">Keluar</span>
-        </button>
-
         <div class="hidden md:flex items-center space-x-2 text-xs text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
             <i class="fa-regular fa-calendar text-emerald-700"></i>
             <span>{{ now()->locale('id')->isoFormat('dddd, D MMM Y') }}</span>

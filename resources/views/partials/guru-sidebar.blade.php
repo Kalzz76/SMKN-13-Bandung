@@ -22,12 +22,6 @@
             <p class="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 sidebar-category-header">Akademik</p>
             <div class="sidebar-category-divider hidden border-t border-slate-800 my-2"></div>
             <div class="space-y-1">
-                <a href="{{ url('/') }}" title="Beranda Website"
-                    class="sidebar-menu-link w-full text-left px-3 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-house w-5 text-center flex-shrink-0 text-emerald-400"></i>
-                    <span class="sidebar-text truncate">Beranda Website</span>
-                </a>
-
                 <a href="{{ route('guru.jadwal') }}" title="Jadwal Mengajar"
                     class="sidebar-menu-link w-full text-left px-3 py-2.5 rounded-xl font-semibold transition flex items-center space-x-3 {{ request()->routeIs('guru.jadwal') || (request()->routeIs('guru.dashboard') && (!request()->has('tab') || request('tab') === 'jadwal')) ? 'bg-emerald-700 text-white' : 'hover:bg-slate-800 hover:text-white' }}">
                     <i class="fa-solid fa-calendar-days w-5 text-center flex-shrink-0"></i>
