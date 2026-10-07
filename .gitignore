@@ -24,3 +24,7 @@ Homestead.yaml
 Thumbs.db
 *.exe
 *.sql
+
+# Local References & Assistant files
+/referensi-desain/
+/CLAUDE.md
