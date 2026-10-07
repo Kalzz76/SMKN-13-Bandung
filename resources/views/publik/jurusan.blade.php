@@ -38,7 +38,7 @@
                         <p class="text-lg font-bold text-teal-light mt-3">Analisis, Pengujian & Kontrol Mutu</p>
                     </div>
 
-                    <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
+                    <div class="w-full max-w-xs sm:max-w-sm mx-auto aspect-[4/5] md:aspect-auto md:w-[38%] md:max-w-none md:h-auto md:absolute md:top-0 md:right-4 md:bottom-12 bg-navy-mid rounded-3xl overflow-hidden shadow-xl relative z-10 mb-6 md:mb-0 border border-teal-tint">
                         <img src="{{ asset('Assets/kaprog ka.png') }}" alt="Dra. Hj. Sri Wahyuni, M.Si."
                             class="w-full h-full object-cover object-top">
                     </div>
@@ -111,7 +111,7 @@
                         <p class="text-lg font-bold text-teal-light mt-3">Komputer, Jaringan Fiber Optic & Keamanan Siber</p>
                     </div>
 
-                    <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
+                    <div class="w-full max-w-xs sm:max-w-sm mx-auto aspect-[4/5] md:aspect-auto md:w-[38%] md:max-w-none md:h-auto md:absolute md:top-0 md:right-4 md:bottom-12 bg-navy-mid rounded-3xl overflow-hidden shadow-xl relative z-10 mb-6 md:mb-0 border border-teal-tint">
                         <img src="{{ asset('Assets/kaprog tkj.png') }}" alt="Hendra Setiawan, S.T., M.Kom."
                             class="w-full h-full object-cover object-top">
                     </div>
@@ -184,7 +184,7 @@
                         <p class="text-lg font-bold text-teal-light mt-3">Pemrograman Web, Mobile, Database & API</p>
                     </div>
 
-                    <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
+                    <div class="w-full max-w-xs sm:max-w-sm mx-auto aspect-[4/5] md:aspect-auto md:w-[38%] md:max-w-none md:h-auto md:absolute md:top-0 md:right-4 md:bottom-12 bg-navy-mid rounded-3xl overflow-hidden shadow-xl relative z-10 mb-6 md:mb-0 border border-teal-tint">
                         <img src="{{ asset('Assets/kaprog rpl.webp') }}" alt="Kepala Program Keahlian RPL"
                             class="w-full h-full object-cover object-top">
                     </div>
