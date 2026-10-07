@@ -43,9 +43,10 @@ class JadwalController extends Controller
         }
 
         $daftarKelas = Kelas::with(['ruangan', 'waliKelas'])->orderBy('nama')->get();
-        $daftarJadwal = Jadwal::with(['kelas', 'mapel', 'guru', 'ruangan'])
+        $daftarJadwalRaw = Jadwal::with(['kelas', 'mapel', 'guru', 'ruangan'])
             ->where('hari', $hariTerpilih)
             ->get();
+        $daftarJadwal = $this->gabungkanJadwalSama($daftarJadwalRaw);
         $semuaJadwal = Jadwal::with(['kelas', 'mapel', 'guru', 'ruangan'])->get();
 
         $slotHari = JamPelajaran::slotHari($hariTerpilih);
@@ -437,15 +438,19 @@ class JadwalController extends Controller
         $ringkasan = JamPelajaran::ringkasanHari($request->hari);
         $segmen = JamPelajaran::pecahRentangJam($ringkasan, (int) $request->jam_ke_mulai, (int) $request->jam_ke_selesai);
 
+        $idsTerkait = array_values(array_filter(array_map('intval', explode(',', (string) $request->input('ids_terkait', $id)))));
+        if (empty($idsTerkait)) {
+            $idsTerkait = [(int) $id];
+        }
+
         if (!$isKegiatan) {
-            foreach ($segmen as $idx => $s) {
+            foreach ($segmen as $s) {
                 $reqSegmen = clone $request;
                 $reqSegmen->merge([
                     'jam_ke_mulai' => $s['mulai'],
                     'jam_ke_selesai' => $s['selesai'],
                 ]);
-                $kecuali = ($idx === 0) ? (int) $id : null;
-                if ($kesalahan = $this->periksaBentrok($reqSegmen, $kecuali)) {
+                if ($kesalahan = $this->periksaBentrok($reqSegmen, $idsTerkait)) {
                     return redirect()->back()->withInput()->with('error', $kesalahan);
                 }
             }
@@ -460,6 +465,11 @@ class JadwalController extends Controller
             } else {
                 Jadwal::create($data);
             }
+        }
+
+        $hapusLain = array_diff($idsTerkait, [(int) $jadwal->id]);
+        if (!empty($hapusLain)) {
+            Jadwal::whereIn('id', $hapusLain)->delete();
         }
 
         $kelas = Kelas::find($request->id_kelas);
@@ -477,17 +487,28 @@ class JadwalController extends Controller
 
     public function destroy($id)
     {
-        $jadwal = Jadwal::findOrFail($id);
-
-        if ($jadwal->absensiSiswa()->count() > 0 || $jadwal->jurnalKelas()->count() > 0) {
-            return redirect()->back()->with('error', 'Jadwal tidak dapat dihapus karena sudah memiliki riwayat absensi siswa atau jurnal kelas.');
+        $ids = array_values(array_filter(array_map('intval', explode(',', (string) $id))));
+        if (empty($ids)) {
+            $ids = [(int) $id];
         }
 
-        $hari = $jadwal->hari;
-        $kelas = $jadwal->kelas ? $jadwal->kelas->nama : 'Kelas';
-        $namaItem = $jadwal->is_kegiatan ? ($jadwal->nama_kegiatan ?? 'Kegiatan') : ($jadwal->mapel ? $jadwal->mapel->nama : 'Mapel');
+        $jadwals = Jadwal::whereIn('id', $ids)->get();
+        if ($jadwals->isEmpty()) {
+            abort(404);
+        }
 
-        $jadwal->delete();
+        foreach ($jadwals as $j) {
+            if ($j->absensiSiswa()->count() > 0 || $j->jurnalKelas()->count() > 0) {
+                return redirect()->back()->with('error', 'Jadwal tidak dapat dihapus karena sudah memiliki riwayat absensi siswa atau jurnal kelas.');
+            }
+        }
+
+        $pertama = $jadwals->first();
+        $hari = $pertama->hari;
+        $kelas = $pertama->kelas ? $pertama->kelas->nama : 'Kelas';
+        $namaItem = $pertama->is_kegiatan ? ($pertama->nama_kegiatan ?? 'Kegiatan') : ($pertama->mapel ? $pertama->mapel->nama : 'Mapel');
+
+        Jadwal::whereIn('id', $ids)->delete();
 
         LogAktivitas::catat('Hapus Jadwal', "Menghapus jadwal {$kelas} - {$namaItem} ({$hari})");
 
@@ -557,7 +578,7 @@ class JadwalController extends Controller
         return null;
     }
 
-    private function periksaBentrok(Request $request, ?int $kecualiId = null): ?string
+    private function periksaBentrok(Request $request, $kecualiId = null): ?string
     {
         if ($request->id_guru) {
             $bentrokGuru = $this->cariBentrok($request, 'id_guru', $kecualiId);
@@ -584,19 +605,68 @@ class JadwalController extends Controller
         return null;
     }
 
-    private function cariBentrok(Request $request, string $kolom, ?int $kecualiId = null): ?Jadwal
+    private function cariBentrok(Request $request, string $kolom, $kecualiId = null): ?Jadwal
     {
         $nilai = $request->input($kolom);
         if (!$nilai) {
             return null;
         }
 
+        $kecualiArray = is_array($kecualiId) ? $kecualiId : ($kecualiId ? [(int) $kecualiId] : []);
+
         return Jadwal::where('hari', $request->hari)
             ->where('is_kegiatan', false)
             ->where($kolom, $nilai)
-            ->when($kecualiId, fn ($q) => $q->where('id', '!=', $kecualiId))
+            ->when(!empty($kecualiArray), fn ($q) => $q->whereNotIn('id', $kecualiArray))
             ->where('jam_ke_mulai', '<=', $request->jam_ke_selesai)
             ->where('jam_ke_selesai', '>=', $request->jam_ke_mulai)
             ->first();
+    }
+
+    private function gabungkanJadwalSama($daftarJadwal)
+    {
+        $hasil = collect();
+        $perKelas = $daftarJadwal->groupBy('id_kelas');
+
+        foreach ($perKelas as $kelasId => $items) {
+            $urut = $items->sortBy('jam_ke_mulai')->values();
+            $cur = null;
+
+            foreach ($urut as $item) {
+                if (!$cur) {
+                    $cur = clone $item;
+                    $cur->ids_terkait = [(int) $item->id];
+                    continue;
+                }
+
+                $samaTipe = (bool) $cur->is_kegiatan === (bool) $item->is_kegiatan;
+                $samaKonten = $samaTipe && (
+                    $cur->is_kegiatan
+                        ? ($cur->nama_kegiatan === $item->nama_kegiatan)
+                        : ($cur->id_mapel === $item->id_mapel && $cur->id_guru === $item->id_guru)
+                );
+                $samaRuang = ($cur->id_ruangan === $item->id_ruangan);
+                $berurutan = ((int) $item->jam_ke_mulai <= (int) $cur->jam_ke_selesai + 1);
+
+                if ($samaKonten && $samaRuang && $berurutan) {
+                    $cur->jam_ke_selesai = max((int) $cur->jam_ke_selesai, (int) $item->jam_ke_selesai);
+                    $terkait = $cur->ids_terkait ?? [];
+                    $terkait[] = (int) $item->id;
+                    $cur->ids_terkait = $terkait;
+                } else {
+                    $hasil->push($cur);
+                    $cur = clone $item;
+                    $cur->ids_terkait = [(int) $item->id];
+                }
+            }
+
+            if ($cur) {
+                $hasil->push($cur);
+            }
+        }
+
+        return $hasil->sortBy(function ($j) {
+            return sprintf('%03d_%s', $j->jam_ke_mulai, $j->kelas ? $j->kelas->nama : '');
+        })->values();
     }
 }

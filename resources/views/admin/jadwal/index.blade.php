@@ -50,15 +50,11 @@
                 <i class="fa-solid fa-download text-emerald-700"></i>
                 <span>Download Template</span>
             </a>
-            <button type="button" onclick="openImportModal()" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs shadow-xs transition flex items-center space-x-2">
-                <i class="fa-solid fa-upload"></i>
+            <button type="button" onclick="openImportModal()" class="px-4 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs shadow-xs transition flex items-center space-x-2 cursor-pointer">
+                <i class="fa-solid fa-file-excel text-emerald-600"></i>
                 <span>Import Excel</span>
             </button>
-            <button type="button" onclick="triggerFixTeacherIds()" class="px-4 py-2.5 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs shadow-xs transition flex items-center space-x-2">
-                <i class="fa-solid fa-wrench text-amber-600"></i>
-                <span>Fix Teacher IDs</span>
-            </button>
-            <button type="button" onclick="openTambahModal()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition flex items-center space-x-2">
+            <button type="button" onclick="openTambahModal()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition flex items-center space-x-2 cursor-pointer">
                 <i class="fa-solid fa-plus text-emerald-400"></i>
                 <span>Tambah Jadwal</span>
             </button>
@@ -488,10 +484,11 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach($daftarJadwal->sortBy('jam_ke_mulai') as $j)
+                        @foreach($daftarJadwal as $j)
                             @php
                                 $waktuMulai = $jamKeMap[$j->jam_ke_mulai]->jam_mulai ?? null;
                                 $waktuSelesai = $jamKeMap[$j->jam_ke_selesai]->jam_selesai ?? null;
+                                $idsTerkaitStr = implode(',', $j->ids_terkait ?? [$j->id]);
                             @endphp
                             <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-3.5 whitespace-nowrap">
@@ -523,7 +520,7 @@
                                 </td>
                                 <td class="p-3.5 font-mono whitespace-nowrap">
                                     <div class="text-xs font-bold text-emerald-700 whitespace-nowrap">
-                                        Jam {{ $j->jam_ke_mulai }} s/d {{ $j->jam_ke_selesai }}
+                                        Jam {{ $j->jam_ke_mulai }}{{ $j->jam_ke_mulai != $j->jam_ke_selesai ? ' - ' . $j->jam_ke_selesai : '' }}
                                     </div>
                                     @if($waktuMulai && $waktuSelesai)
                                         <div class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-0.5">
@@ -534,11 +531,11 @@
                                 <td class="p-3.5 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end space-x-2">
                                         <button type="button"
-                                            onclick="openEditModalFromDirect('{{ $j->id }}', '{{ $j->hari }}', '{{ $j->id_kelas }}', '{{ $j->id_mapel }}', '{{ $j->id_ruangan }}', '{{ $j->id_guru }}', '{{ $j->jam_ke_mulai }}', '{{ $j->jam_ke_selesai }}', {{ $j->is_kegiatan ? 'true' : 'false' }}, '{{ addslashes($j->nama_kegiatan ?? '') }}')"
+                                            onclick="openEditModalFromDirect('{{ $j->id }}', '{{ $j->hari }}', '{{ $j->id_kelas }}', '{{ $j->id_mapel }}', '{{ $j->id_ruangan }}', '{{ $j->id_guru }}', '{{ $j->jam_ke_mulai }}', '{{ $j->jam_ke_selesai }}', {{ $j->is_kegiatan ? 'true' : 'false' }}, '{{ addslashes($j->nama_kegiatan ?? '') }}', '{{ $idsTerkaitStr }}')"
                                             class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
                                         </button>
-                                        <button type="button" onclick="hapusJadwalDirect({{ $j->id }}, event)" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
+                                        <button type="button" onclick="hapusJadwalDirect('{{ $idsTerkaitStr }}', event)" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                             <i class="fa-solid fa-trash mr-1"></i> Hapus
                                         </button>
                                     </div>
@@ -692,6 +689,7 @@
             @csrf
             @method('PUT')
             <input type="hidden" id="editIsKegiatanHidden" name="is_kegiatan" value="0">
+            <input type="hidden" id="editIdsTerkait" name="ids_terkait" value="">
 
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -827,10 +825,6 @@
 <form id="directDeleteForm" method="POST" action="" class="hidden">
     @csrf
     @method('DELETE')
-</form>
-
-<form id="fixTeacherIdsForm" method="POST" action="{{ route('admin.jadwal.fix-teacher-ids') }}" class="hidden">
-    @csrf
 </form>
 
 <script>
@@ -1293,7 +1287,8 @@ function tampilkanHasilEvaluasi(alertBox, btnSimpan, errors, segmen = []) {
 
 function kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, kecualiId) {
     const errors = [];
-    const sama = j => !j.is_kegiatan && (kecualiId === null || String(j.id) !== String(kecualiId)) &&
+    const kecualiList = Array.isArray(kecualiId) ? kecualiId.map(String) : (kecualiId ? [String(kecualiId)] : []);
+    const sama = j => !j.is_kegiatan && !kecualiList.includes(String(j.id)) &&
         j.hari === hari &&
         j.jam_ke_mulai <= selesai &&
         j.jam_ke_selesai >= mulai;
@@ -1358,11 +1353,14 @@ function evaluasiFormJadwal() {
     tampilkanHasilEvaluasi(byId('alertBentrokJadwal'), byId('btnSimpanJadwal'), errors, segmen);
 }
 
-function openEditModalFromDirect(id, hari, kelasId, mapelId, ruangId, guruId, mulai, selesai, isKegiatan, namaKegiatan) {
+function openEditModalFromDirect(id, hari, kelasId, mapelId, ruangId, guruId, mulai, selesai, isKegiatan, namaKegiatan, idsTerkait) {
     currentEditId = id;
     byId('editForm').action = '/admin/jadwal/' + id;
     byId('editHari').value = hari;
     byId('editKelas').value = kelasId;
+    if (byId('editIdsTerkait')) {
+        byId('editIdsTerkait').value = idsTerkait || id;
+    }
 
     toggleKegiatanMode('edit', isKegiatan);
 
@@ -1438,9 +1436,10 @@ function evaluasiEditForm() {
     }
 
     if (!isKegiatan) {
-        segmen.forEach((s, idx) => {
-            const kecId = (idx === 0) ? currentEditId : null;
-            errors = errors.concat(kumpulkanBentrok(hari, s.mulai, s.selesai, idKelas, idRuang, idGuru, kecId));
+        const idsTerkaitVal = byId('editIdsTerkait') ? byId('editIdsTerkait').value : currentEditId;
+        const idsList = idsTerkaitVal ? idsTerkaitVal.split(',').map(x => x.trim()) : [String(currentEditId)];
+        segmen.forEach((s) => {
+            errors = errors.concat(kumpulkanBentrok(hari, s.mulai, s.selesai, idKelas, idRuang, idGuru, idsList));
         });
         errors = Array.from(new Set(errors));
     }
@@ -1451,8 +1450,9 @@ function evaluasiEditForm() {
 function hapusJadwalAktif() {
     if (!currentEditId) return;
     bukaKonfirmasi('Apakah Anda yakin ingin menghapus jadwal ini?', function() {
+        const idsTerkaitVal = byId('editIdsTerkait') ? byId('editIdsTerkait').value : currentEditId;
         const form = byId('directDeleteForm');
-        form.action = '/admin/jadwal/' + currentEditId;
+        form.action = '/admin/jadwal/' + (idsTerkaitVal || currentEditId);
         form.submit();
     }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
 }
@@ -1464,12 +1464,6 @@ function hapusJadwalDirect(id, event) {
         form.action = '/admin/jadwal/' + id;
         form.submit();
     }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
-}
-
-function triggerFixTeacherIds() {
-    bukaKonfirmasi('Ini akan memperbaiki jadwal yang memiliki teacher ID berupa nama guru menjadi ID yang valid. Lanjutkan?', function() {
-        byId('fixTeacherIdsForm').submit();
-    }, { warna: 'emerald', tombolTeks: 'Ya, Perbaiki' });
 }
 
 function openImportModal() {

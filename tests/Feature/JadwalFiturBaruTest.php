@@ -129,4 +129,40 @@ class JadwalFiturBaruTest extends TestCase
             'id_guru' => $this->guru->id,
         ]);
     }
+
+    public function test_tabel_rincian_menggabungkan_jadwal_sama_dan_berurutan(): void
+    {
+        $j1 = Jadwal::create([
+            'hari' => 'Rabu',
+            'id_kelas' => $this->kelas->id,
+            'id_mapel' => $this->mapel->id,
+            'id_ruangan' => $this->ruangan->id,
+            'id_guru' => $this->guru->id,
+            'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 3,
+            'is_kegiatan' => false,
+        ]);
+
+        $j2 = Jadwal::create([
+            'hari' => 'Rabu',
+            'id_kelas' => $this->kelas->id,
+            'id_mapel' => $this->mapel->id,
+            'id_ruangan' => $this->ruangan->id,
+            'id_guru' => $this->guru->id,
+            'jam_ke_mulai' => 4,
+            'jam_ke_selesai' => 5,
+            'is_kegiatan' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->get('/admin/jadwal?hari=Rabu');
+        $response->assertOk();
+        $response->assertSee('Jam 3 - 5');
+
+        $deleteResponse = $this->actingAs($this->admin)->delete("/admin/jadwal/{$j1->id},{$j2->id}");
+        $deleteResponse->assertRedirect(route('admin.jadwal.index', ['hari' => 'Rabu']));
+
+        $this->assertDatabaseMissing('jadwal', ['id' => $j1->id]);
+        $this->assertDatabaseMissing('jadwal', ['id' => $j2->id]);
+    }
 }
+
