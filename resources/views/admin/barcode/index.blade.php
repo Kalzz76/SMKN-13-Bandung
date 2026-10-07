@@ -70,10 +70,8 @@
                 <div class="w-full flex flex-col items-center justify-center overflow-hidden">
                     <div id="cardScaleContainer" class="w-full max-w-[428px] flex justify-center items-start overflow-hidden">
                         <div id="cardBarcodeScaler" class="origin-top transition-transform duration-150" style="width: 428px; height: 270px; flex-shrink: 0;">
-                            <div id="cardBarcodePreview" style="background-image: url('{{ asset('images/desain-card.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 428px; height: 270px; min-width: 428px; min-height: 270px; border-radius: 14px; border: 1px solid #cbd5e1; position: relative; overflow: hidden; display: flex; box-sizing: border-box; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
-                                <!-- Left Section: Dark Navy Area -->
-                                <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 12px 6px 12px 12px; box-sizing: border-box; position: relative; z-index: 2;">
-                                    <!-- Top Left: Logo & School Title -->
+                            <div id="cardBarcodePreview" style="background-image: url('{{ asset('images/desain-card.png') }}'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; width: 428px; height: 270px; min-width: 428px; min-height: 270px; border-radius: 14px; border: 1px solid #cbd5e1; position: relative; overflow: hidden; display: flex; box-sizing: border-box; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                                <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 7px; padding: 12px 6px 12px 12px; box-sizing: border-box; position: relative; z-index: 2;">
                                     <div style="display: flex; align-items: center; gap: 7px;">
                                         @if(!empty($pengaturan?->logo_url))
                                             <img src="{{ $pengaturan->logo_url }}" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0;">
@@ -92,30 +90,33 @@
                                         </div>
                                     </div>
 
-                                    <!-- Bottom Left: Contact Info from Pengaturan Sekolah -->
-                                    <div style="max-width: 170px; font-size: 7.5px; color: #f1f5f9; line-height: 1.3; margin-top: 4px; display: flex; flex-direction: column; gap: 3px; font-family: 'Inter', sans-serif;">
+                                    <div style="width: 100%; max-width: 168px; font-size: 7px; color: #f1f5f9; line-height: 1.25; display: flex; flex-direction: column; gap: 3px; font-family: 'Inter', sans-serif; background: rgba(11, 34, 62, 0.78); padding: 6px 7px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.25); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
                                         <div style="display: flex; align-items: flex-start; gap: 5px;">
-                                            <i class="fa-solid fa-house" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; margin-top: 1px; font-size: 7.5px;"></i>
+                                            <i class="fa-solid fa-house" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; margin-top: 1px; font-size: 7px;"></i>
                                             <span style="color: #f1f5f9; line-height: 1.2; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
-                                            <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
-                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 145px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
+                                            <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7px;"></i>
+                                            <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
-                                            <i class="fa-solid fa-phone" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
+                                            <i class="fa-solid fa-phone" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7px;"></i>
                                             <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->telepon ?? '(022) 7801234 / 7805678' }}</span>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
-                                            <i class="fa-solid fa-globe" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
+                                            <i class="fa-solid fa-globe" style="color: #fbbf24; width: 11px; text-align: center; flex-shrink: 0; font-size: 7px;"></i>
                                             <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->social_media ?? 'smkn13bdg.sch.id' }}</span>
                                         </div>
                                     </div>
+
+                                    <div style="margin-top: auto; display: flex; align-items: center; gap: 4px; padding-bottom: 2px;">
+                                        <span style="font-size: 6px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Inter', sans-serif; opacity: 0.9;">
+                                            Pusat Keunggulan · SMKN 13
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <!-- Right Section: White Area -->
                                 <div style="width: 54%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; padding: 12px 12px 12px 6px; box-sizing: border-box; position: relative; z-index: 2;">
-                                    <!-- Top Right: Name & Role -->
                                     <div style="max-width: 200px; display: flex; flex-direction: column; gap: 2px;">
                                         <h3 style="font-size: 13px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; text-transform: uppercase; margin: 0; font-family: 'Inter', sans-serif;">
                                             <span style="color: #f59e0b;">{{ $nama1 }}</span>
@@ -129,7 +130,6 @@
                                         </p>
                                     </div>
 
-                                    <!-- Bottom Right: QR Code -->
                                     <div style="display: flex; flex-direction: column; align-items: flex-end;">
                                         <div style="padding: 3px; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0; display: inline-block;">
                                             <div id="qrcode"></div>

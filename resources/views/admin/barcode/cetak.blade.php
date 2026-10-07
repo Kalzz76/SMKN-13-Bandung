@@ -25,7 +25,7 @@
             height: 270px;
             min-height: 270px;
             background-image: url('{{ asset('images/desain-card.png') }}');
-            background-size: cover;
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             border-radius: 0.875rem;
@@ -78,6 +78,8 @@
                 break-inside: avoid !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+                background-size: 100% 100% !important;
+                background-position: center !important;
                 width: 428px !important;
                 height: 270px !important;
             }
@@ -123,6 +125,8 @@
                 break-inside: avoid !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+                background-size: 100% 100% !important;
+                background-position: center !important;
                 width: 428px !important;
                 height: 270px !important;
             }
@@ -132,7 +136,6 @@
 </head>
 <body class="p-4 sm:p-8 min-h-screen text-slate-900">
     <div class="max-w-5xl mx-auto space-y-6">
-        <!-- Control Header -->
         <div class="no-print bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
                 <h1 class="font-bold text-slate-900 text-base sm:text-lg">Cetak Kartu Absensi Guru</h1>
@@ -158,7 +161,6 @@
             </div>
         </div>
 
-        <!-- Cards Grid -->
         <div id="printableArea" class="grid grid-cols-1 md:grid-cols-2 gap-6 grid-cetak justify-items-center">
             @foreach($daftarGuru as $g)
                 @php
@@ -170,9 +172,7 @@
                 <div class="card-scale-wrapper w-full max-w-[480px] flex justify-center items-start overflow-hidden">
                     <div class="card-scaler origin-top transition-transform duration-150" style="width: 480px; height: 276px; flex-shrink: 0;">
                         <div class="card-id" id="card_{{ $g->id }}">
-                            <!-- Left Section: Dark Navy Area -->
-                            <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 6px 14px 14px; box-sizing: border-box; text-align: left; position: relative; z-index: 2;">
-                                <!-- Top Left: Logo dari Pengaturan Sekolah & School Title -->
+                            <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; padding: 14px 6px 14px 14px; box-sizing: border-box; text-align: left; position: relative; z-index: 2;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     @if(!empty($pengaturan?->logo_url))
                                         <img src="{{ $pengaturan->logo_url }}" alt="Logo" style="width: 35px; height: 35px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
@@ -191,30 +191,33 @@
                                     </div>
                                 </div>
 
-                                <!-- Bottom Left: Contact Info from Pengaturan Sekolah -->
-                                <div style="max-width: 175px; font-size: 8px; color: #f1f5f9; line-height: 1.35; margin-top: 6px; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif;">
+                                <div style="width: 100%; max-width: 172px; font-size: 7.5px; color: #f1f5f9; line-height: 1.3; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif; background: rgba(11, 34, 62, 0.78); padding: 7px 8px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.25); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
                                     <div style="display: flex; align-items: flex-start; gap: 5px;">
-                                        <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 8px;"></i>
+                                        <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 7.5px;"></i>
                                         <span style="color: #f1f5f9; line-height: 1.25; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 5px;">
-                                        <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
-                                        <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 155px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
+                                        <i class="fa-solid fa-envelope" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
+                                        <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 145px;">{{ $pengaturan->email ?? 'info@smkn13bandung.sch.id' }}</span>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 5px;">
-                                        <i class="fa-solid fa-phone" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                        <i class="fa-solid fa-phone" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
                                         <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->telepon ?? '(022) 7801234 / 7805678' }}</span>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 5px;">
-                                        <i class="fa-solid fa-globe" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 8px;"></i>
+                                        <i class="fa-solid fa-globe" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
                                         <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->social_media ?? 'smkn13bdg.sch.id' }}</span>
                                     </div>
                                 </div>
+
+                                <div style="margin-top: auto; display: flex; align-items: center; gap: 4px; padding-bottom: 2px;">
+                                    <span style="font-size: 6.5px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Inter', sans-serif; opacity: 0.9;">
+                                        Pusat Keunggulan · SMKN 13
+                                    </span>
+                                </div>
                             </div>
 
-                            <!-- Right Section: White Area -->
                             <div style="width: 54%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; text-align: right; padding: 14px 14px 14px 8px; box-sizing: border-box; position: relative; z-index: 2;">
-                                <!-- Top Right: Name & Role -->
                                 <div style="max-width: 210px; display: flex; flex-direction: column; gap: 2px;">
                                     <h3 style="font-size: 14px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; text-transform: uppercase; margin: 0; font-family: 'Inter', sans-serif;">
                                         <span class="sr-only">{{ $g->nama }}</span>
@@ -229,7 +232,6 @@
                                     </p>
                                 </div>
 
-                                <!-- Bottom Right: QR Code -->
                                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
                                     <div style="padding: 4px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; display: inline-block;">
                                         <div id="qr_{{ $g->id }}" data-code="{{ $g->kode_barcode }}" class="qrcode-item"></div>
@@ -290,7 +292,6 @@
 
         resizeCardScalers();
 
-        // Auto download PDF jika query param download=pdf tersedia
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('download') === 'pdf') {
             setTimeout(function() {
@@ -312,7 +313,6 @@
         }
 
         try {
-            // Pastikan seluruh font web dan glyph icon sudah selesai termuat
             if (document.fonts && document.fonts.ready) {
                 await document.fonts.ready;
             }
@@ -329,7 +329,6 @@
             const isSingle = totalCards === 1;
 
             if (isSingle) {
-                // Single card PDF: format persis standar ISO ID-1 (85.6 mm x 54 mm)
                 const pdf = new jsPDF({
                     orientation: 'landscape',
                     unit: 'mm',
@@ -350,7 +349,6 @@
                 const guruNama = '{{ Str::slug($daftarGuru->first()->nama ?? "Guru") }}';
                 pdf.save('Kartu-Barcode-' + guruNama + '.pdf');
             } else {
-                // Multi-card PDF: format A4 Portrait dengan 8 kartu berukuran persis 85.6 x 54 mm (2 kolom x 4 baris)
                 const pdf = new jsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
@@ -392,7 +390,6 @@
 
                     pdf.addImage(imgData, 'JPEG', x, y, cardW, cardH);
 
-                    // Jeda sejenak setiap 4 kartu agar browser tidak freeze
                     if (i % 4 === 0) {
                         await new Promise(r => setTimeout(r, 20));
                     }
