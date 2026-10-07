@@ -26,17 +26,26 @@ class ProfilController extends Controller
             'username' => 'required|string|max:50|unique:users,username,' . $user->id,
             'alamat' => 'nullable|string|max:500',
             'password' => 'nullable|string|min:6|confirmed',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:3072',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah digunakan akun lain.',
             'password.min' => 'Password baru minimal 6 karakter.',
             'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format gambar harus jpeg, png, jpg, webp, atau gif.',
+            'foto.max' => 'Ukuran gambar maksimal 3MB.',
         ]);
 
         $user->name = $request->name;
         $user->username = $request->username;
         $user->alamat = $request->alamat;
+
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('profil', 'public');
+            $user->foto = $fotoPath;
+        }
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
@@ -47,5 +56,30 @@ class ProfilController extends Controller
         LogAktivitas::catat('Ubah Profil', "Memperbarui profil pengguna '{$user->name}'");
 
         return redirect()->route('admin.profil')->with('sukses', 'Profil berhasil diperbarui.');
+    }
+
+    public function updateFoto(Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:3072',
+        ], [
+            'foto.required' => 'Pilih foto profil terlebih dahulu.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format gambar harus jpeg, png, jpg, webp, atau gif.',
+            'foto.max' => 'Ukuran gambar maksimal 3MB.',
+        ]);
+
+        $user = auth()->user();
+        $fotoPath = $request->file('foto')->store('profil', 'public');
+        $user->foto = $fotoPath;
+        $user->save();
+
+        LogAktivitas::catat('Ubah Foto Profil', "Memperbarui foto profil pengguna '{$user->name}'");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto profil berhasil diperbarui.',
+            'foto_url' => asset('storage/' . $fotoPath),
+        ]);
     }
 }

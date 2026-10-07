@@ -28,8 +28,12 @@
         </div>
 
         <a href="{{ route('admin.profil') }}" class="flex items-center space-x-2.5 sm:space-x-3 pl-1.5 sm:pl-3 border-l border-slate-200 hover:opacity-80 transition group cursor-pointer" title="Lihat Profil Saya">
-            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-700 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow group-hover:ring-2 group-hover:ring-emerald-500/50 transition">
-                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-700 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow group-hover:ring-2 group-hover:ring-emerald-500/50 transition overflow-hidden header-user-avatar">
+                @if(auth()->user()->foto_url)
+                    <img src="{{ auth()->user()->foto_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                @else
+                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+                @endif
             </div>
             <div class="hidden sm:block text-left">
                 <span class="text-xs font-bold text-slate-900 block leading-tight group-hover:text-emerald-700 transition">{{ auth()->user()->name }}</span>

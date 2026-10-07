@@ -2,9 +2,7 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto pb-10">
-    <!-- Header Banner / Cover -->
-    <div class="relative h-64 sm:h-72 rounded-3xl overflow-hidden shadow-xs border border-blue-900/10 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-600">
-        <!-- Geometric SVG Pattern Overlay -->
+    <div class="relative h-36 sm:h-44 rounded-3xl overflow-hidden shadow-xs border border-blue-900/10 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-600">
         <svg class="absolute inset-0 w-full h-full opacity-15 object-cover pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="none">
             <path d="M0 0 L400 200 L0 400 Z" fill="#ffffff" />
             <path d="M400 0 L800 200 L400 400 Z" fill="#ffffff" />
@@ -12,65 +10,62 @@
             <path d="M200 400 L600 400 L400 200 Z" fill="#ffffff" />
         </svg>
 
-        <!-- Accent Floating Shapes -->
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
         <div class="absolute left-1/3 -top-10 w-48 h-48 bg-cyan-400/20 rounded-full blur-xl pointer-events-none"></div>
 
-        <!-- Tombol Pojok Kanan Atas (Change Cover) -->
-        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-10">
-            <button type="button" onclick="showModalMsg('Informasi', 'Fitur ganti sampul akan segera hadir!', 'info')" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-900/40 hover:bg-slate-900/60 text-white backdrop-blur-md text-xs font-semibold shadow-xs transition border border-white/10 cursor-pointer">
-                <i class="fa-solid fa-camera text-xs"></i>
-                <span>Change Cover</span>
+        <div class="absolute top-3 right-3 sm:top-4 sm:right-5 z-10">
+            <button type="button" onclick="showModalMsg('Informasi', 'Fitur ganti sampul akan segera hadir!', 'info')" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-900/40 hover:bg-slate-900/60 text-white backdrop-blur-md text-xs shadow-xs transition border border-white/10 cursor-pointer" title="Ganti Sampul">
+                <i class="fa-solid fa-camera"></i>
             </button>
         </div>
     </div>
 
-    <!-- Main Content Overlap Grid (Naik ke Atas Menindih Cover) -->
-    <div class="relative -mt-36 sm:-mt-44 px-3 sm:px-6 z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div class="relative -mt-20 sm:-mt-24 px-3 sm:px-6 z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
-        <!-- KOLOM KIRI: Card Identitas & Ringkasan Info (lg:col-span-4) -->
-        <div class="lg:col-span-4 bg-white rounded-3xl border border-slate-200/90 shadow-lg p-6 flex flex-col items-center text-center space-y-5">
-            <!-- Avatar Bulat Besar dengan Tombol Kamera -->
-            <div class="relative">
-                <div class="w-28 h-28 rounded-full ring-4 ring-white shadow-md bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-black text-3xl flex items-center justify-center select-none overflow-hidden">
-                    {{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}
+        <div class="lg:col-span-4 bg-white rounded-3xl border border-slate-200/90 shadow-lg p-6 sm:p-8 flex flex-col justify-between h-full space-y-6">
+            <div class="flex flex-col items-center text-center space-y-4 w-full">
+                <div class="relative">
+                    <div id="avatarPreviewContainer" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-4 ring-white shadow-md bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-black text-3xl flex items-center justify-center select-none overflow-hidden">
+                        @if($user->foto_url)
+                            <img id="avatarImage" src="{{ $user->foto_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                        @else
+                            <span id="avatarInitial">{{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}</span>
+                        @endif
+                    </div>
+                    <label for="inputFotoProfil" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center text-xs shadow-md transition cursor-pointer ring-2 ring-white hover:scale-105 active:scale-95" title="Ganti Foto Profil">
+                        <i class="fa-solid fa-camera"></i>
+                    </label>
+                    <input type="file" id="inputFotoProfil" name="foto" form="formProfil" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden" onchange="handleFotoProfilChange(this)">
                 </div>
-                <button type="button" onclick="document.getElementById('inputNamaLengkap').focus()" class="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center text-xs shadow-md transition cursor-pointer ring-2 ring-white" title="Perbarui Profil">
-                    <i class="fa-solid fa-camera"></i>
-                </button>
+
+                <div class="space-y-1 w-full">
+                    <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ $user->name }}</h2>
+                    <p class="text-xs text-slate-500 font-medium">SMK Negeri 13 Bandung</p>
+                    <span class="inline-block mt-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+                        {{ ucfirst($user->role ?? 'Pengguna') }}
+                    </span>
+                </div>
             </div>
 
-            <!-- Nama & Instansi -->
-            <div class="space-y-1 w-full">
-                <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ $user->name }}</h2>
-                <p class="text-xs text-slate-500 font-medium">SMK Negeri 13 Bandung</p>
-                <span class="inline-block mt-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
-                    {{ ucfirst($user->role ?? 'Pengguna') }}
-                </span>
-            </div>
-
-            <div class="w-full border-t border-slate-100"></div>
-
-            <!-- Ringkasan Statistik / Info Akun -->
-            <div class="w-full space-y-3 text-xs">
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-600 font-medium">Status Akun</span>
-                    <span class="font-bold text-amber-500">{{ $user->status ?? 'Aktif' }}</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-600 font-medium">Hak Akses</span>
-                    <span class="font-bold text-emerald-600">{{ ucfirst($user->role ?? 'User') }}</span>
-                </div>
-                <div class="flex items-center justify-between py-1">
-                    <span class="text-slate-600 font-medium">Terdaftar Sejak</span>
-                    <span class="font-bold text-slate-700">{{ $user->created_at ? $user->created_at->format('M Y') : '2026' }}</span>
+            <div class="w-full space-y-4 pt-6 border-t border-slate-100 mt-auto">
+                <div class="w-full space-y-3 text-xs">
+                    <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                        <span class="text-slate-600 font-medium">Status Akun</span>
+                        <span class="font-bold text-amber-500">{{ $user->status ?? 'Aktif' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                        <span class="text-slate-600 font-medium">Hak Akses</span>
+                        <span class="font-bold text-emerald-600">{{ ucfirst($user->role ?? 'User') }}</span>
+                    </div>
+                    <div class="flex items-center justify-between py-1">
+                        <span class="text-slate-600 font-medium">Terdaftar Sejak</span>
+                        <span class="font-bold text-slate-700">{{ $user->created_at ? $user->created_at->format('M Y') : '2026' }}</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- KOLOM KANAN: Card Pengaturan Akun & Tabs Form (lg:col-span-8) -->
-        <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200/90 shadow-lg p-6 sm:p-8 space-y-6">
-            <!-- Tabs Navigasi (Hanya: Account Settings, Security & Password, Institusi SMKN 13) -->
+        <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200/90 shadow-lg p-6 sm:p-8 flex flex-col justify-between h-full space-y-6">
             <div class="flex items-center space-x-6 border-b border-slate-200 text-xs sm:text-sm font-semibold overflow-x-auto scrollbar-none pb-px">
                 <button type="button" onclick="switchProfileTab('tabAccount')" id="btnTabAccount" class="pb-3 border-b-2 border-blue-600 text-blue-600 font-bold transition whitespace-nowrap cursor-pointer">
                     Account Settings
@@ -83,12 +78,10 @@
                 </button>
             </div>
 
-            <!-- Form Edit Profile -->
-            <form method="POST" action="{{ $user->role === 'admin' ? route('admin.profil.update') : route('profil.update') }}" class="space-y-6">
+            <form id="formProfil" method="POST" action="{{ $user->role === 'admin' ? route('admin.profil.update') : route('profil.update') }}" enctype="multipart/form-data" class="space-y-6 flex flex-col justify-between flex-grow">
                 @csrf
                 @method('PUT')
 
-                <!-- TAB 1: Account Settings (Default Aktif) -->
                 <div id="contentTabAccount" class="space-y-5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                         <div>
@@ -163,7 +156,6 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: Security & Password -->
                 <div id="contentTabSecurity" class="space-y-5 hidden">
                     <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100 text-blue-900 text-xs">
                         <p class="font-bold mb-0.5"><i class="fa-solid fa-shield-halved mr-1.5"></i> Keamanan Akun</p>
@@ -199,7 +191,6 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: Institusi SMKN 13 -->
                 <div id="contentTabInstitusi" class="space-y-4 hidden text-xs">
                     <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                         <h4 class="font-bold text-slate-900 text-sm">Informasi Sekolah</h4>
@@ -212,8 +203,7 @@
                     </div>
                 </div>
 
-                <!-- Action Button di Bawah Persis Gambar (Tombol Biru 'Update') -->
-                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
                     <a href="{{ $backUrl }}" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition">
                         Kembali
                     </a>
@@ -264,6 +254,58 @@ function togglePasswordVisibility(inputId, iconId) {
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
     }
+}
+
+function handleFotoProfilChange(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    
+    if (file.size > 3 * 1024 * 1024) {
+        showModalMsg('Ukuran Terlalu Besar', 'Maksimal ukuran foto adalah 3MB.', 'warning');
+        input.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const container = document.getElementById('avatarPreviewContainer');
+        if (container) {
+            container.innerHTML = '<img id="avatarImage" src="' + e.target.result + '" alt="Avatar" class="w-full h-full object-cover">';
+        }
+    };
+    reader.readAsDataURL(file);
+
+    const formData = new FormData();
+    formData.append('foto', file);
+    formData.append('_token', '{{ csrf_token() }}');
+
+    const uploadUrl = "{{ $user->role === 'admin' ? route('admin.profil.foto.update') : route('profil.foto.update') }}";
+
+    fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => { throw new Error(data.message || 'Gagal mengunggah foto'); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showModalMsg('Berhasil', data.message || 'Foto profil berhasil diperbarui.', 'success');
+            document.querySelectorAll('.header-user-avatar').forEach(el => {
+                el.innerHTML = '<img src="' + data.foto_url + '" alt="Avatar" class="w-full h-full object-cover">';
+            });
+        }
+    })
+    .catch(err => {
+        showModalMsg('Perhatian', err.message || 'Terjadi kesalahan saat mengunggah foto.', 'warning');
+    });
 }
 </script>
 @endsection
