@@ -332,7 +332,5 @@ class DatabaseSeeder extends Seeder
             'deskripsi' => 'Meraih juara 2 dalam kompetisi IT Network System Administration tingkat Jawa Barat.',
             'gambar' => null,
         ]);
-
-        $this->call(RuanganSeeder::class);
     }
 }
