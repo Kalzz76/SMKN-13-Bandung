@@ -85,22 +85,18 @@
 @endphp
 
 <div class="py-16 px-4 max-w-7xl mx-auto w-full flex-grow">
-    <!-- Header Galeri -->
     <div class="text-center max-w-2xl mx-auto">
         <span class="text-xs font-bold uppercase tracking-[.25em] text-teal-primary">Galeri</span>
-        <h1 class="text-4xl sm:text-5xl font-black text-navy-dark mt-3 mb-4">Galeri & Dokumentasi</h1>
+        <h1 class="text-3xl sm:text-5xl font-black text-navy-dark mt-3 mb-4">Galeri & Dokumentasi</h1>
         <p class="text-lg text-text-muted">Koleksi album foto kegiatan dan fasilitas sekolah SMKN 13 Bandung.</p>
     </div>
 
-    <!-- Filter Pills Kategori -->
     <div id="galFilters" class="flex flex-wrap justify-center gap-3 mt-10"></div>
 
-    <!-- 3D Coverflow Slider Track -->
     <div class="relative overflow-hidden mt-10 -mx-4 py-4" onmouseenter="galPaused=true" onmouseleave="galPaused=false">
         <div id="galTrack" class="relative h-[470px]"></div>
     </div>
 
-    <!-- Navigasi Prev / Next -->
     <div class="flex justify-center gap-3 mt-6">
         <button onclick="galPrev()" aria-label="Sebelumnya"
             class="w-11 h-11 rounded-full border border-navy-dark/60 text-navy-dark hover:bg-navy-dark hover:text-white transition flex items-center justify-center shadow-sm">
@@ -157,11 +153,14 @@
         }
 
         const it = galItems();
+        if (typeof setGalItemsData === 'function') {
+            setGalItemsData(it);
+        }
         const track = document.getElementById('galTrack');
         if (!track) return;
 
         track.innerHTML = it.map((x, i) => `
-            <div class="gal-card" onclick="galGo(${i})">
+            <div class="gal-card" onclick="galOpen(${i})">
                 <img src="${x.src}" alt="${x.judul}" onerror="this.onerror=null;this.src='{{ asset('Assets/LOGOS.jpg') }}';" loading="lazy">
                 <div class="gal-shade"></div>
                 <div class="gal-info">

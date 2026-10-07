@@ -170,8 +170,8 @@ class DataMasterDanJadwalTest extends TestCase
 
     public function test_crud_kelas_dan_proteksi_hapus(): void
     {
-        $ruang = Ruangan::first();
-        $guru = Guru::first();
+        $ruang = Ruangan::whereNotIn('id', Kelas::whereNotNull('id_ruangan')->pluck('id_ruangan'))->first();
+        $guru = Guru::where('jenis', 'Guru')->whereNotIn('id', Kelas::whereNotNull('id_wali_kelas')->pluck('id_wali_kelas'))->first();
 
         $responseTambah = $this->actingAs($this->admin)->post('/admin/kelas', [
             'nama' => 'XI RPL 2',
@@ -182,6 +182,23 @@ class DataMasterDanJadwalTest extends TestCase
         $this->assertDatabaseHas('kelas', ['nama' => 'XI RPL 2']);
 
         $kelas = Kelas::where('nama', 'XI RPL 2')->first();
+
+        $responseDupNama = $this->actingAs($this->admin)->post('/admin/kelas', [
+            'nama' => 'XI RPL 2',
+        ]);
+        $responseDupNama->assertSessionHas('error');
+
+        $responseDupRuang = $this->actingAs($this->admin)->post('/admin/kelas', [
+            'nama' => 'Kelas Ruang Sama',
+            'id_ruangan' => $ruang->id,
+        ]);
+        $responseDupRuang->assertSessionHas('error');
+
+        $responseDupWali = $this->actingAs($this->admin)->post('/admin/kelas', [
+            'nama' => 'Kelas Wali Sama',
+            'id_wali_kelas' => $guru->id,
+        ]);
+        $responseDupWali->assertSessionHas('error');
 
         $responseEdit = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id, [
             'nama' => 'XI RPL 2 Unggulan',
@@ -195,13 +212,27 @@ class DataMasterDanJadwalTest extends TestCase
         $responseShow->assertStatus(200);
         $responseShow->assertSee('XI RPL 2 Unggulan');
 
+        $guruBaru = Guru::where('jenis', 'Guru')->whereNotIn('id', Kelas::whereNotNull('id_wali_kelas')->pluck('id_wali_kelas'))->first();
+
         $responseStruktur = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id . '/struktur', [
+            'id_wali_kelas' => $guruBaru ? $guruBaru->id : $guru->id,
             'km' => 'Siswa Ketua',
             'wakil_km' => 'Siswa Wakil',
             'bendahara_1' => 'Siswa Bendahara 1',
         ]);
         $responseStruktur->assertRedirect('/admin/kelas/' . $kelas->id);
         $this->assertDatabaseHas('kelas', ['id' => $kelas->id]);
+        if ($guruBaru) {
+            $this->assertDatabaseHas('kelas', ['id' => $kelas->id, 'id_wali_kelas' => $guruBaru->id]);
+        }
+
+        $kelasLain = Kelas::where('id', '!=', $kelas->id)->whereNotNull('id_wali_kelas')->first();
+        if ($kelasLain) {
+            $responseStrukturBentrok = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id . '/struktur', [
+                'id_wali_kelas' => $kelasLain->id_wali_kelas,
+            ]);
+            $responseStrukturBentrok->assertSessionHas('error');
+        }
 
         $kelasTerpakai = Kelas::where('nama', 'XII RPL 1')->first();
         $responseHapusTerpakai = $this->actingAs($this->admin)->delete('/admin/kelas/' . $kelasTerpakai->id);
@@ -363,21 +394,45 @@ class DataMasterDanJadwalTest extends TestCase
         ]);
         $responseSelesaiKecil->assertSessionHas('error');
 
-        // Jadwal melewati jam istirahat (jam 3-5 di hari Selasa melintasi istirahat jam 4) kini diizinkan
         $responseValid = $this->actingAs($this->admin)->post('/admin/jadwal', [
             'hari' => 'Selasa',
             'id_kelas' => $kelas1->id,
             'id_mapel' => $mapel->id,
             'id_guru' => $guru->id,
             'id_ruangan' => $ruang->id,
-            'jam_ke_mulai' => 3,
-            'jam_ke_selesai' => 5,
+            'jam_ke_mulai' => 1,
+            'jam_ke_selesai' => 3,
         ]);
         $responseValid->assertRedirect('/admin/jadwal?hari=Selasa');
         $this->assertDatabaseHas('jadwal', [
             'hari' => 'Selasa',
             'id_kelas' => $kelas1->id,
+            'jam_ke_mulai' => 1,
+            'jam_ke_selesai' => 3,
+        ]);
+
+        $guru2 = Guru::where('id', '!=', $guru->id)->first();
+        $ruang2 = Ruangan::where('kode', 'R.52')->first();
+        $responseLewatIstirahat = $this->actingAs($this->admin)->post('/admin/jadwal', [
+            'hari' => 'Selasa',
+            'id_kelas' => $kelas2->id,
+            'id_mapel' => $mapel->id,
+            'id_guru' => $guru2->id,
+            'id_ruangan' => $ruang2->id,
             'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 5,
+        ]);
+        $responseLewatIstirahat->assertSessionMissing('error');
+        $this->assertDatabaseHas('jadwal', [
+            'hari' => 'Selasa',
+            'id_kelas' => $kelas2->id,
+            'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 4,
+        ]);
+        $this->assertDatabaseHas('jadwal', [
+            'hari' => 'Selasa',
+            'id_kelas' => $kelas2->id,
+            'jam_ke_mulai' => 5,
             'jam_ke_selesai' => 5,
         ]);
 

@@ -134,6 +134,36 @@ class JamPelajaran extends Model
         return false;
     }
 
+    public static function pecahRentangJam(array $ringkasan, int $mulai, int $selesai): array
+    {
+        $titikIstirahat = [];
+        foreach ($ringkasan['istirahat'] as $istirahat) {
+            $setelah = (int) $istirahat['setelah_jam'];
+            if ($setelah >= $mulai && $setelah < $selesai) {
+                $titikIstirahat[] = $setelah;
+            }
+        }
+
+        sort($titikIstirahat);
+
+        if (empty($titikIstirahat)) {
+            return [['mulai' => $mulai, 'selesai' => $selesai]];
+        }
+
+        $segmen = [];
+        $curMulai = $mulai;
+        foreach ($titikIstirahat as $titik) {
+            $segmen[] = ['mulai' => $curMulai, 'selesai' => $titik];
+            $curMulai = $titik + 1;
+        }
+
+        if ($curMulai <= $selesai) {
+            $segmen[] = ['mulai' => $curMulai, 'selesai' => $selesai];
+        }
+
+        return $segmen;
+    }
+
     private static function labelBagian(int $indeks, int $total): string
     {
         if ($total === 1) {

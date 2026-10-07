@@ -112,7 +112,38 @@
             to { transform: translateX(-50%); }
         }
 
-        /* 3D Coverflow Galeri */
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-color: #0F2A47;
+            opacity: 0;
+            transform: scale(1.1);
+            transition: opacity 1.3s ease, transform 7s ease-out;
+        }
+        .hero-slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .slider-dot {
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.45);
+            transition: all 0.3s;
+        }
+        .slider-dot.active {
+            width: 1.8rem;
+            background: #9ED6CF;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero-slide {
+                transition: opacity 0.5s;
+                transform: none !important;
+            }
+        }
+
         .gal-card {
             position: absolute;
             top: 10px;
@@ -171,11 +202,9 @@
 </head>
 
 <body class="bg-bg-page text-text-main antialiased min-h-screen flex flex-col overflow-x-hidden">
-    <!-- NAVBAR UTAMA -->
     <nav class="bg-navy-dark text-white shadow-md sticky top-0 z-50 border-b border-navy-mid">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-                <!-- Brand / Logo -->
                 <a href="{{ route('beranda') }}" class="flex items-center space-x-3 btn-animate">
                     @if(!empty($sitePengaturan?->logo_url))
                         <img src="{{ $sitePengaturan->logo_url }}" alt="Logo SMKN 13 Bandung"
@@ -185,19 +214,17 @@
                             class="h-12 w-12 object-contain drop-shadow">
                     @endif
                     <div>
-                        <span class="text-lg font-black block leading-tight tracking-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
+                        <span class="text-base sm:text-lg font-bold block leading-tight tracking-tight">{{ $sitePengaturan->nama_sekolah ?? 'SMKN 13 BANDUNG' }}</span>
                         <span class="text-xs text-teal-accent tracking-wider uppercase font-semibold">Official Portal</span>
                     </div>
                 </a>
 
-                <!-- Desktop Navigation Links -->
                 <div class="hidden lg:flex items-center space-x-7 text-sm font-bold uppercase tracking-wider">
                     <a href="{{ route('beranda') }}"
                         class="nav-item py-2 transition {{ request()->routeIs('beranda') ? 'text-teal-accent' : 'text-white hover:text-teal-accent' }}">
                         Beranda
                     </a>
 
-                    <!-- Dropdown Profil -->
                     <div class="relative group">
                         <a href="{{ route('publik.profil') }}"
                             class="nav-item flex items-center space-x-1.5 py-2 transition {{ request()->routeIs('publik.profil') ? 'text-teal-accent' : 'text-white hover:text-teal-accent' }}">
@@ -238,90 +265,62 @@
                     </a>
                 </div>
 
-                <!-- Auth / Login Button -->
-                <div class="hidden sm:flex items-center space-x-3">
+                <div class="flex items-center gap-2">
                     @auth
                         @if(auth()->user()->role === 'admin')
                             <a href="{{ route('admin.dashboard') }}"
-                                class="btn-animate bg-teal-primary hover:bg-teal-light text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-md flex items-center space-x-2">
+                                class="btn-animate bg-teal-primary hover:bg-teal-light text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold shadow-md flex items-center space-x-1.5">
                                 <i class="fa-solid fa-gauge"></i>
-                                <span>Dashboard Admin</span>
+                                <span class="hidden sm:inline">Admin</span>
                             </a>
                         @elseif(auth()->user()->role === 'guru')
                             <a href="{{ route('guru.dashboard') }}"
-                                class="btn-animate bg-teal-primary hover:bg-teal-light text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-md flex items-center space-x-2">
+                                class="btn-animate bg-teal-primary hover:bg-teal-light text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold shadow-md flex items-center space-x-1.5">
                                 <i class="fa-solid fa-chalkboard-user"></i>
-                                <span>Portal Guru</span>
+                                <span class="hidden sm:inline">Portal Guru</span>
                             </a>
                         @elseif(auth()->user()->role === 'sekretaris')
                             <a href="{{ route('sekretaris.dashboard') }}"
-                                class="btn-animate bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-md flex items-center space-x-2">
+                                class="btn-animate bg-amber-600 hover:bg-amber-500 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold shadow-md flex items-center space-x-1.5">
                                 <i class="fa-solid fa-user-pen"></i>
-                                <span>Portal Sekretaris</span>
+                                <span class="hidden sm:inline">Portal Sekretaris</span>
                             </a>
                         @endif
                     @else
                         <a href="{{ route('login') }}"
-                            class="btn-animate bg-teal-primary hover:bg-teal-light px-6 py-2.5 rounded-full text-sm font-bold shadow-md text-white inline-flex items-center">
-                            <i class="fa-solid fa-lock mr-2"></i>Login
+                            class="btn-animate bg-teal-primary hover:bg-teal-light px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-sm font-bold shadow-md text-white inline-flex items-center">
+                            <i class="fa-solid fa-lock sm:mr-2"></i><span class="hidden sm:inline">Login</span>
                         </a>
                     @endauth
-                </div>
-
-                <!-- Mobile Hamburger Button -->
-                <div class="lg:hidden flex items-center space-x-2">
-                    <button type="button" onclick="toggleMobileMenu()" aria-label="Menu"
-                        class="text-white p-2.5 rounded-xl hover:bg-navy-mid transition">
-                        <i class="fa-solid fa-bars text-xl"></i>
+                    <button id="menuBtn" onclick="toggleMobileMenu()" aria-label="Menu"
+                        class="lg:hidden w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+                        <i id="menuIcon" class="fa-solid fa-bars text-lg"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
         <div id="mobileMenu"
-            class="hidden lg:hidden bg-navy-dark px-5 pt-3 pb-6 space-y-2.5 border-t border-navy-mid text-sm font-semibold">
+            class="hidden lg:hidden border-t border-navy-mid bg-navy-dark px-4 pb-4 max-h-[75vh] overflow-y-auto">
             <a href="{{ route('beranda') }}"
-                class="block py-2 {{ request()->routeIs('beranda') ? 'text-teal-accent font-bold' : 'text-white hover:text-teal-accent' }}">Beranda</a>
-            <div class="py-1">
-                <span class="text-xs uppercase tracking-wider text-teal-accent font-bold block mb-1">Profil Sekolah</span>
-                <div class="pl-3 space-y-2 border-l-2 border-navy-mid">
-                    <a href="{{ route('publik.profil') }}#visi-misi" class="block py-1 text-slate-200 hover:text-teal-accent">Visi & Misi</a>
-                    <a href="{{ route('publik.profil') }}#sejarah" class="block py-1 text-slate-200 hover:text-teal-accent">Sejarah Sekolah</a>
-                    <a href="{{ route('publik.profil') }}#struktur" class="block py-1 text-slate-200 hover:text-teal-accent">Struktur Organisasi</a>
-                    <a href="{{ route('publik.profil') }}#pengajar" class="block py-1 text-slate-200 hover:text-teal-accent">Tenaga Pengajar</a>
-                </div>
+                class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid {{ request()->routeIs('beranda') ? 'text-teal-accent' : 'text-white' }}">Beranda</a>
+            <div class="py-3 border-b border-navy-mid">
+                <span class="block font-bold uppercase text-sm tracking-wider text-teal-accent mb-2">Profil</span>
+                <a href="{{ route('publik.profil') }}#visi-misi" class="block w-full text-left py-2 pl-4 text-sm font-semibold text-slate-200 hover:text-teal-accent">Visi & Misi</a>
+                <a href="{{ route('publik.profil') }}#sejarah" class="block w-full text-left py-2 pl-4 text-sm font-semibold text-slate-200 hover:text-teal-accent">Sejarah Sekolah</a>
+                <a href="{{ route('publik.profil') }}#struktur" class="block w-full text-left py-2 pl-4 text-sm font-semibold text-slate-200 hover:text-teal-accent">Struktur Organisasi</a>
+                <a href="{{ route('publik.profil') }}#pengajar" class="block w-full text-left py-2 pl-4 text-sm font-semibold text-slate-200 hover:text-teal-accent">Tenaga Pengajar</a>
             </div>
             <a href="{{ route('publik.jurusan') }}"
-                class="block py-2 {{ request()->routeIs('publik.jurusan') ? 'text-teal-accent font-bold' : 'text-white hover:text-teal-accent' }}">Jurusan</a>
+                class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid {{ request()->routeIs('publik.jurusan') ? 'text-teal-accent' : 'text-white' }}">Jurusan</a>
             <a href="{{ route('publik.berita') }}"
-                class="block py-2 {{ request()->routeIs('publik.berita*') ? 'text-teal-accent font-bold' : 'text-white hover:text-teal-accent' }}">Berita</a>
+                class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid {{ request()->routeIs('publik.berita*') ? 'text-teal-accent' : 'text-white' }}">Berita</a>
             <a href="{{ route('publik.galeri') }}"
-                class="block py-2 {{ request()->routeIs('publik.galeri') ? 'text-teal-accent font-bold' : 'text-white hover:text-teal-accent' }}">Galeri</a>
+                class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid {{ request()->routeIs('publik.galeri') ? 'text-teal-accent' : 'text-white' }}">Galeri</a>
             <a href="{{ route('publik.ekstrakurikuler') }}"
-                class="block py-2 {{ request()->routeIs('publik.ekstrakurikuler') ? 'text-teal-accent font-bold' : 'text-white hover:text-teal-accent' }}">Ekskul</a>
+                class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid {{ request()->routeIs('publik.ekstrakurikuler') ? 'text-teal-accent' : 'text-white' }}">Ekskul</a>
             <a href="{{ route('publik.kontak') }}"
-                class="block py-2 {{ request()->routeIs('publik.kontak') ? 'text-teal-accent font-bold' : 'text-white hover:text-teal-accent' }}">Kontak</a>
-            <div class="pt-3 border-t border-navy-mid">
-                @auth
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="block w-full text-center bg-teal-primary text-white py-3 rounded-full font-bold">Dashboard Admin</a>
-                    @elseif(auth()->user()->role === 'guru')
-                        <a href="{{ route('guru.dashboard') }}"
-                            class="block w-full text-center bg-teal-primary text-white py-3 rounded-full font-bold">Portal Guru</a>
-                    @elseif(auth()->user()->role === 'sekretaris')
-                        <a href="{{ route('sekretaris.dashboard') }}"
-                            class="block w-full text-center bg-amber-600 text-white py-3 rounded-full font-bold">Portal Sekretaris</a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}"
-                        class="w-full text-center bg-teal-primary text-white py-3 rounded-full font-bold flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-lock"></i>
-                        <span>Login Portal</span>
-                    </a>
-                @endauth
-            </div>
+                class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider {{ request()->routeIs('publik.kontak') ? 'text-teal-accent' : 'text-white' }}">Kontak</a>
         </div>
     </nav>
 
@@ -415,15 +414,157 @@
         </div>
     </footer>
 
+    <div id="galLightbox" class="fixed inset-0 z-[80] hidden items-center justify-center bg-navy-dark/95 backdrop-blur-md p-4 sm:p-10" onclick="if(event.target===this)galClose()">
+        <button onclick="galClose()" aria-label="Tutup" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center z-10">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <button onclick="galLbStep(-1)" aria-label="Sebelumnya" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center z-10">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button onclick="galLbStep(1)" aria-label="Berikutnya" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center z-10">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <figure class="max-w-6xl w-full m-0 flex flex-col items-center">
+            <img id="galLbImg" src="" alt="" class="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl">
+            <figcaption class="mt-4 text-center text-white">
+                <span id="galLbKat" class="text-xs font-black uppercase tracking-widest text-teal-accent"></span>
+                <h5 id="galLbJudul" class="text-xl font-bold mt-1"></h5>
+                <span id="galLbCount" class="text-sm text-teal-tint/70"></span>
+            </figcaption>
+        </figure>
+    </div>
+
     @include('partials.modal-pesan')
 
     <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            if (menu) {
-                menu.classList.toggle('hidden');
+        function toggleMobileMenu(force) {
+            const m = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            if (!m) return;
+            const open = force === undefined ? m.classList.contains('hidden') : force;
+            m.classList.toggle('hidden', !open);
+            if (icon) {
+                icon.className = 'fa-solid ' + (open ? 'fa-xmark' : 'fa-bars') + ' text-lg';
             }
         }
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) toggleMobileMenu(false);
+        });
+
+        const HOME_SLIDER_FILES = [
+            '{{ asset("Assets/home1.webp") }}',
+            '{{ asset("Assets/home2.webp") }}',
+            '{{ asset("Assets/home3.jpg") }}',
+            '{{ asset("Assets/home4.jpg") }}'
+        ];
+        const FALLBACK_SLIDER_FILES = [
+            'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80',
+            'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=80',
+            'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=80',
+            'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1600&q=80'
+        ];
+
+        function initSliders() {
+            document.querySelectorAll('[data-slider]').forEach(box => {
+                const off = (+box.dataset.offset || 0) % HOME_SLIDER_FILES.length;
+                const files = HOME_SLIDER_FILES.slice(off).concat(HOME_SLIDER_FILES.slice(0, off));
+                const fallbacks = FALLBACK_SLIDER_FILES.slice(off).concat(FALLBACK_SLIDER_FILES.slice(0, off));
+
+                box.innerHTML = files.map((f, i) => `<div class="hero-slide ${i ? '' : 'active'}" style="background-image:url('${f}')"></div>`).join('') +
+                    (box.dataset.dots ? `<div class="absolute bottom-5 inset-x-0 flex justify-center gap-2 z-20">${files.map((_, i) => `<button type="button" aria-label="Slide ${i+1}" class="slider-dot ${i ? '' : 'active'}"></button>`).join('')}</div>` : '');
+
+                const slides = [...box.querySelectorAll('.hero-slide')];
+                const dots = [...box.querySelectorAll('.slider-dot')];
+
+                files.forEach((f, i) => {
+                    const t = new Image();
+                    t.onerror = () => {
+                        if (slides[i]) slides[i].style.backgroundImage = `url('${fallbacks[i]}')`;
+                    };
+                    t.src = f;
+                });
+
+                let cur = 0;
+                let timer;
+                const go = n => {
+                    if (!slides[cur]) return;
+                    slides[cur].classList.remove('active');
+                    if (dots[cur]) dots[cur].classList.remove('active');
+                    cur = (n + slides.length) % slides.length;
+                    slides[cur].classList.add('active');
+                    if (dots[cur]) dots[cur].classList.add('active');
+                };
+                const start = () => {
+                    clearInterval(timer);
+                    timer = setInterval(() => go(cur + 1), 5500);
+                };
+                dots.forEach((d, i) => d.addEventListener('click', () => {
+                    go(i);
+                    start();
+                }));
+                start();
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initSliders);
+
+        let galItemsData = [];
+        let galIdx = 0;
+
+        function setGalItemsData(items) {
+            galItemsData = items || [];
+        }
+
+        function galOpen(i) {
+            if (!galItemsData.length) return;
+            galIdx = i;
+            galLbShow();
+            const lb = document.getElementById('galLightbox');
+            if (lb) {
+                lb.classList.remove('hidden');
+                lb.classList.add('flex');
+            }
+            document.body.style.overflow = 'hidden';
+        }
+
+        function galLbShow() {
+            const x = galItemsData[galIdx];
+            if (!x) return;
+            const img = document.getElementById('galLbImg');
+            const kat = document.getElementById('galLbKat');
+            const judul = document.getElementById('galLbJudul');
+            const count = document.getElementById('galLbCount');
+            if (img) {
+                img.src = x.src ? x.src.replace(/w=\d+/, 'w=1600') : '';
+                img.alt = x.judul || '';
+            }
+            if (kat) kat.innerText = x.kat || '';
+            if (judul) judul.innerText = x.judul || '';
+            if (count) count.innerText = (galIdx + 1) + ' / ' + galItemsData.length;
+        }
+
+        function galLbStep(d) {
+            const N = galItemsData.length;
+            if (!N) return;
+            galIdx = (galIdx + d + N) % N;
+            galLbShow();
+        }
+
+        function galClose() {
+            const lb = document.getElementById('galLightbox');
+            if (lb) {
+                lb.classList.add('hidden');
+                lb.classList.remove('flex');
+            }
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', e => {
+            const lb = document.getElementById('galLightbox');
+            if (!lb || lb.classList.contains('hidden')) return;
+            if (e.key === 'Escape') galClose();
+            else if (e.key === 'ArrowLeft') galLbStep(-1);
+            else if (e.key === 'ArrowRight') galLbStep(1);
+        });
     </script>
 </body>
 

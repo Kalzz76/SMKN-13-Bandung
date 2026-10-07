@@ -120,52 +120,38 @@ class JadwalHarianDinamisTest extends TestCase
         $selasaTanpaIstirahat = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Selasa', 1, 4));
         $selasaTanpaIstirahat->assertSessionMissing('error');
 
-        $guruBebas = Guru::firstOrCreate(
-            ['nama' => 'GURU UJI BEBAS'],
-            ['jenis' => 'Guru', 'tampil_publik' => true]
-        );
-        $ruangBebas = Ruangan::firstOrCreate(
-            ['kode' => 'R.TEST'],
-            ['nama' => 'Ruang Uji Bebas']
-        );
+        $guruBebas = Guru::create(['nama' => 'Guru Split Test', 'jenis' => 'Guru']);
+        $ruangBebas = Ruangan::where('kode', 'R.55')->first();
 
         $senin = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Senin', 3, 4, [
             'id_guru' => $guruBebas->id,
             'id_ruangan' => $ruangBebas->id,
         ]));
         $senin->assertSessionMissing('error');
-        $this->assertDatabaseHas('jadwal', ['hari' => 'Senin', 'jam_ke_mulai' => 3, 'jam_ke_selesai' => 4]);
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Senin', 'jam_ke_mulai' => 3, 'jam_ke_selesai' => 3]);
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Senin', 'jam_ke_mulai' => 4, 'jam_ke_selesai' => 4]);
 
         $jumatMelewati = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Jumat', 5, 7, [
             'id_guru' => $guruBebas->id,
             'id_ruangan' => $ruangBebas->id,
         ]));
         $jumatMelewati->assertSessionMissing('error');
-        $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'jam_ke_mulai' => 5, 'jam_ke_selesai' => 7]);
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'jam_ke_mulai' => 5, 'jam_ke_selesai' => 6]);
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'jam_ke_mulai' => 7, 'jam_ke_selesai' => 7]);
 
-        $kelasJumatPanjang = Kelas::firstOrCreate(
-            ['nama' => 'X RPL 98'],
-            [
-                'id_ruangan' => $ruangBebas->id,
-                'id_wali_kelas' => $guruBebas->id,
-            ]
-        );
-        $ruangJumatPanjang = Ruangan::firstOrCreate(
-            ['kode' => 'R.TEST2'],
-            ['nama' => 'Ruang Uji Bebas 2']
-        );
-        $guruJumatPanjang = Guru::firstOrCreate(
-            ['nama' => 'GURU UJI BEBAS 2'],
-            ['jenis' => 'Guru', 'tampil_publik' => true]
-        );
-
+        $guruBebas2 = Guru::create(['nama' => 'Guru Split Test 2', 'jenis' => 'Guru']);
+        $kelasUji2 = Kelas::create([
+            'nama' => 'X RPL 98',
+            'id_ruangan' => Ruangan::where('kode', 'R.56')->first()->id,
+            'id_wali_kelas' => $guruBebas2->id,
+        ]);
         $jumatPanjang = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Jumat', 1, 6, [
-            'id_kelas' => $kelasJumatPanjang->id,
-            'id_guru' => $guruJumatPanjang->id,
-            'id_ruangan' => $ruangJumatPanjang->id,
+            'id_kelas' => $kelasUji2->id,
+            'id_guru' => $guruBebas2->id,
+            'id_ruangan' => Ruangan::where('kode', 'R.56')->first()->id,
         ]));
         $jumatPanjang->assertSessionMissing('error');
-        $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'jam_ke_mulai' => 1, 'jam_ke_selesai' => 6]);
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'id_kelas' => $kelasUji2->id, 'jam_ke_mulai' => 1, 'jam_ke_selesai' => 6]);
     }
 
     public function test_bentrok_dicek_per_hari_dan_rentang_jam(): void

@@ -1,12 +1,12 @@
 <!-- Custom Modal Notifikasi (Alert / Pesan Sukses / Error) -->
-<div id="customModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4 transition-all duration-200 {{ session('sukses') || session('error') || session('info') ? '' : 'hidden' }}">
+<div id="customModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4 transition-all duration-200 {{ session('sukses') || session('error') || session('info') || $errors->any() ? '' : 'hidden' }}">
     <div id="customModalCard" class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-slate-100 text-center space-y-4 transform transition-all duration-200">
-        @if(session('error'))
+        @if(session('error') || $errors->any())
             <div id="customModalIcon" class="w-14 h-14 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto shadow-xs">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h4 id="customModalTitle" class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Perhatian</h4>
-            <p id="customModalMessage" class="text-xs sm:text-sm text-slate-600 leading-relaxed">{{ session('error') }}</p>
+            <p id="customModalMessage" class="text-xs sm:text-sm text-slate-600 leading-relaxed">{{ session('error') ?? $errors->first() }}</p>
         @elseif(session('sukses'))
             <div id="customModalIcon" class="w-14 h-14 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto shadow-xs">
                 <i class="fa-solid fa-circle-check"></i>

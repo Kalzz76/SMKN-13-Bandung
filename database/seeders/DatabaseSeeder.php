@@ -87,10 +87,13 @@ class DatabaseSeeder extends Seeder
         $ruang52 = Ruangan::where('kode', 'R.52')->first();
         $ruang53 = Ruangan::where('kode', 'R.53')->first();
         $ruangLab = Ruangan::where('kode', 'R.42')->first();
+        $ruang60 = Ruangan::where('kode', 'R.60')->first();
 
         $guruUli = Guru::where('nama', 'like', '%ULI SOLIHAT%')->first();
         $guruKiki = Guru::where('nama', 'like', '%KIKI AIMA%')->first();
         $guruNofa = Guru::where('nama', 'like', '%NOFA NIRAWATI%')->first();
+        $guruMaspuri = Guru::where('nama', 'like', '%MASPURI%')->first()
+            ?? Guru::where('jenis', 'Guru')->whereNotIn('id', array_filter([$guruUli?->id, $guruKiki?->id, $guruNofa?->id]))->first();
 
         $kelasX1 = Kelas::create([
             'nama' => 'X KA 1',
@@ -112,8 +115,8 @@ class DatabaseSeeder extends Seeder
 
         $kelasXII = Kelas::create([
             'nama' => 'XII RPL 1',
-            'id_ruangan' => $ruangLab->id,
-            'id_wali_kelas' => $guruKiki->id,
+            'id_ruangan' => $ruang60?->id ?? $ruangLab->id,
+            'id_wali_kelas' => $guruMaspuri?->id ?? $guruKiki->id,
             'struktur' => [
                 'km' => 'Rizky Pratama',
                 'bendahara_1' => 'Siti Nurhaliza',

@@ -2,12 +2,11 @@
 
 @section('content')
 <div class="py-16 px-4 max-w-5xl mx-auto space-y-12 w-full flex-grow">
-    <!-- BANNER HEADER PERSIS REFERENSI DESAIN -->
-    <div class="bg-navy-dark rounded-3xl p-10 sm:p-16 text-center shadow-lg text-white border-b-8 border-teal-primary">
+    <div class="bg-navy-dark rounded-3xl p-6 sm:p-16 text-center shadow-lg text-white border-b-8 border-teal-primary">
         <span class="bg-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">
             Pengembangan Diri
         </span>
-        <h1 class="text-4xl sm:text-5xl font-black mb-4">
+        <h1 class="text-3xl sm:text-5xl font-black mb-4">
             Ekstrakurikuler Pilihan
         </h1>
         <p class="text-teal-tint max-w-2xl mx-auto text-lg">

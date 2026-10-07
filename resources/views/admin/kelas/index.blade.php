@@ -124,7 +124,10 @@
                 <select name="id_ruangan" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
                     <option value="">-- Pilih Ruangan Tetap --</option>
                     @foreach($daftarRuangan as $r)
-                        <option value="{{ $r->id }}">{{ $r->kode }} - {{ $r->nama }}</option>
+                        @php $terpakaiR = $semuaKelas->firstWhere('id_ruangan', $r->id); @endphp
+                        <option value="{{ $r->id }}" {{ $terpakaiR ? 'disabled class=text-slate-400' : '' }}>
+                            {{ $r->kode }} - {{ $r->nama }}{{ $terpakaiR ? ' (Dipakai: ' . $terpakaiR->nama . ')' : '' }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -133,7 +136,10 @@
                 <select name="id_wali_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
                     <option value="">-- Pilih Guru Wali Kelas --</option>
                     @foreach($daftarGuru as $g)
-                        <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->nip ?? 'No NIP' }})</option>
+                        @php $terpakaiW = $semuaKelas->firstWhere('id_wali_kelas', $g->id); @endphp
+                        <option value="{{ $g->id }}" {{ $terpakaiW ? 'disabled class=text-slate-400' : '' }}>
+                            {{ $g->nama }} ({{ $g->nip ?? 'No NIP' }}){{ $terpakaiW ? ' (Wali: ' . $terpakaiW->nama . ')' : '' }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -163,7 +169,10 @@
                 <select id="editRuangan" name="id_ruangan" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
                     <option value="">-- Pilih Ruangan Tetap --</option>
                     @foreach($daftarRuangan as $r)
-                        <option value="{{ $r->id }}">{{ $r->kode }} - {{ $r->nama }}</option>
+                        @php $terpakaiR = $semuaKelas->firstWhere('id_ruangan', $r->id); @endphp
+                        <option value="{{ $r->id }}" data-assigned-kelas="{{ $terpakaiR ? $terpakaiR->id : '' }}" data-assigned-nama="{{ $terpakaiR ? $terpakaiR->nama : '' }}" data-raw-text="{{ $r->kode }} - {{ $r->nama }}">
+                            {{ $r->kode }} - {{ $r->nama }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -172,7 +181,10 @@
                 <select id="editWali" name="id_wali_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
                     <option value="">-- Pilih Guru Wali Kelas --</option>
                     @foreach($daftarGuru as $g)
-                        <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->nip ?? 'No NIP' }})</option>
+                        @php $terpakaiW = $semuaKelas->firstWhere('id_wali_kelas', $g->id); @endphp
+                        <option value="{{ $g->id }}" data-assigned-kelas="{{ $terpakaiW ? $terpakaiW->id : '' }}" data-assigned-nama="{{ $terpakaiW ? $terpakaiW->nama : '' }}" data-raw-text="{{ $g->nama }} ({{ $g->nip ?? 'No NIP' }})">
+                            {{ $g->nama }} ({{ $g->nip ?? 'No NIP' }})
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -199,8 +211,38 @@ function openEditModal(button) {
 
     document.getElementById('editForm').action = '/admin/kelas/' + id;
     document.getElementById('editNama').value = nama;
-    document.getElementById('editRuangan').value = ruangan || '';
-    document.getElementById('editWali').value = wali || '';
+
+    const selectRuangan = document.getElementById('editRuangan');
+    Array.from(selectRuangan.options).forEach(opt => {
+        const assigned = opt.getAttribute('data-assigned-kelas');
+        const raw = opt.getAttribute('data-raw-text');
+        if (assigned && String(assigned) !== String(id)) {
+            opt.disabled = true;
+            opt.textContent = (raw || opt.textContent.trim()) + ' (Dipakai: ' + opt.getAttribute('data-assigned-nama') + ')';
+            opt.classList.add('text-slate-400');
+        } else {
+            opt.disabled = false;
+            if (raw) opt.textContent = raw;
+            opt.classList.remove('text-slate-400');
+        }
+    });
+    selectRuangan.value = ruangan || '';
+
+    const selectWali = document.getElementById('editWali');
+    Array.from(selectWali.options).forEach(opt => {
+        const assigned = opt.getAttribute('data-assigned-kelas');
+        const raw = opt.getAttribute('data-raw-text');
+        if (assigned && String(assigned) !== String(id)) {
+            opt.disabled = true;
+            opt.textContent = (raw || opt.textContent.trim()) + ' (Wali: ' + opt.getAttribute('data-assigned-nama') + ')';
+            opt.classList.add('text-slate-400');
+        } else {
+            opt.disabled = false;
+            if (raw) opt.textContent = raw;
+            opt.classList.remove('text-slate-400');
+        }
+    });
+    selectWali.value = wali || '';
 
     document.getElementById('editModal').classList.remove('hidden');
 }

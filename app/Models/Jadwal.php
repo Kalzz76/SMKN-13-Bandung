@@ -13,6 +13,12 @@ class Jadwal extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'is_kegiatan' => 'boolean',
+        'jam_ke_mulai' => 'integer',
+        'jam_ke_selesai' => 'integer',
+    ];
+
     public function kelas()
     {
         return $this->belongsTo(Kelas::class, 'id_kelas');

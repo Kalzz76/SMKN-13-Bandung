@@ -2,27 +2,29 @@
 
 @section('content')
 <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 w-full flex-grow">
-    <!-- Header Halaman -->
-    <div class="text-center max-w-3xl mx-auto">
-        <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Program Pendidikan Vokasi</span>
-        <h1 class="text-4xl sm:text-5xl font-black text-navy-dark mt-1 mb-4">Konsentrasi Keahlian</h1>
-        <p class="text-base sm:text-lg text-text-muted">Informasi mendalam seputar kurikulum, materi pembelajaran, sarana laboratorium, dan pimpinan program studi.</p>
+    <div class="relative rounded-3xl overflow-hidden shadow-xl bg-navy-dark min-h-[260px] sm:min-h-[340px] flex items-center justify-center text-center px-6 py-14">
+        <div class="absolute inset-0" data-slider data-offset="1"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-navy-dark/70 via-navy-dark/60 to-navy-dark/80"></div>
+        <div class="relative z-10 max-w-3xl [text-shadow:0_2px_14px_rgba(0,0,0,.35)]">
+            <span class="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/20 text-xs font-bold uppercase tracking-[.25em] text-teal-accent">
+                Program Keahlian
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white mb-4">Konsentrasi Keahlian</h1>
+            <p class="text-base sm:text-lg text-teal-tint/90">Informasi mendalam seputar kurikulum, fasilitas, dan pimpinan program studi.</p>
+        </div>
     </div>
 
-    <!-- Accordion Jurusan List -->
     <div class="space-y-6" id="jurusanAccordionList">
-
-        <!-- 1. KIMIA ANALISIS -->
         <div class="bg-bg-card rounded-3xl shadow-sm border border-teal-tint overflow-hidden">
-            <button class="accordion-btn w-full px-6 sm:px-8 py-6 flex justify-between items-center text-left hover:bg-bg-page transition expanded"
+            <button class="accordion-btn w-full px-4 sm:px-8 py-4 sm:py-6 flex justify-between items-center text-left hover:bg-bg-page transition expanded"
                 onclick="toggleAccordion('j_apl')">
-                <div class="flex items-center space-x-5">
-                    <div class="w-14 h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                <div class="flex items-center space-x-3 sm:space-x-5 min-w-0">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
                         <i class="fa-solid fa-vial"></i>
                     </div>
                     <div>
                         <span class="text-xs font-bold uppercase tracking-wider text-teal-primary">Program Keahlian 4 Tahun</span>
-                        <h3 class="text-2xl font-black text-navy-dark">Kimia Analisis</h3>
+                        <h3 class="text-lg sm:text-2xl font-black text-navy-dark">Kimia Analisis</h3>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-down accordion-icon text-teal-primary text-xl"></i>
@@ -86,17 +88,16 @@
             </div>
         </div>
 
-        <!-- 2. TEKNIK KOMPUTER JARINGAN (TKJ) -->
         <div class="bg-bg-card rounded-3xl shadow-sm border border-teal-tint overflow-hidden">
-            <button class="accordion-btn w-full px-6 sm:px-8 py-6 flex justify-between items-center text-left hover:bg-bg-page transition"
+            <button class="accordion-btn w-full px-4 sm:px-8 py-4 sm:py-6 flex justify-between items-center text-left hover:bg-bg-page transition"
                 onclick="toggleAccordion('j_tkj')">
-                <div class="flex items-center space-x-5">
-                    <div class="w-14 h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                <div class="flex items-center space-x-3 sm:space-x-5 min-w-0">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
                         <i class="fa-solid fa-network-wired"></i>
                     </div>
                     <div>
                         <span class="text-xs font-bold uppercase tracking-wider text-teal-primary">Teknologi Jaringan & Telekomunikasi</span>
-                        <h3 class="text-2xl font-black text-navy-dark">Teknik Komputer Jaringan (TKJ)</h3>
+                        <h3 class="text-lg sm:text-2xl font-black text-navy-dark">Teknik Komputer Jaringan (TKJ)</h3>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-down accordion-icon text-teal-primary text-xl"></i>
@@ -116,7 +117,7 @@
                     </div>
 
                     <div class="bg-navy-dark text-white rounded-3xl p-8 md:p-10 md:pr-[44%] md:min-h-[300px] flex items-center shadow-md">
-                        <p class="text-justify leading-relaxed text-teal-tint text-sm sm:text-base">
+                        <p class="leading-relaxed text-teal-tint text-sm sm:text-base md:text-justify">
                             Keahlian merancang, membangun, mengonfigurasi dan mengelola infrastruktur jaringan enterprise hingga keamanan jaringan komputer. Siswa dibekali kompetensi routing MikroTik, Cisco, switching, sistem server Linux, dan transmisi fiber optic berstandar industri.
                         </p>
                     </div>
@@ -124,7 +125,7 @@
 
                 <div class="mt-10 bg-bg-page border border-teal-tint rounded-3xl p-6 sm:p-8">
                     <h5 class="text-2xl font-black text-navy-dark mb-3">Apa itu TKJ?</h5>
-                    <p class="leading-relaxed text-text-muted text-sm sm:text-base text-justify whitespace-pre-line">
+                    <p class="leading-relaxed text-text-muted text-sm sm:text-base md:text-justify whitespace-pre-line">
                         Teknik Komputer dan Jaringan membekali peserta didik dengan keahlian praktis merakit workstation, mengelola administrasi sistem server, instalasi jaringan kabel LAN/MAN/WAN, wireless outdoor, serta teknik penyambungan fiber optic (splicing & OTDR).
 
                         Peluang karir lulusan sangat dibutuhkan di berbagai sektor sebagai Network Administrator, IT Support Specialist, System Administrator, Cloud Engineer, hingga Teknisi Fiber Optic ISP ternama.
@@ -160,17 +161,16 @@
             </div>
         </div>
 
-        <!-- 3. REKAYASA PERANGKAT LUNAK (RPL) -->
         <div class="bg-bg-card rounded-3xl shadow-sm border border-teal-tint overflow-hidden">
-            <button class="accordion-btn w-full px-6 sm:px-8 py-6 flex justify-between items-center text-left hover:bg-bg-page transition"
+            <button class="accordion-btn w-full px-4 sm:px-8 py-4 sm:py-6 flex justify-between items-center text-left hover:bg-bg-page transition"
                 onclick="toggleAccordion('j_rpl')">
-                <div class="flex items-center space-x-5">
-                    <div class="w-14 h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                <div class="flex items-center space-x-3 sm:space-x-5 min-w-0">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
                         <i class="fa-solid fa-code"></i>
                     </div>
                     <div>
                         <span class="text-xs font-bold uppercase tracking-wider text-teal-primary">Software Engineering & Development</span>
-                        <h3 class="text-2xl font-black text-navy-dark">Rekayasa Perangkat Lunak (RPL)</h3>
+                        <h3 class="text-lg sm:text-2xl font-black text-navy-dark">Rekayasa Perangkat Lunak (RPL)</h3>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-down accordion-icon text-teal-primary text-xl"></i>
