@@ -19,7 +19,7 @@
                 <span>•</span>
                 <span><i class="fa-solid fa-door-open text-slate-400 mr-1"></i>{{ $jadwal->ruangan ? $jadwal->ruangan->nama : 'Ruang Kelas' }}</span>
                 <span>•</span>
-                <span>Jam ke {{ $jadwal->jam_ke_mulai }} - {{ $jadwal->jam_ke_selesai }}</span>
+                <span><i class="fa-regular fa-clock text-slate-400 mr-1"></i>{{ $jamKeLabel ?? ($jadwal->jam_ke_mulai == $jadwal->jam_ke_selesai ? 'Jam ke ' . $jadwal->jam_ke_mulai : 'Jam ke ' . $jadwal->jam_ke_mulai . ' - ' . $jadwal->jam_ke_selesai) }} @if(!empty($rentangWaktu)) ({{ $rentangWaktu }}) @endif</span>
             </p>
         </div>
         <div class="flex items-center self-start sm:self-auto">
@@ -33,69 +33,7 @@
     <form method="POST" action="{{ route('sekretaris.absensi-siswa.simpan', $jadwal->id) }}" id="formAbsensi" class="space-y-6">
         @csrf
 
-        {{-- 1. Card Kehadiran Guru Pengajar --}}
-        @php
-            $guruHadirDefault = !($absensiGuruHariIni && $absensiGuruHariIni->status === 'Tidak Hadir');
-        @endphp
-        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-7 shadow-xs space-y-5">
-            <div class="flex items-center space-x-2.5 text-slate-900">
-                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
-                    <i class="fa-regular fa-user"></i>
-                </div>
-                <h3 class="font-extrabold text-base text-slate-900 tracking-tight">Kehadiran Guru Pengajar</h3>
-            </div>
 
-            <input type="hidden" name="kehadiran_guru" id="inputKehadiranGuru" value="{{ $guruHadirDefault ? 'Hadir' : 'Tidak Hadir' }}">
-
-            {{-- Toggle Button: Hadir vs Tidak Hadir --}}
-            <div class="grid grid-cols-2 gap-2.5 sm:gap-4">
-                <button type="button" onclick="setKehadiranGuru('Hadir')" id="btnGuruHadir" class="w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 {{ $guruHadirDefault ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300' }}">
-                    <i class="fa-solid fa-check text-sm sm:text-base text-emerald-600"></i>
-                    <span>Hadir</span>
-                </button>
-
-                <button type="button" onclick="setKehadiranGuru('Tidak Hadir')" id="btnGuruTidakHadir" class="w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 {{ !$guruHadirDefault ? 'border-rose-500 bg-rose-50/50 text-rose-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:border-rose-200 hover:text-rose-600' }}">
-                    <i class="fa-solid fa-xmark text-sm sm:text-base text-rose-500"></i>
-                    <span>Tidak Hadir</span>
-                </button>
-            </div>
-
-            {{-- Bagian Alasan & Jam Tidak Hadir (Muncul jika Tidak Hadir dipilih) --}}
-            <div id="sectionGuruTidakHadir" class="{{ $guruHadirDefault ? 'hidden' : '' }} space-y-4 pt-4 border-t border-slate-100">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Pilih Jam Ketidakhadiran Guru:</label>
-                    <div class="flex flex-wrap gap-2.5">
-                        @foreach($daftarSlotJam as $slot)
-                            <div class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl font-bold text-xs bg-rose-50 text-rose-700 border border-rose-300 shadow-2xs">
-                                <span>Jam {{ $slot }}</span>
-                                <i class="fa-solid fa-xmark text-xs text-rose-500"></i>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Alasan Tidak Hadir <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <select name="alasan_guru" id="alasanGuruSelect" class="w-full text-xs font-medium p-3.5 pr-10 border border-slate-200 rounded-xl bg-white focus:border-rose-500 focus:outline-none appearance-none">
-                                <option value="">Pilih alasan</option>
-                                <option value="Sakit" {{ ($absensiGuruHariIni->alasan ?? '') === 'Sakit' ? 'selected' : '' }}>Sakit</option>
-                                <option value="Izin" {{ ($absensiGuruHariIni->alasan ?? '') === 'Izin' ? 'selected' : '' }}>Izin / Keperluan Mendesak</option>
-                                <option value="Dinas Luar" {{ ($absensiGuruHariIni->alasan ?? '') === 'Dinas Luar' ? 'selected' : '' }}>Dinas Luar / Rapat</option>
-                                <option value="Terlambat" {{ ($absensiGuruHariIni->alasan ?? '') === 'Terlambat' ? 'selected' : '' }}>Terlambat / Kendala Teknis</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-xs text-slate-400 pointer-events-none"></i>
-                        </div>
-                    </div>
-
-                    <div>
-                        <input type="text" name="keterangan_guru" placeholder="Keterangan tambahan (opsional)" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:border-rose-500 focus:outline-none">
-                    </div>
-                </div>
-            </div>
-        </div>
 
         {{-- 2. Daftar Siswa (Tabel Presensi dengan gaya Pill Buttons seperti referensi) --}}
         <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
@@ -198,26 +136,6 @@
 </div>
 
 <script>
-// Logic Toggle Kehadiran Guru
-function setKehadiranGuru(status) {
-    const input = document.getElementById('inputKehadiranGuru');
-    const btnHadir = document.getElementById('btnGuruHadir');
-    const btnTidakHadir = document.getElementById('btnGuruTidakHadir');
-    const sectionDetail = document.getElementById('sectionGuruTidakHadir');
-
-    input.value = status;
-
-    if (status === 'Hadir') {
-        btnHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-xs';
-        btnTidakHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-slate-200 bg-white text-slate-600 hover:border-rose-200 hover:text-rose-600';
-        if (sectionDetail) sectionDetail.classList.add('hidden');
-    } else {
-        btnHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-slate-200 bg-white text-slate-600 hover:border-slate-300';
-        btnTidakHadir.className = 'w-full py-3 sm:py-3.5 px-3 sm:px-6 rounded-2xl border-2 font-bold text-xs sm:text-sm transition flex items-center justify-center space-x-1.5 sm:space-x-2 border-rose-500 bg-rose-50/50 text-rose-700 shadow-xs';
-        if (sectionDetail) sectionDetail.classList.remove('hidden');
-    }
-}
-
 // Logic Status Tiap Siswa
 const activeClasses = {
     'Hadir': 'bg-emerald-600 text-white shadow-xs',

@@ -7,7 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
+        [x-cloak] { display: none !important; }
         body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar {
             width: 0px;
@@ -17,6 +19,59 @@
         * {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+
+        /* Animasi Buka Tutup Mini Sidebar (Icon-Only Mode) */
+        #guruSidebar {
+            transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+        }
+        @media (min-width: 768px) {
+            .sidebar-collapsed {
+                width: 5rem !important; /* 80px */
+            }
+            .sidebar-collapsed .sidebar-text,
+            .sidebar-collapsed .sidebar-category-header {
+                display: none !important;
+                opacity: 0;
+            }
+            .sidebar-collapsed .sidebar-category-divider {
+                display: block !important;
+            }
+            .sidebar-collapsed .sidebar-header-box {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+                justify-content: center !important;
+            }
+            .sidebar-collapsed .sidebar-menu-link {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 2.75rem !important;
+                height: 2.75rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .sidebar-collapsed .sidebar-menu-link i {
+                margin: 0 !important;
+                font-size: 1.15rem !important;
+            }
+            .sidebar-collapsed .sidebar-logout-btn {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 2.75rem !important;
+                height: 2.75rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .sidebar-collapsed .sidebar-logout-btn span {
+                display: none !important;
+            }
+            .sidebar-collapsed .sidebar-logout-btn i {
+                margin: 0 !important;
+                font-size: 1.15rem !important;
+            }
         }
     </style>
 </head>
@@ -51,15 +106,29 @@
     function toggleGuruSidebar() {
         const sidebar = document.getElementById('guruSidebar');
         if (!sidebar) return;
-        const isHidden = sidebar.classList.contains('hidden');
-        if (isHidden) {
-            openGuruSidebar();
+
+        if (window.innerWidth >= 768) {
+            // Mode Desktop: Toggle Mini Sidebar (Icon-Only)
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            if (isCollapsed) {
+                sidebar.classList.remove('sidebar-collapsed');
+                localStorage.setItem('guru_sidebar_collapsed', 'false');
+            } else {
+                sidebar.classList.add('sidebar-collapsed');
+                localStorage.setItem('guru_sidebar_collapsed', 'true');
+            }
         } else {
-            closeGuruSidebar();
+            // Mode Mobile: Toggle Off-canvas Drawer
+            const isHiddenMobile = sidebar.classList.contains('hidden');
+            if (isHiddenMobile) {
+                openGuruSidebarMobile();
+            } else {
+                closeGuruSidebarMobile();
+            }
         }
     }
 
-    function openGuruSidebar() {
+    function openGuruSidebarMobile() {
         const sidebar = document.getElementById('guruSidebar');
         const backdrop = document.getElementById('guruSidebarBackdrop');
         const content = document.getElementById('guruMainContent');
@@ -81,7 +150,7 @@
         document.body.classList.add('overflow-hidden');
     }
 
-    function closeGuruSidebar() {
+    function closeGuruSidebarMobile() {
         const sidebar = document.getElementById('guruSidebar');
         const backdrop = document.getElementById('guruSidebarBackdrop');
         const content = document.getElementById('guruMainContent');
@@ -103,22 +172,54 @@
         document.body.classList.remove('overflow-hidden');
     }
 
+    function openGuruSidebar() {
+        openGuruSidebarMobile();
+    }
+
+    function closeGuruSidebar() {
+        closeGuruSidebarMobile();
+    }
+
     window.addEventListener('resize', function() {
+        const sidebar = document.getElementById('guruSidebar');
+        if (!sidebar) return;
+
         if (window.innerWidth >= 768) {
-            closeGuruSidebar();
+            closeGuruSidebarMobile();
+            if (localStorage.getItem('guru_sidebar_collapsed') === 'true') {
+                sidebar.classList.add('sidebar-collapsed');
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+            }
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('md:flex');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('hidden');
         }
     });
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            closeGuruSidebar();
+            closeGuruSidebarMobile();
         }
     });
 
     document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('guruSidebar');
+        if (sidebar && window.innerWidth >= 768) {
+            if (localStorage.getItem('guru_sidebar_collapsed') === 'true') {
+                sidebar.classList.add('sidebar-collapsed');
+            }
+        }
+
         const links = document.querySelectorAll('#guruSidebar a');
         links.forEach(function(link) {
-            link.addEventListener('click', closeGuruSidebar);
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    closeGuruSidebarMobile();
+                }
+            });
         });
     });
     </script>

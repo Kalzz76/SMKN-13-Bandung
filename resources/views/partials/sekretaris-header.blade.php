@@ -1,6 +1,6 @@
 <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between flex-shrink-0 sticky top-0 z-30 shadow-xs">
     <div class="flex items-center space-x-3">
-        <button type="button" onclick="toggleSekretarisSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition">
+        <button type="button" onclick="toggleSekretarisSidebar()" class="text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition shrink-0 cursor-pointer" title="Buka / Tutup Sidebar">
             <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <div class="flex items-center space-x-2">

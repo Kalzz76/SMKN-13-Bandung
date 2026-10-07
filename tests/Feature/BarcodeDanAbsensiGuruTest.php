@@ -209,7 +209,12 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'jam_ke_selesai' => 3,
         ]);
 
+        $jamSlot = \App\Models\JamPelajaran::where('hari', $hariIni)->where('jam_ke', 1)->first();
+        $waktuTes = $jamSlot ? $jamSlot->jam_mulai : '07:30';
+        Carbon::setTestNow(Carbon::parse("today {$waktuTes}", 'Asia/Jakarta'));
+
         $response = $this->actingAs($this->userGuru)->get('/guru/absensi-siswa/' . $jadwal->id);
+        Carbon::setTestNow();
         $response->assertStatus(200);
         $response->assertSee($kelas->nama);
         $response->assertSee($mapel->nama);
@@ -285,6 +290,10 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             ]);
         }
 
+        $jamSlot = \App\Models\JamPelajaran::where('hari', $hariIni)->where('jam_ke', 6)->first();
+        $waktuTes = $jamSlot ? $jamSlot->jam_mulai : '11:00';
+        Carbon::setTestNow(Carbon::parse("today {$waktuTes}", 'Asia/Jakarta'));
+
         $response = $this->actingAs($this->userGuru)->post('/guru/absensi-siswa/' . $jadwal->id, [
             'status' => [
                 $siswa->id => 'Hadir',
@@ -295,6 +304,7 @@ class BarcodeDanAbsensiGuruTest extends TestCase
             'materi' => 'Pengenalan Basis Data Relasional dan Perancangan Skema',
         ]);
 
+        Carbon::setTestNow();
         $response->assertRedirect('/guru?tab=jadwal');
         $response->assertSessionHas('sukses');
 

@@ -21,19 +21,21 @@
 
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <form method="GET" action="{{ route('admin.log.index') }}" class="w-full sm:w-80">
-                <div class="relative">
+            <form method="GET" action="{{ route('admin.log.index') }}" class="w-full sm:w-80 flex items-center gap-2">
+                <div class="relative flex-grow">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs leading-none"></i>
+                    </div>
                     <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari aksi, user, keterangan..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs focus:border-emerald-600 focus:outline-none">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                 </div>
-            </form>
-            @if(request('cari'))
-                <a href="{{ route('admin.log.index') }}" class="text-xs text-rose-600 hover:underline font-bold flex items-center space-x-1">
+                <button type="button" id="liveResetBtn" class="text-xs text-rose-600 hover:underline font-bold flex items-center space-x-1 {{ request('cari') ? '' : 'hidden' }}">
                     <i class="fa-solid fa-xmark"></i>
-                    <span>Reset Pencarian</span>
-                </a>
-            @endif
+                    <span>Reset</span>
+                </button>
+            </form>
         </div>
+
+        <div id="liveDataContainer">
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
@@ -90,6 +92,7 @@
                 {{ $daftarLog->links() }}
             </div>
         @endif
+        </div>
     </div>
 </div>
 @endsection

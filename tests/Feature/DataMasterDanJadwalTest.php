@@ -68,7 +68,7 @@ class DataMasterDanJadwalTest extends TestCase
             'kode' => 'LAB-IOT-1',
         ]);
 
-        $ruanganTerpakai = Ruangan::where('kode', 'LAB-RPL')->first();
+        $ruanganTerpakai = Ruangan::where('kode', 'R.42')->first();
         $responseHapusTerpakai = $this->actingAs($this->admin)->delete('/admin/ruangan/' . $ruanganTerpakai->id);
         $responseHapusTerpakai->assertRedirect('/admin/ruangan');
         $responseHapusTerpakai->assertSessionHas('error');
@@ -157,7 +157,7 @@ class DataMasterDanJadwalTest extends TestCase
             'nama' => 'Guru Penguji Utama, M.T.',
         ]);
 
-        $guruTerpakai = Guru::where('nama', 'Refky, M.Kom.')->first();
+        $guruTerpakai = Guru::where('nama', 'like', '%KIKI AIMA%')->first();
         $responseHapusTerpakai = $this->actingAs($this->admin)->delete('/admin/guru/' . $guruTerpakai->id);
         $responseHapusTerpakai->assertRedirect('/admin/guru');
         $responseHapusTerpakai->assertSessionHas('error');
@@ -340,11 +340,17 @@ class DataMasterDanJadwalTest extends TestCase
 
     public function test_crud_jadwal_dan_validasi_bentrok(): void
     {
-        $kelas1 = Kelas::where('nama', 'XII RPL 1')->first();
+        $kelas1 = Kelas::firstOrCreate(
+            ['nama' => 'X RPL 99'],
+            [
+                'id_ruangan' => Ruangan::where('kode', 'R.20')->first()->id,
+                'id_wali_kelas' => Guru::first()->id,
+            ]
+        );
         $kelas2 = Kelas::where('nama', 'X KA 1')->first();
         $mapel = Mapel::first();
-        $guru = Guru::where('nama', 'Refky, M.Kom.')->first();
-        $ruang = Ruangan::where('kode', 'LAB-RPL')->first();
+        $guru = Guru::where('nama', 'like', '%KIKI AIMA%')->first();
+        $ruang = Ruangan::where('kode', 'R.20')->first();
 
         $responseSelesaiKecil = $this->actingAs($this->admin)->post('/admin/jadwal', [
             'hari' => 'Selasa',

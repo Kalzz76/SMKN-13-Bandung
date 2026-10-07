@@ -185,7 +185,7 @@
                     </div>
 
                     <div class="md:absolute md:top-0 md:right-4 md:bottom-12 md:w-[38%] bg-navy-mid rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0 border border-teal-tint">
-                        <img src="{{ asset('Assets/kaprog rpl.webp') }}" alt="Refky, M.Kom."
+                        <img src="{{ asset('Assets/kaprog rpl.webp') }}" alt="Kepala Program Keahlian RPL"
                             class="w-full h-full object-cover object-top">
                     </div>
 

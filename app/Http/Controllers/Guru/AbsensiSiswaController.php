@@ -43,6 +43,25 @@ class AbsensiSiswaController extends Controller
                 ->with('error', "Jadwal ini berlangsung pada hari {$jadwal->hari}. Absensi hanya dapat diisi pada hari jadwal mengajar berlangsung.");
         }
 
+        // Validasi batasan jam KBM (Hanya bisa absen jika jam sekarang berada di antara jam mulai dan jam selesai)
+        $jamKeMapPerHari = \App\Models\JamPelajaran::pelajaran()->urut()->get()
+            ->groupBy('hari')
+            ->map(fn ($slots) => $slots->keyBy('jam_ke'));
+        $jamKeMap = $jamKeMapPerHari->get($jadwal->hari, collect());
+        $mulai = $jamKeMap[$jadwal->jam_ke_mulai]->jam_mulai ?? sprintf('%02d:00', max(7, 7 + ($jadwal->jam_ke_mulai - 1)));
+        $selesai = $jamKeMap[$jadwal->jam_ke_selesai]->jam_selesai ?? sprintf('%02d:45', max(7, 7 + ($jadwal->jam_ke_selesai - 1)));
+        $nowTime = Carbon::now('Asia/Jakarta')->format('H:i');
+
+        if ($nowTime < $mulai) {
+            return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
+                ->with('error', "Sesi KBM belum dimulai. Absensi hanya dapat diisi mulai pukul {$mulai} WIB sesuai jadwal pelajaran.");
+        }
+
+        if ($nowTime > $selesai) {
+            return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
+                ->with('error', "Batas waktu absensi untuk sesi ini telah berakhir ({$selesai} WIB).");
+        }
+
         $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
         $daftarSiswa = $jadwal->kelas->siswa()->orderBy('nama')->get();
 
@@ -55,10 +74,6 @@ class AbsensiSiswaController extends Controller
             ->where('tanggal', $tanggalHariIni)
             ->first();
 
-        $absensiGuruHariIni = AbsensiGuru::where('id_guru', $guru->id)
-            ->where('tanggal', $tanggalHariIni)
-            ->first();
-
         $daftarSlotJam = range($jadwal->jam_ke_mulai, $jadwal->jam_ke_selesai);
 
         return view('guru.absensi-siswa', compact(
@@ -67,7 +82,6 @@ class AbsensiSiswaController extends Controller
             'absensiTersimpan',
             'jurnalTersimpan',
             'tanggalHariIni',
-            'absensiGuruHariIni',
             'daftarSlotJam'
         ));
     }
@@ -83,6 +97,41 @@ class AbsensiSiswaController extends Controller
 
         if ($jadwal->id_guru !== $guru->id) {
             abort(403, 'Anda bukan pengajar untuk jadwal kelas ini.');
+        }
+
+        $hariIniMap = [
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+            'Sunday' => 'Minggu',
+        ];
+        $hariIni = $hariIniMap[Carbon::now('Asia/Jakarta')->format('l')] ?? 'Senin';
+
+        if ($jadwal->hari !== $hariIni) {
+            return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
+                ->with('error', "Jadwal ini berlangsung pada hari {$jadwal->hari}. Absensi hanya dapat diisi pada hari jadwal mengajar berlangsung.");
+        }
+
+        // Validasi batasan jam KBM di backend
+        $jamKeMapPerHari = \App\Models\JamPelajaran::pelajaran()->urut()->get()
+            ->groupBy('hari')
+            ->map(fn ($slots) => $slots->keyBy('jam_ke'));
+        $jamKeMap = $jamKeMapPerHari->get($jadwal->hari, collect());
+        $mulai = $jamKeMap[$jadwal->jam_ke_mulai]->jam_mulai ?? sprintf('%02d:00', max(7, 7 + ($jadwal->jam_ke_mulai - 1)));
+        $selesai = $jamKeMap[$jadwal->jam_ke_selesai]->jam_selesai ?? sprintf('%02d:45', max(7, 7 + ($jadwal->jam_ke_selesai - 1)));
+        $nowTime = Carbon::now('Asia/Jakarta')->format('H:i');
+
+        if ($nowTime < $mulai) {
+            return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
+                ->with('error', "Sesi KBM belum dimulai. Absensi hanya dapat diisi mulai pukul {$mulai} WIB.");
+        }
+
+        if ($nowTime > $selesai) {
+            return redirect()->route('guru.dashboard', ['tab' => 'jadwal'])
+                ->with('error', "Batas waktu absensi untuk sesi ini telah berakhir ({$selesai} WIB).");
         }
 
         $request->validate([
@@ -107,27 +156,8 @@ class AbsensiSiswaController extends Controller
                     'status' => $statusKehadiran,
                     'keterangan' => $ket,
                     'id_guru_pengisi' => $guru->id,
-                ]
-            );
-        }
-
-        if ($request->filled('kehadiran_guru')) {
-            $statusGuru = $request->kehadiran_guru === 'Hadir' ? 'Hadir' : 'Tidak Hadir';
-            $alasan = $request->alasan_guru;
-            if ($request->filled('keterangan_guru')) {
-                $alasan = ($alasan ? "{$alasan} - " : "") . $request->keterangan_guru;
-            }
-            AbsensiGuru::updateOrCreate(
-                [
-                    'id_guru' => $guru->id,
-                    'tanggal' => $tanggalHariIni,
-                ],
-                [
-                    'status' => $statusGuru,
-                    'metode' => 'Jadwal Kelas',
-                    'jam_masuk' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
-                    'alasan' => $alasan,
-                    'id_user_input' => auth()->id(),
+                    'status_validasi' => 'disetujui',
+                    'diisi_oleh' => 'guru',
                 ]
             );
         }

@@ -1,6 +1,6 @@
 <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between flex-shrink-0 sticky top-0 z-30 shadow-xs">
     <div class="flex items-center space-x-3">
-        <button type="button" onclick="toggleAdminSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition">
+        <button type="button" onclick="toggleAdminSidebar()" class="text-slate-600 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition shrink-0 cursor-pointer" title="Buka / Tutup Sidebar">
             <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <div class="flex items-center space-x-2">
@@ -9,6 +9,14 @@
     </div>
 
     <div class="flex items-center space-x-3 sm:space-x-4">
+        @if(!empty($chronos['enabled']))
+            <a href="{{ route('admin.chronos.index') }}" title="Chronos Waktu Virtual Aktif - Klik untuk mengatur" class="flex items-center space-x-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-xl shadow-xs transition">
+                <i class="fa-solid fa-flask-vial animate-pulse text-indigo-600"></i>
+                <span class="hidden sm:inline">Chronos:</span>
+                <span>{{ $chronos['badge_text'] }}</span>
+            </a>
+        @endif
+
         <a href="{{ url('/') }}" class="hidden lg:flex items-center space-x-2 text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-200 transition">
             <i class="fa-solid fa-house"></i>
             <span>Beranda</span>

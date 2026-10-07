@@ -152,10 +152,29 @@
                                     @endif
                                 </div>
 
-                                <a href="{{ route('guru.absensi-siswa', $j->id) }}" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition shadow-xs flex items-center justify-center space-x-2 {{ $isFilled ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200' : 'bg-emerald-700 hover:bg-emerald-800 text-white' }}">
-                                    <i class="fa-solid {{ $isFilled ? 'fa-pen-to-square' : 'fa-clipboard-check' }}"></i>
-                                    <span>{{ $isFilled ? 'Ubah Absensi' : 'Isi / Validasi Absensi' }}</span>
-                                </a>
+                                @if($isOngoing)
+                                    <a href="{{ route('guru.absensi-siswa', $j->id) }}" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition shadow-xs flex items-center justify-center space-x-2 {{ $isFilled ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200' : 'bg-emerald-700 hover:bg-emerald-800 text-white' }}">
+                                        <i class="fa-solid {{ $isFilled ? 'fa-pen-to-square' : 'fa-clipboard-check' }}"></i>
+                                        <span>{{ $isFilled ? 'Ubah Absensi Kelas' : 'Isi Absensi Kelas' }}</span>
+                                    </a>
+                                @elseif($isUpcoming)
+                                    <button type="button" disabled class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed flex items-center justify-center space-x-2">
+                                        <i class="fa-solid fa-lock text-xs"></i>
+                                        <span>Belum Waktunya (Mulai {{ $j->jam_mulai_formatted }})</span>
+                                    </button>
+                                @else
+                                    @if($isFilled)
+                                        <span class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-circle-check text-xs"></i>
+                                            <span>Selesai & Tercatat</span>
+                                        </span>
+                                    @else
+                                        <button type="button" disabled class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-rose-50 text-rose-500 border border-rose-200 cursor-not-allowed flex items-center justify-center space-x-2" title="Waktu KBM telah usai. Jika Anda berhalangan hadir, sekretaris kelas yang mengisikan.">
+                                            <i class="fa-solid fa-ban text-xs"></i>
+                                            <span>Waktu Berakhir (Selesai {{ $j->jam_selesai_formatted }})</span>
+                                        </button>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     @endforeach

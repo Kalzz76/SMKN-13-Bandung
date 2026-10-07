@@ -18,6 +18,59 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* Animasi Buka Tutup Mini Sidebar (Icon-Only Mode) */
+        #sekretarisSidebar {
+            transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+        }
+        @media (min-width: 768px) {
+            .sidebar-collapsed {
+                width: 5rem !important; /* 80px */
+            }
+            .sidebar-collapsed .sidebar-text,
+            .sidebar-collapsed .sidebar-category-header {
+                display: none !important;
+                opacity: 0;
+            }
+            .sidebar-collapsed .sidebar-category-divider {
+                display: block !important;
+            }
+            .sidebar-collapsed .sidebar-header-box {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+                justify-content: center !important;
+            }
+            .sidebar-collapsed .sidebar-menu-link {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 2.75rem !important;
+                height: 2.75rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .sidebar-collapsed .sidebar-menu-link i {
+                margin: 0 !important;
+                font-size: 1.15rem !important;
+            }
+            .sidebar-collapsed .sidebar-logout-btn {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 2.75rem !important;
+                height: 2.75rem !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .sidebar-collapsed .sidebar-logout-btn span {
+                display: none !important;
+            }
+            .sidebar-collapsed .sidebar-logout-btn i {
+                margin: 0 !important;
+                font-size: 1.15rem !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex flex-col md:flex-row">
@@ -75,15 +128,29 @@
     function toggleSekretarisSidebar() {
         const sidebar = document.getElementById('sekretarisSidebar');
         if (!sidebar) return;
-        const isHidden = sidebar.classList.contains('hidden');
-        if (isHidden) {
-            openSekretarisSidebar();
+
+        if (window.innerWidth >= 768) {
+            // Mode Desktop: Toggle Mini Sidebar (Icon-Only)
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            if (isCollapsed) {
+                sidebar.classList.remove('sidebar-collapsed');
+                localStorage.setItem('sekretaris_sidebar_collapsed', 'false');
+            } else {
+                sidebar.classList.add('sidebar-collapsed');
+                localStorage.setItem('sekretaris_sidebar_collapsed', 'true');
+            }
         } else {
-            closeSekretarisSidebar();
+            // Mode Mobile: Toggle Off-canvas Drawer
+            const isHiddenMobile = sidebar.classList.contains('hidden');
+            if (isHiddenMobile) {
+                openSekretarisSidebarMobile();
+            } else {
+                closeSekretarisSidebarMobile();
+            }
         }
     }
 
-    function openSekretarisSidebar() {
+    function openSekretarisSidebarMobile() {
         const sidebar = document.getElementById('sekretarisSidebar');
         const backdrop = document.getElementById('sekretarisSidebarBackdrop');
         const content = document.getElementById('sekretarisMainContent');
@@ -105,7 +172,7 @@
         document.body.classList.add('overflow-hidden');
     }
 
-    function closeSekretarisSidebar() {
+    function closeSekretarisSidebarMobile() {
         const sidebar = document.getElementById('sekretarisSidebar');
         const backdrop = document.getElementById('sekretarisSidebarBackdrop');
         const content = document.getElementById('sekretarisMainContent');
@@ -127,22 +194,54 @@
         document.body.classList.remove('overflow-hidden');
     }
 
+    function openSekretarisSidebar() {
+        openSekretarisSidebarMobile();
+    }
+
+    function closeSekretarisSidebar() {
+        closeSekretarisSidebarMobile();
+    }
+
     window.addEventListener('resize', function() {
+        const sidebar = document.getElementById('sekretarisSidebar');
+        if (!sidebar) return;
+
         if (window.innerWidth >= 768) {
-            closeSekretarisSidebar();
+            closeSekretarisSidebarMobile();
+            if (localStorage.getItem('sekretaris_sidebar_collapsed') === 'true') {
+                sidebar.classList.add('sidebar-collapsed');
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+            }
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('md:flex');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('hidden');
         }
     });
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            closeSekretarisSidebar();
+            closeSekretarisSidebarMobile();
         }
     });
 
     document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sekretarisSidebar');
+        if (sidebar && window.innerWidth >= 768) {
+            if (localStorage.getItem('sekretaris_sidebar_collapsed') === 'true') {
+                sidebar.classList.add('sidebar-collapsed');
+            }
+        }
+
         const links = document.querySelectorAll('#sekretarisSidebar a');
         links.forEach(function(link) {
-            link.addEventListener('click', closeSekretarisSidebar);
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    closeSekretarisSidebarMobile();
+                }
+            });
         });
     });
     </script>

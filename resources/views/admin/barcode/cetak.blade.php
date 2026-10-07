@@ -1,5 +1,7 @@
 @php
     $pengaturan = $pengaturan ?? \App\Models\PengaturanSekolah::first();
+    $totalGuru = $daftarGuru->count();
+    $isSingle = $totalGuru === 1;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -8,23 +10,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Barcode Absensi Guru - {{ $pengaturan->nama_sekolah ?? 'SMKN 13 Bandung' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
 
         .card-id {
-            width: 480px;
-            min-width: 480px;
-            max-width: 480px;
-            height: 276px;
-            min-height: 276px;
+            width: 428px;
+            min-width: 428px;
+            max-width: 428px;
+            height: 270px;
+            min-height: 270px;
             background-image: url('{{ asset('images/desain-card.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            border-radius: 1.25rem;
+            border-radius: 0.875rem;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(226, 232, 240, 0.8);
             overflow: hidden;
@@ -38,26 +42,79 @@
             flex-shrink: 0;
         }
 
+        @if($isSingle)
+        @page {
+            size: 85.6mm 54mm landscape;
+            margin: 0;
+        }
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
-            .grid-cetak {
-                display: grid !important;
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 16px !important;
-                padding: 10px !important;
+            #printableArea {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
             }
             .card-scale-wrapper {
-                width: 480px !important;
-                height: 276px !important;
-                max-width: 480px !important;
-                overflow: visible !important;
-                display: block !important;
+                width: 85.6mm !important;
+                height: 54mm !important;
+                overflow: hidden !important;
+                display: flex !important;
+                justify-content: center !important;
             }
             .card-scaler {
-                transform: none !important;
-                width: 480px !important;
-                height: 276px !important;
+                transform: scale(0.755) !important;
+                transform-origin: top left !important;
+                width: 428px !important;
+                height: 270px !important;
+            }
+            .card-id {
+                box-shadow: none !important;
+                border: none !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                width: 428px !important;
+                height: 270px !important;
+            }
+        }
+        @else
+        @page {
+            size: A4 portrait;
+            margin: 10mm 12mm;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            #printableArea {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6mm 10.8mm !important;
+                padding: 0 !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+            }
+            .card-scale-wrapper {
+                width: 85.6mm !important;
+                max-width: 85.6mm !important;
+                height: 54mm !important;
+                max-height: 54mm !important;
+                overflow: hidden !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: flex-start !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .card-scaler {
+                transform: scale(0.755) !important;
+                transform-origin: top left !important;
+                width: 428px !important;
+                height: 270px !important;
             }
             .card-id {
                 box-shadow: none !important;
@@ -66,10 +123,11 @@
                 break-inside: avoid !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                width: 480px !important;
-                height: 276px !important;
+                width: 428px !important;
+                height: 270px !important;
             }
         }
+        @endif
     </style>
 </head>
 <body class="p-4 sm:p-8 min-h-screen text-slate-900">
@@ -79,13 +137,16 @@
             <div>
                 <h1 class="font-bold text-slate-900 text-base sm:text-lg">Cetak Kartu Absensi Guru</h1>
                 <p class="text-xs text-slate-500 mt-0.5">
-                    Jumlah kartu: <span class="font-semibold text-emerald-700">{{ $daftarGuru->count() }} guru</span>
+                    Jumlah kartu: <span class="font-semibold text-emerald-700">{{ $totalGuru }} guru</span>
+                    @if(!$isSingle)
+                        <span class="text-slate-400 ml-1">· Klik <b>"Download PDF"</b> untuk mengunduh dokumen .pdf, atau <b>"Cetak Sekarang"</b> untuk kirim ke printer.</span>
+                    @endif
                 </p>
             </div>
             <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
                 <button type="button" id="btnDownloadPdf" onclick="downloadAllPDF()" class="col-span-1 sm:w-auto bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap">
                     <i class="fa-solid fa-file-pdf"></i>
-                    <span>Download PDF</span>
+                    <span id="btnDownloadPdfText">Download PDF</span>
                 </button>
                 <button type="button" onclick="window.print()" class="col-span-1 sm:w-auto bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-3.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap">
                     <i class="fa-solid fa-print"></i>
@@ -97,7 +158,7 @@
             </div>
         </div>
 
-        <!-- Cards Grid (2 Kolom Seperti Awal) -->
+        <!-- Cards Grid -->
         <div id="printableArea" class="grid grid-cols-1 md:grid-cols-2 gap-6 grid-cetak justify-items-center">
             @foreach($daftarGuru as $g)
                 @php
@@ -130,7 +191,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Bottom Left: Contact Info from Pengaturan Sekolah (Ukuran Pas Tidak Kepotong) -->
+                                <!-- Bottom Left: Contact Info from Pengaturan Sekolah -->
                                 <div style="max-width: 175px; font-size: 8px; color: #f1f5f9; line-height: 1.35; margin-top: 6px; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif;">
                                     <div style="display: flex; align-items: flex-start; gap: 5px;">
                                         <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 8px;"></i>
@@ -179,36 +240,6 @@
                                 </div>
                             </div>
                         </div>
-=======
-                <div class="card-cetak bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-lg bg-[#0b6534] text-white font-black text-xs flex items-center justify-center flex-shrink-0">
-                            13
-                        </div>
-                        <div>
-                            <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-800 leading-none">SMK NEGERI 13 BANDUNG</h2>
-                            <p class="text-[9px] text-[#0b6534] font-bold uppercase tracking-wider mt-0.5">KARTU BARCODE KEHADIRAN GURU</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between gap-4 py-1">
-                        <div class="space-y-1">
-                            <h3 class="font-bold text-slate-900 text-sm leading-tight">{{ $g->nama }}</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">{{ $g->nip ?? '-' }}</p>
-                            <p class="text-[11px] text-slate-700 font-medium">{{ $g->mapel->nama ?? $g->mapel_utama ?? ($g->jabatan ?? 'Guru Pengajar') }}</p>
-                            <span class="inline-block text-[9px] bg-slate-50 text-slate-500 font-mono px-2 py-0.5 rounded border border-slate-200 mt-2">
-                                BARCODE-{{ strtoupper(\Illuminate\Support\Str::limit($g->kode_barcode, 10, '...')) }}
-                            </span>
-                        </div>
-                        <div class="flex-shrink-0 p-1.5 bg-white rounded-xl border border-slate-200">
-                            <div id="qr_{{ $g->id }}" data-code="{{ $g->kode_barcode }}" class="qrcode-item"></div>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 flex items-center justify-between text-[9px] text-slate-400">
-                        <span>Gunakan saat presensi di area kampus</span>
-                        <span>SMKN 13 Bandung</span>
->>>>>>> b623606903dcec2d6acdbae1f5f2cfc7056f2f73
                     </div>
                 </div>
             @endforeach
@@ -218,8 +249,8 @@
     <script>
     function resizeCardScalers() {
         const wrappers = document.querySelectorAll('.card-scale-wrapper');
-        const baseW = 480;
-        const baseH = 276;
+        const baseW = 428;
+        const baseH = 270;
 
         wrappers.forEach(function(wrapper) {
             const scaler = wrapper.querySelector('.card-scaler');
@@ -241,28 +272,30 @@
     window.addEventListener('resize', resizeCardScalers);
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.qrcode-item').forEach(function(el) {
-            const code = el.getAttribute('data-code');
-            if (code) {
-                new QRCode(el, {
-                    text: code,
-                    width: 76,
-                    height: 76,
-                    colorDark : "#0f172a",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.M
-                });
-            }
-        });
+        if (typeof QRCode !== 'undefined') {
+            document.querySelectorAll('.qrcode-item').forEach(function(el) {
+                const code = el.getAttribute('data-code');
+                if (code) {
+                    new QRCode(el, {
+                        text: code,
+                        width: 68,
+                        height: 68,
+                        colorDark : "#0f172a",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.M
+                    });
+                }
+            });
+        }
 
         resizeCardScalers();
 
-        // Auto download if query param download=pdf exists
+        // Auto download PDF jika query param download=pdf tersedia
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('download') === 'pdf') {
             setTimeout(function() {
                 downloadAllPDF();
-            }, 800);
+            }, 600);
         }
     });
 
@@ -270,60 +303,119 @@
         setTimeout(resizeCardScalers, 50);
     }
 
-    function downloadAllPDF() {
-        const targetEl = document.getElementById('printableArea');
+    async function downloadAllPDF() {
         const btn = document.getElementById('btnDownloadPdf');
-
-        if (!targetEl) return;
-
         const originalText = btn ? btn.innerHTML : '';
         if (btn) {
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Membuat PDF...</span>';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Menyiapkan PDF...</span>';
             btn.disabled = true;
         }
 
-        const isSingle = {{ $daftarGuru->count() == 1 ? 'true' : 'false' }};
-        const filename = isSingle
-            ? 'Kartu-Barcode-{{ Str::slug($daftarGuru->first()->nama ?? "Guru") }}.pdf'
-            : 'Kumpulan-Kartu-Barcode-Guru.pdf';
-
-        const opt = {
-            margin: isSingle ? [4, 4, 4, 4] : [8, 8, 8, 8],
-            filename: filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            },
-            jsPDF: isSingle
-                ? { unit: 'mm', format: [100, 62], orientation: 'landscape' }
-                : { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-        };
-
-        const scalers = document.querySelectorAll('.card-scaler');
-        scalers.forEach(s => s.style.transform = 'none');
-        const wrappers = document.querySelectorAll('.card-scale-wrapper');
-        wrappers.forEach(w => w.style.height = '276px');
-
-        html2pdf().set(opt).from(targetEl).save().then(function() {
-            if (btn) {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+        try {
+            // Pastikan seluruh font web dan glyph icon sudah selesai termuat
+            if (document.fonts && document.fonts.ready) {
+                await document.fonts.ready;
             }
-            resizeCardScalers();
-        }).catch(function(err) {
+
+            const cards = document.querySelectorAll('.card-id');
+            const totalCards = cards.length;
+
+            if (totalCards === 0) {
+                showModalMsg('Pemberitahuan', 'Tidak ada kartu barcode untuk diunduh.', 'error');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const isSingle = totalCards === 1;
+
+            if (isSingle) {
+                // Single card PDF: format persis standar ISO ID-1 (85.6 mm x 54 mm)
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: [85.6, 54]
+                });
+
+                const card = cards[0];
+                const canvas = await html2canvas(card, {
+                    scale: 3,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 85.6, 54);
+
+                const guruNama = '{{ Str::slug($daftarGuru->first()->nama ?? "Guru") }}';
+                pdf.save('Kartu-Barcode-' + guruNama + '.pdf');
+            } else {
+                // Multi-card PDF: format A4 Portrait dengan 8 kartu berukuran persis 85.6 x 54 mm (2 kolom x 4 baris)
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const cardW = 85.6;
+                const cardH = 54;
+                const startX = 14;
+                const startY = 12;
+                const gapX = 10.8;
+                const gapY = 6;
+                const cardsPerPage = 8;
+
+                for (let i = 0; i < totalCards; i++) {
+                    if (btn) {
+                        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Membuat PDF (${i + 1}/${totalCards})...</span>`;
+                    }
+
+                    const card = cards[i];
+                    const canvas = await html2canvas(card, {
+                        scale: 2.5,
+                        useCORS: true,
+                        backgroundColor: '#ffffff',
+                        logging: false
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+                    const pageIndex = i % cardsPerPage;
+                    if (i > 0 && pageIndex === 0) {
+                        pdf.addPage();
+                    }
+
+                    const col = pageIndex % 2;
+                    const row = Math.floor(pageIndex / 2);
+                    const x = startX + col * (cardW + gapX);
+                    const y = startY + row * (cardH + gapY);
+
+                    pdf.addImage(imgData, 'JPEG', x, y, cardW, cardH);
+
+                    // Jeda sejenak setiap 4 kartu agar browser tidak freeze
+                    if (i % 4 === 0) {
+                        await new Promise(r => setTimeout(r, 20));
+                    }
+                }
+
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i><span>Menyimpan file PDF...</span>';
+                }
+
+                pdf.save('Kumpulan-Kartu-Barcode-Guru.pdf');
+            }
+        } catch (err) {
             console.error('Error generating PDF:', err);
+            showModalMsg('Gagal Memproses PDF', 'Terjadi kesalahan saat memproses file PDF: ' + err.message, 'error');
+        } finally {
             if (btn) {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
-            resizeCardScalers();
-            window.print();
-        });
+        }
     }
     </script>
+
+    @include('partials.modal-pesan')
 </body>
 </html>

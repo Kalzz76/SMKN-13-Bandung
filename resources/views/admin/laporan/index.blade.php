@@ -26,7 +26,7 @@
 
     @if($tab === 'guru')
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <form method="GET" action="{{ route('admin.laporan.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+            <form method="GET" action="{{ route('admin.laporan.index') }}" class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
                 <input type="hidden" name="tab" value="guru">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Bulan</label>
@@ -53,11 +53,25 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Status Kehadiran</label>
+                    <select name="status" class="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:border-emerald-600 focus:outline-none">
+                        <option value="">Semua Status</option>
+                        <option value="Hadir" {{ request('status') === 'Hadir' ? 'selected' : '' }}>Hadir</option>
+                        <option value="Terlambat" {{ request('status') === 'Terlambat' ? 'selected' : '' }}>Terlambat</option>
+                        <option value="Sakit" {{ request('status') === 'Sakit' ? 'selected' : '' }}>Sakit</option>
+                        <option value="Izin" {{ request('status') === 'Izin' ? 'selected' : '' }}>Izin</option>
+                        <option value="Alpa" {{ request('status') === 'Alpa' ? 'selected' : '' }}>Alpa</option>
+                    </select>
+                </div>
                 <div class="flex items-center space-x-2">
-                    <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-1.5 shadow-sm">
+                    <button type="submit" class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-1.5 shadow-sm">
                         <i class="fa-solid fa-filter"></i>
                         <span>Terapkan</span>
                     </button>
+                    <a href="{{ route('admin.laporan.index', ['tab' => 'guru']) }}" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition text-center">
+                        Reset
+                    </a>
                 </div>
             </form>
 
@@ -66,11 +80,11 @@
                     Periode Laporan: {{ $daftarBulan[$bulan] ?? $bulan }} {{ $tahun }}
                 </span>
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('admin.laporan.guru.cetak', ['bulan' => $bulan, 'tahun' => $tahun]) }}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center space-x-1.5">
+                    <a href="{{ route('admin.laporan.guru.cetak', array_filter(['bulan' => $bulan, 'tahun' => $tahun, 'guru_id' => request('guru_id'), 'status' => request('status')])) }}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center space-x-1.5">
                         <i class="fa-solid fa-print"></i>
                         <span>Cetak Laporan</span>
                     </a>
-                    <a href="{{ route('admin.laporan.guru.csv', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="px-4 py-2 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-bold rounded-xl text-xs transition flex items-center space-x-1.5">
+                    <a href="{{ route('admin.laporan.guru.csv', array_filter(['bulan' => $bulan, 'tahun' => $tahun, 'guru_id' => request('guru_id'), 'status' => request('status')])) }}" class="px-4 py-2 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-bold rounded-xl text-xs transition flex items-center space-x-1.5">
                         <i class="fa-solid fa-file-csv"></i>
                         <span>Ekspor CSV</span>
                     </a>
@@ -200,7 +214,7 @@
         </div>
     @else
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <form method="GET" action="{{ route('admin.laporan.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+            <form method="GET" action="{{ route('admin.laporan.index') }}" class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
                 <input type="hidden" name="tab" value="siswa">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Kelas</label>
@@ -227,11 +241,22 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tahun</label>
+                    <select name="tahun" class="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:border-emerald-600 focus:outline-none">
+                        @foreach($daftarTahun as $t)
+                            <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="flex items-center space-x-2">
-                    <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-1.5 shadow-sm">
+                    <button type="submit" class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center space-x-1.5 shadow-sm">
                         <i class="fa-solid fa-filter"></i>
                         <span>Filter Rekap</span>
                     </button>
+                    <a href="{{ route('admin.laporan.index', ['tab' => 'siswa']) }}" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition text-center">
+                        Reset
+                    </a>
                 </div>
             </form>
 

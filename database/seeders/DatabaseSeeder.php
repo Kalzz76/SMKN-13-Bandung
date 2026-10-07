@@ -40,37 +40,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'Aktif',
         ]);
 
-        $userRefky = User::create([
-            'name' => 'Refky, M.Kom.',
-            'username' => 'refky',
-            'password' => Hash::make('guru123'),
-            'role' => 'guru',
-            'status' => 'Aktif',
-        ]);
 
-        $userUli = User::create([
-            'name' => 'Uli, S.Pd.',
-            'username' => 'uli',
-            'password' => Hash::make('guru123'),
-            'role' => 'guru',
-            'status' => 'Aktif',
-        ]);
-
-        $userKiki = User::create([
-            'name' => 'Kiki, S.T.',
-            'username' => 'kiki',
-            'password' => Hash::make('guru123'),
-            'role' => 'guru',
-            'status' => 'Aktif',
-        ]);
-
-        $userNofa = User::create([
-            'name' => 'Nofa, S.Pd.',
-            'username' => 'nofa',
-            'password' => Hash::make('guru123'),
-            'role' => 'guru',
-            'status' => 'Aktif',
-        ]);
 
         PengaturanSekolah::create([
             'nama_sekolah' => 'SMK Negeri 13 Bandung',
@@ -108,88 +78,18 @@ class DatabaseSeeder extends Seeder
         $this->call([
             JamPelajaranSeeder::class,
             JadwalPembiasaanSeeder::class,
+            RuanganSeeder::class,
+            GuruSeeder::class,
+            MapelSeeder::class,
         ]);
 
-        $ruang52 = Ruangan::create(['kode' => 'R.52', 'nama' => 'Ruang Teori 52']);
-        $ruang53 = Ruangan::create(['kode' => 'R.53', 'nama' => 'Ruang Teori 53']);
-        $ruangLab = Ruangan::create(['kode' => 'LAB-RPL', 'nama' => 'Laboratorium Komputer RPL']);
-        Ruangan::create(['kode' => 'LAP', 'nama' => 'Lapangan Olahraga']);
+        $ruang52 = Ruangan::where('kode', 'R.52')->first();
+        $ruang53 = Ruangan::where('kode', 'R.53')->first();
+        $ruangLab = Ruangan::where('kode', 'R.42')->first();
 
-        $guruRefky = Guru::create([
-            'user_id' => $userRefky->id,
-            'nama' => 'Refky, M.Kom.',
-            'nip' => '198501012010011001',
-            'jenis' => 'Guru',
-            'jabatan' => 'Kepala Lab RPL',
-            'mapel_utama' => 'Produktif RPL',
-            'foto' => null,
-            'tampil_publik' => true,
-            'kode_barcode' => 'BARCODE-REFKY-001',
-        ]);
-
-        $guruUli = Guru::create([
-            'user_id' => $userUli->id,
-            'nama' => 'Uli, S.Pd.',
-            'nip' => '198702022012022002',
-            'jenis' => 'Guru',
-            'jabatan' => 'Guru Pengajar',
-            'mapel_utama' => 'DPK / Matematika',
-            'foto' => null,
-            'tampil_publik' => true,
-            'kode_barcode' => 'BARCODE-ULI-002',
-        ]);
-
-        $guruKiki = Guru::create([
-            'user_id' => $userKiki->id,
-            'nama' => 'Kiki, S.T.',
-            'nip' => '198903032014031003',
-            'jenis' => 'Guru',
-            'jabatan' => 'Guru Pengajar',
-            'mapel_utama' => 'Jaringan Komputer',
-            'foto' => null,
-            'tampil_publik' => true,
-            'kode_barcode' => 'BARCODE-KIKI-003',
-        ]);
-
-        $guruNofa = Guru::create([
-            'user_id' => $userNofa->id,
-            'nama' => 'Nofa, S.Pd.',
-            'nip' => '199004042015042004',
-            'jenis' => 'Guru',
-            'jabatan' => 'Guru Pengajar',
-            'mapel_utama' => 'Matematika',
-            'foto' => null,
-            'tampil_publik' => true,
-            'kode_barcode' => 'BARCODE-NOFA-004',
-        ]);
-
-        $gurusIndex = [
-            ['nama' => 'Hasan', 'username' => 'hasan', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/hasan.webp'],
-            ['nama' => 'Maya', 'username' => 'maya', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/maya.webp'],
-            ['nama' => 'Nina', 'username' => 'nina', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/nina.webp'],
-            ['nama' => 'Santika', 'username' => 'santika', 'mapel' => 'Tenaga Pendidik', 'foto' => 'guru/santika.webp'],
-        ];
-
-        foreach ($gurusIndex as $idx => $gi) {
-            $u = User::create([
-                'name' => $gi['nama'],
-                'username' => $gi['username'],
-                'password' => Hash::make('guru123'),
-                'role' => 'guru',
-                'status' => 'Aktif',
-            ]);
-            Guru::create([
-                'user_id' => $u->id,
-                'nama' => $gi['nama'],
-                'nip' => '19950101202001' . ($idx + 1) . '00' . ($idx + 1),
-                'jenis' => 'Guru',
-                'jabatan' => 'Tenaga Pendidik',
-                'mapel_utama' => $gi['mapel'],
-                'foto' => $gi['foto'],
-                'tampil_publik' => true,
-                'kode_barcode' => 'BARCODE-' . strtoupper($gi['nama']) . '-00' . ($idx + 1),
-            ]);
-        }
+        $guruUli = Guru::where('nama', 'like', '%ULI SOLIHAT%')->first();
+        $guruKiki = Guru::where('nama', 'like', '%KIKI AIMA%')->first();
+        $guruNofa = Guru::where('nama', 'like', '%NOFA NIRAWATI%')->first();
 
         $kelasX1 = Kelas::create([
             'nama' => 'X KA 1',
@@ -206,13 +106,13 @@ class DatabaseSeeder extends Seeder
         $kelasXIRPL = Kelas::create([
             'nama' => 'XI RPL 1',
             'id_ruangan' => $ruangLab->id,
-            'id_wali_kelas' => $guruRefky->id,
+            'id_wali_kelas' => $guruKiki->id,
         ]);
 
         $kelasXII = Kelas::create([
             'nama' => 'XII RPL 1',
             'id_ruangan' => $ruangLab->id,
-            'id_wali_kelas' => $guruRefky->id,
+            'id_wali_kelas' => $guruKiki->id,
             'struktur' => [
                 'km' => 'Rizky Pratama',
                 'bendahara_1' => 'Siti Nurhaliza',
@@ -265,23 +165,8 @@ class DatabaseSeeder extends Seeder
             'jabatan' => 'Anggota',
         ]);
 
-        $mapelDpk = Mapel::create([
-            'kode' => 'DPK',
-            'nama' => 'Dasar Program Keahlian',
-            'jenis' => 'Produktif',
-        ]);
-
-        $mapelMath = Mapel::create([
-            'kode' => 'MATH',
-            'nama' => 'Matematika',
-            'jenis' => 'Umum',
-        ]);
-
-        Mapel::create([
-            'kode' => 'BING',
-            'nama' => 'Bahasa Inggris',
-            'jenis' => 'Umum',
-        ]);
+        $mapelDpk = Mapel::where('kode', 'DPK')->first();
+        $mapelMath = Mapel::where('kode', 'MATH')->first();
 
         Jurusan::create([
             'kode' => 'RPL',
@@ -382,20 +267,14 @@ class DatabaseSeeder extends Seeder
             'jam_ke_selesai' => 3,
         ]);
 
-        Jadwal::create([
-            'id_kelas' => $kelasXII->id,
-            'id_mapel' => $mapelDpk->id,
-            'id_guru' => $guruRefky->id,
-            'id_ruangan' => $ruangLab->id,
-            'hari' => 'Senin',
-            'jam_ke_mulai' => 1,
-            'jam_ke_selesai' => 3,
+        $this->call([
+            JadwalSeeder::class,
         ]);
 
         Jadwal::create([
             'id_kelas' => $kelasXIRPL->id,
             'id_mapel' => $mapelDpk->id,
-            'id_guru' => $guruRefky->id,
+            'id_guru' => $guruKiki->id,
             'id_ruangan' => $ruangLab->id,
             'hari' => 'Senin',
             'jam_ke_mulai' => 1,

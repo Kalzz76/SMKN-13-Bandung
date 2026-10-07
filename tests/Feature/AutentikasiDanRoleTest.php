@@ -56,7 +56,7 @@ class AutentikasiDanRoleTest extends TestCase
     public function test_login_guru_berhasil_dan_diarahkan_ke_portal_guru(): void
     {
         $response = $this->post('/login', [
-            'username' => 'refky',
+            'username' => 'uli',
             'password' => 'guru123',
         ]);
 
@@ -99,11 +99,11 @@ class AutentikasiDanRoleTest extends TestCase
 
     public function test_akun_nonaktif_ditolak_login(): void
     {
-        $user = User::where('username', 'refky')->first();
+        $user = User::where('username', 'uli')->first();
         $user->update(['status' => 'Nonaktif']);
 
         $response = $this->post('/login', [
-            'username' => 'refky',
+            'username' => 'uli',
             'password' => 'guru123',
         ]);
 

@@ -14,7 +14,7 @@ class GuruController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Guru::query()->with(['user', 'mapel']);
+        $query = Guru::query()->with(['user', 'mapel', 'mapels']);
 
         if ($request->filled('jenis')) {
             $query->where('jenis', $request->jenis);
@@ -28,6 +28,10 @@ class GuruController extends Controller
                   ->orWhere('jabatan', 'like', "%{$cari}%")
                   ->orWhere('mapel_utama', 'like', "%{$cari}%")
                   ->orWhereHas('mapel', function ($mq) use ($cari) {
+                      $mq->where('nama', 'like', "%{$cari}%")
+                         ->orWhere('kode', 'like', "%{$cari}%");
+                  })
+                  ->orWhereHas('mapels', function ($mq) use ($cari) {
                       $mq->where('nama', 'like', "%{$cari}%")
                          ->orWhere('kode', 'like', "%{$cari}%");
                   });
@@ -47,6 +51,8 @@ class GuruController extends Controller
             'nip' => ['required', 'regex:/^[0-9]+$/', 'max:50'],
             'jenis' => 'required|in:Guru,Staff',
             'jabatan' => 'nullable|string|max:255',
+            'mapel_ids' => 'nullable|array',
+            'mapel_ids.*' => 'exists:mapel,id',
             'id_mapel' => 'nullable|exists:mapel,id',
             'mapel_utama' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -56,11 +62,14 @@ class GuruController extends Controller
             'nip.regex' => 'NIP hanya boleh berisi angka.',
         ]);
 
-        $mapel = null;
-        if ($request->filled('id_mapel')) {
-            $mapel = Mapel::find($request->id_mapel);
+        $mapelIds = $request->input('mapel_ids', []);
+        if (empty($mapelIds) && $request->filled('id_mapel')) {
+            $mapelIds = [(int) $request->id_mapel];
         }
-        $mapelUtama = $mapel ? $mapel->nama : $request->mapel_utama;
+
+        $namaMapels = Mapel::whereIn('id', $mapelIds)->pluck('nama')->toArray();
+        $mapelUtama = !empty($namaMapels) ? implode(', ', $namaMapels) : $request->mapel_utama;
+        $primaryMapelId = !empty($mapelIds) ? $mapelIds[0] : $request->id_mapel;
 
         $fotoPath = null;
         if ($request->hasFile('foto')) {
@@ -72,12 +81,16 @@ class GuruController extends Controller
             'nip' => $request->nip,
             'jenis' => $request->jenis,
             'jabatan' => $request->jabatan ?? ($request->jenis === 'Guru' ? 'Guru Pengajar' : 'Staff Tata Usaha'),
-            'id_mapel' => $request->id_mapel,
+            'id_mapel' => $primaryMapelId,
             'mapel_utama' => $mapelUtama,
             'foto' => $fotoPath,
             'tampil_publik' => $request->has('tampil_publik') ? 1 : 0,
             'user_id' => $request->user_id,
         ]);
+
+        if (!empty($mapelIds)) {
+            $guru->mapels()->sync($mapelIds);
+        }
 
         LogAktivitas::catat('Tambah Guru', "Menambahkan tenaga pendidik/staff '{$guru->nama}'");
 
@@ -93,6 +106,8 @@ class GuruController extends Controller
             'nip' => ['required', 'regex:/^[0-9]+$/', 'max:50'],
             'jenis' => 'required|in:Guru,Staff',
             'jabatan' => 'nullable|string|max:255',
+            'mapel_ids' => 'nullable|array',
+            'mapel_ids.*' => 'exists:mapel,id',
             'id_mapel' => 'nullable|exists:mapel,id',
             'mapel_utama' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -102,19 +117,27 @@ class GuruController extends Controller
             'nip.regex' => 'NIP hanya boleh berisi angka.',
         ]);
 
-        $mapel = null;
-        if ($request->filled('id_mapel')) {
-            $mapel = Mapel::find($request->id_mapel);
-        }
-
         $guru->nama = $request->nama;
         $guru->nip = $request->nip;
         $guru->jenis = $request->jenis;
         if ($request->filled('jabatan')) {
             $guru->jabatan = $request->jabatan;
         }
-        $guru->id_mapel = $request->id_mapel;
-        $guru->mapel_utama = $mapel ? $mapel->nama : ($request->mapel_utama ?? $guru->mapel_utama);
+
+        $mapelIds = $request->input('mapel_ids', null);
+        if ($mapelIds === null && $request->has('id_mapel')) {
+            $mapelIds = $request->filled('id_mapel') ? [(int) $request->id_mapel] : [];
+        }
+
+        if ($mapelIds !== null) {
+            $guru->mapels()->sync($mapelIds);
+            $namaMapels = Mapel::whereIn('id', $mapelIds)->pluck('nama')->toArray();
+            $guru->mapel_utama = !empty($namaMapels) ? implode(', ', $namaMapels) : ($request->mapel_utama ?? $guru->mapel_utama);
+            $guru->id_mapel = !empty($mapelIds) ? $mapelIds[0] : null;
+        } elseif ($request->filled('mapel_utama')) {
+            $guru->mapel_utama = $request->mapel_utama;
+        }
+
         $guru->tampil_publik = $request->has('tampil_publik') ? 1 : 0;
         if ($request->has('user_id')) {
             $guru->user_id = $request->user_id;

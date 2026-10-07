@@ -4,12 +4,12 @@
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900">Rekap Absensi Siswa</h2>
-            <p class="text-sm text-slate-500 mt-1">Pantau performa dan riwayat kehadiran siswa pada mata pelajaran Anda.</p>
+            <h2 class="text-2xl font-bold text-slate-900">Rekap Absensi</h2>
+            <p class="text-sm text-slate-500 mt-1">Pantau performa dan riwayat kehadiran siswa pada mata pelajaran Anda serta riwayat kehadiran mandiri.</p>
         </div>
-        <button type="button" onclick="window.print()" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition">
-            <i class="fa-solid fa-file-arrow-down"></i>
-            <span>Export Excel / PDF</span>
+        <button type="button" onclick="window.print()" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition cursor-pointer">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak Rekap</span>
         </button>
     </div>
 
@@ -32,7 +32,7 @@
                 </div>
                 <div>
                     <span class="text-xs text-slate-400 font-semibold block uppercase">Total Absensi</span>
-                    <span class="text-2xl font-black text-slate-900 block mt-0.5">0</span>
+                    <span class="text-2xl font-black text-slate-900 block mt-0.5">{{ $totalAbsensiSiswa ?? 0 }}</span>
                 </div>
             </div>
 
@@ -42,7 +42,7 @@
                 </div>
                 <div>
                     <span class="text-xs text-slate-400 font-semibold block uppercase">Siswa Hadir</span>
-                    <span class="text-2xl font-black text-slate-900 block mt-0.5">0</span>
+                    <span class="text-2xl font-black text-slate-900 block mt-0.5">{{ $totalHadirSiswa ?? 0 }}</span>
                 </div>
             </div>
 
@@ -52,47 +52,83 @@
                 </div>
                 <div>
                     <span class="text-xs text-slate-400 font-semibold block uppercase">Rasio Kehadiran</span>
-                    <span class="text-2xl font-black text-slate-900 block mt-0.5">0%</span>
+                    <span class="text-2xl font-black text-slate-900 block mt-0.5">{{ $rasioKehadiranSiswa ?? 0 }}%</span>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+        <form method="GET" action="{{ route('guru.rekap') }}" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+            <input type="hidden" name="tab" value="rekap">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Rentang Waktu</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
-                        <option>1 Bulan</option>
-                        <option>1 Semester</option>
-                        <option>1 Tahun</option>
+                    <select name="rentang" onchange="this.form.submit()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                        <option value="1 Bulan" {{ ($rentang ?? '') === '1 Bulan' ? 'selected' : '' }}>1 Bulan Terakhir</option>
+                        <option value="1 Semester" {{ ($rentang ?? '') === '1 Semester' ? 'selected' : '' }}>1 Semester (6 Bulan)</option>
+                        <option value="1 Tahun" {{ ($rentang ?? '') === '1 Tahun' ? 'selected' : '' }}>1 Tahun</option>
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Kelas</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
-                        <option>Semua Kelas</option>
+                    <select name="id_kelas" onchange="this.form.submit()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                        <option value="">Semua Kelas</option>
                         @foreach($daftarKelas as $k)
-                            <option>{{ $k->nama }}</option>
+                            <option value="{{ $k->id }}" {{ ($idKelasPilihan ?? '') == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
-                        <option>Semua Mapel</option>
+                    <select name="id_mapel" onchange="this.form.submit()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                        <option value="">Semua Mapel</option>
                         @foreach($daftarMapel as $m)
-                            <option>{{ $m->nama }}</option>
+                            <option value="{{ $m->id }}" {{ ($idMapelPilihan ?? '') == $m->id ? 'selected' : '' }}>{{ $m->nama }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
-        </div>
+        </form>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-sm shadow-xs">
-            Belum ada catatan presensi siswa pada rentang waktu ini.
-        </div>
+        @if(!isset($daftarRekapSiswa) || $daftarRekapSiswa->isEmpty())
+            <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-sm shadow-xs">
+                Belum ada catatan presensi siswa pada rentang waktu ini.
+            </div>
+        @else
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3.5">Tanggal</th>
+                                <th class="p-3.5">Kelas</th>
+                                <th class="p-3.5">Mata Pelajaran</th>
+                                <th class="p-3.5 text-center">Hadir</th>
+                                <th class="p-3.5 text-center">Sakit</th>
+                                <th class="p-3.5 text-center">Izin</th>
+                                <th class="p-3.5 text-center">Alpa</th>
+                                <th class="p-3.5 text-center">Total Siswa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($daftarRekapSiswa as $rs)
+                                <tr class="hover:bg-slate-50/50">
+                                    <td class="p-3.5 font-semibold text-slate-800">{{ \Carbon\Carbon::parse($rs['tanggal'])->locale('id')->isoFormat('dddd, D MMM Y') }}</td>
+                                    <td class="p-3.5 font-bold text-slate-900">{{ $rs['kelas'] }}</td>
+                                    <td class="p-3.5 font-semibold text-emerald-700">{{ $rs['mapel'] }}</td>
+                                    <td class="p-3.5 text-center font-bold text-emerald-600">{{ $rs['hadir'] }}</td>
+                                    <td class="p-3.5 text-center font-bold text-sky-600">{{ $rs['sakit'] }}</td>
+                                    <td class="p-3.5 text-center font-bold text-amber-600">{{ $rs['izin'] }}</td>
+                                    <td class="p-3.5 text-center font-bold text-rose-600">{{ $rs['alpa'] }}</td>
+                                    <td class="p-3.5 text-center font-bold text-slate-800">{{ $rs['total'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div id="subRekapView_saya" class="space-y-6 hidden">
@@ -104,6 +140,38 @@
                 </div>
                 <span class="text-xs text-slate-500 font-mono">Total data: {{ $rekapAbsensi ? $rekapAbsensi->total() : 0 }}</span>
             </div>
+
+            <form method="GET" action="{{ route('guru.rekap') }}" class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs items-end">
+                <input type="hidden" name="sub" value="saya">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Bulan</label>
+                    <select name="bulan" onchange="this.form.submit()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                        <option value="">Semua Bulan</option>
+                        @for($b = 1; $b <= 12; $b++)
+                            <option value="{{ $b }}" {{ request('bulan') == $b ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($b)->locale('id')->isoFormat('MMMM') }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Tahun</label>
+                    <select name="tahun" onchange="this.form.submit()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600">
+                        <option value="">Semua Tahun</option>
+                        @foreach(range(\Carbon\Carbon::now()->year, \Carbon\Carbon::now()->year - 4) as $y)
+                            <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="submit" class="flex-1 py-2 px-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl transition text-center shadow-xs cursor-pointer">
+                        <i class="fa-solid fa-filter text-[11px] mr-1"></i> Terapkan
+                    </button>
+                    <a href="{{ route('guru.rekap', ['sub' => 'saya']) }}" class="py-2 px-3 bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold rounded-xl transition text-center">
+                        Reset
+                    </a>
+                </div>
+            </form>
 
             @if(!$rekapAbsensi || $rekapAbsensi->isEmpty())
                 <div class="p-12 text-center text-slate-400 text-sm">Belum ada riwayat absensi guru.</div>
@@ -163,6 +231,19 @@ function switchSubRekap(sub) {
         if (btnSaya) btnSaya.className = 'px-4 py-2 rounded-lg font-bold bg-emerald-50 text-emerald-800 transition flex items-center space-x-2';
         if (btnSiswa) btnSiswa.className = 'px-4 py-2 rounded-lg font-semibold text-slate-500 hover:text-slate-900 transition flex items-center space-x-2';
     }
+
+    try {
+        const url = new URL(window.location);
+        url.searchParams.set('sub', sub);
+        window.history.replaceState({}, '', url);
+    } catch(e) {}
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('sub') === 'saya') {
+        switchSubRekap('saya');
+    }
+});
 </script>
 @endsection

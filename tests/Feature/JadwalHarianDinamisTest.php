@@ -27,12 +27,20 @@ class JadwalHarianDinamisTest extends TestCase
 
     private function payload(string $hari, int $mulai, int $selesai, array $override = []): array
     {
+        $kelasUji = Kelas::firstOrCreate(
+            ['nama' => 'X RPL 99'],
+            [
+                'id_ruangan' => Ruangan::where('kode', 'R.20')->first()->id,
+                'id_wali_kelas' => Guru::where('nama', 'like', '%KIKI AIMA%')->first()->id,
+            ]
+        );
+
         return array_merge([
             'hari' => $hari,
-            'id_kelas' => Kelas::where('nama', 'XII RPL 1')->first()->id,
+            'id_kelas' => $kelasUji->id,
             'id_mapel' => Mapel::first()->id,
-            'id_guru' => Guru::where('nama', 'Refky, M.Kom.')->first()->id,
-            'id_ruangan' => Ruangan::where('kode', 'LAB-RPL')->first()->id,
+            'id_guru' => Guru::where('nama', 'like', '%KIKI AIMA%')->first()->id,
+            'id_ruangan' => Ruangan::where('kode', 'R.20')->first()->id,
             'jam_ke_mulai' => $mulai,
             'jam_ke_selesai' => $selesai,
         ], $override);

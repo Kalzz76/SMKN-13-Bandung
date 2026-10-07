@@ -22,4 +22,9 @@ class Mapel extends Model
     {
         return $this->hasMany(Guru::class, 'id_mapel');
     }
+
+    public function gurus()
+    {
+        return $this->belongsToMany(Guru::class, 'guru_mapel', 'mapel_id', 'guru_id')->withTimestamps();
+    }
 }
