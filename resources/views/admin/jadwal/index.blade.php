@@ -557,7 +557,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran</label>
-                    <select name="id_mapel" id="tambahMapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <select name="id_mapel" id="tambahMapel" onchange="onTambahMapelChange()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="">-- Pilih Mata Pelajaran --</option>
                         @foreach($daftarMapel as $m)
                             <option value="{{ $m->id }}">{{ $m->kode }} - {{ $m->nama }}</option>
@@ -661,7 +661,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran</label>
-                    <select id="editMapel" name="id_mapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <select id="editMapel" name="id_mapel" onchange="onEditMapelChange()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         @foreach($daftarMapel as $m)
                             <option value="{{ $m->id }}">{{ $m->kode }} - {{ $m->nama }}</option>
                         @endforeach
@@ -782,10 +782,6 @@ function kumpulkanKesalahanJam(data, hari, mulai, selesai) {
     if (data) {
         if (mulai > data.maks_jam || selesai > data.maks_jam) {
             errors.push(`Hari ${hari} hanya memiliki Jam 1 sampai Jam ${data.maks_jam}.`);
-        }
-
-        if (melewatiIstirahat(data, mulai, selesai)) {
-            errors.push('Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.');
         }
     }
 
@@ -956,17 +952,43 @@ function renderDropdownRuangan() {
     }
 }
 
-function renderDropdownGuru() {
+function guruMengampuMapel(guru, mapelId) {
+    if (!mapelId) return true;
+    const mId = parseInt(mapelId);
+    if (guru.id_mapel && parseInt(guru.id_mapel) === mId) {
+        return true;
+    }
+    if (guru.mapels && Array.isArray(guru.mapels)) {
+        return guru.mapels.some(m => parseInt(m.id) === mId);
+    }
+    return false;
+}
+
+function onTambahMapelChange() {
+    renderDropdownGuru();
+    evaluasiFormJadwal();
+}
+
+function onEditMapelChange() {
+    renderEditDropdownGuru();
+    evaluasiEditForm();
+}
+
+function renderDropdownGuru(targetGuruId = null) {
     const hari = byId('tambahHari').value;
     const mulai = parseInt(byId('tambahMulai').value) || 1;
     const selesai = parseInt(byId('tambahSelesai').value) || mulai;
+    const mapelId = parseInt(byId('tambahMapel').value) || null;
     const selectGuru = byId('tambahGuru');
-    const nilaiLama = selectGuru.value;
+    const nilaiLama = targetGuruId !== null ? targetGuruId : selectGuru.value;
+
+    const guruTersaring = mapelId ? DAFTAR_GURU.filter(g => guruMengampuMapel(g, mapelId)) : DAFTAR_GURU;
+    const sumberGuru = (mapelId && guruTersaring.length > 0) ? guruTersaring : DAFTAR_GURU;
 
     let guruTersedia = [];
     let guruMengajar = [];
 
-    DAFTAR_GURU.forEach(g => {
+    sumberGuru.forEach(g => {
         const bentrok = SEMUA_JADWAL.find(j =>
             j.hari === hari &&
             j.id_guru === g.id &&
@@ -989,7 +1011,9 @@ function renderDropdownGuru() {
 
     if (guruTersedia.length > 0) {
         const groupBebas = document.createElement('optgroup');
-        groupBebas.label = 'Guru Tersedia (Bebas Jam Mengajar)';
+        groupBebas.label = (mapelId && guruTersaring.length > 0)
+            ? 'Guru Pengampu Mapel Ini (Bebas)'
+            : 'Guru Tersedia (Bebas Jam Mengajar)';
         guruTersedia.forEach(g => {
             const opt = document.createElement('option');
             opt.value = g.id;
@@ -1011,15 +1035,142 @@ function renderDropdownGuru() {
             const namaKelas = item.jadwal.kelas ? item.jadwal.kelas.nama : 'Kelas Lain';
             opt.textContent = `${item.guru.nama} (Mengajar di ${namaKelas} Jam ${item.jadwal.jam_ke_mulai}-${item.jadwal.jam_ke_selesai})`;
             opt.disabled = true;
+            if (String(item.guru.id) === String(nilaiLama)) {
+                opt.selected = true;
+            }
             groupSibuk.appendChild(opt);
         });
         selectGuru.appendChild(groupSibuk);
     }
 
+    // Jika guru khusus mapel terpilih hanya 1 orang dan belum ada guru yang dipilih sebelumnya, otomatis pilih guru tersebut jika bebas
+    if (mapelId && guruTersaring.length === 1 && (!nilaiLama || !sumberGuru.some(g => String(g.id) === String(nilaiLama)))) {
+        const satuGuru = guruTersaring[0];
+        const sedangBentrok = guruMengajar.some(item => item.guru.id === satuGuru.id);
+        if (!sedangBentrok) {
+            selectGuru.value = satuGuru.id;
+        }
+    } else if (nilaiLama && sumberGuru.some(g => String(g.id) === String(nilaiLama))) {
+        selectGuru.value = nilaiLama;
+    }
+
     const statusGuruEl = byId('statusGuruText');
     if (statusGuruEl) {
+        let labelFilter = '';
+        if (mapelId) {
+            if (guruTersaring.length > 0) {
+                labelFilter = `<span class="text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200"><i class="fa-solid fa-filter mr-1"></i>${guruTersaring.length} Guru Pengampu Terfilter</span>`;
+            } else {
+                labelFilter = `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Belum ada guru khusus mapel ini</span>`;
+            }
+        }
         statusGuruEl.innerHTML = `
-            <div class="flex items-center space-x-3 text-xs font-semibold mt-1">
+            <div class="flex flex-wrap items-center gap-2 text-xs font-semibold mt-1">
+                ${labelFilter}
+                <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <i class="fa-solid fa-circle-check mr-1"></i>${guruTersedia.length} Bebas
+                </span>
+                <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                    <i class="fa-solid fa-chalkboard-user mr-1"></i>${guruMengajar.length} Sedang Mengajar
+                </span>
+            </div>
+        `;
+    }
+}
+
+function renderEditDropdownGuru(targetGuruId = null) {
+    const hari = byId('editHari').value;
+    const mulai = parseInt(byId('editMulai').value) || 1;
+    const selesai = parseInt(byId('editSelesai').value) || mulai;
+    const mapelId = parseInt(byId('editMapel').value) || null;
+    const selectGuru = byId('editGuru');
+    const nilaiLama = targetGuruId !== null ? targetGuruId : selectGuru.value;
+
+    const guruTersaring = mapelId ? DAFTAR_GURU.filter(g => guruMengampuMapel(g, mapelId)) : DAFTAR_GURU;
+    const sumberGuru = (mapelId && guruTersaring.length > 0) ? guruTersaring : DAFTAR_GURU;
+
+    let guruTersedia = [];
+    let guruMengajar = [];
+
+    sumberGuru.forEach(g => {
+        const bentrok = SEMUA_JADWAL.find(j =>
+            (currentEditId === null || String(j.id) !== String(currentEditId)) &&
+            j.hari === hari &&
+            j.id_guru === g.id &&
+            j.jam_ke_mulai <= selesai &&
+            j.jam_ke_selesai >= mulai
+        );
+
+        if (bentrok) {
+            guruMengajar.push({ guru: g, jadwal: bentrok });
+        } else {
+            guruTersedia.push(g);
+        }
+    });
+
+    selectGuru.innerHTML = '';
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = '-- Tanpa Guru / Belum Ditentukan --';
+    selectGuru.appendChild(defaultOpt);
+
+    if (guruTersedia.length > 0) {
+        const groupBebas = document.createElement('optgroup');
+        groupBebas.label = (mapelId && guruTersaring.length > 0)
+            ? 'Guru Pengampu Mapel Ini (Bebas)'
+            : 'Guru Tersedia (Bebas Jam Mengajar)';
+        guruTersedia.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g.id;
+            opt.textContent = `${g.nama} (${g.mapel_utama || 'Guru'})`;
+            if (String(g.id) === String(nilaiLama)) {
+                opt.selected = true;
+            }
+            groupBebas.appendChild(opt);
+        });
+        selectGuru.appendChild(groupBebas);
+    }
+
+    if (guruMengajar.length > 0) {
+        const groupSibuk = document.createElement('optgroup');
+        groupSibuk.label = 'Guru Sedang Mengajar (Bentrok)';
+        guruMengajar.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.guru.id;
+            const namaKelas = item.jadwal.kelas ? item.jadwal.kelas.nama : 'Kelas Lain';
+            opt.textContent = `${item.guru.nama} (Mengajar di ${namaKelas} Jam ${item.jadwal.jam_ke_mulai}-${item.jadwal.jam_ke_selesai})`;
+            opt.disabled = true;
+            if (String(item.guru.id) === String(nilaiLama)) {
+                opt.selected = true;
+            }
+            groupSibuk.appendChild(opt);
+        });
+        selectGuru.appendChild(groupSibuk);
+    }
+
+    if (nilaiLama && sumberGuru.some(g => String(g.id) === String(nilaiLama))) {
+        selectGuru.value = nilaiLama;
+    } else if (mapelId && guruTersaring.length === 1 && (!nilaiLama || !sumberGuru.some(g => String(g.id) === String(nilaiLama)))) {
+        const satuGuru = guruTersaring[0];
+        const sedangBentrok = guruMengajar.some(item => item.guru.id === satuGuru.id);
+        if (!sedangBentrok) {
+            selectGuru.value = satuGuru.id;
+        }
+    }
+
+    const statusGuruEl = byId('editStatusGuruText');
+    if (statusGuruEl) {
+        let labelFilter = '';
+        if (mapelId) {
+            if (guruTersaring.length > 0) {
+                labelFilter = `<span class="text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200"><i class="fa-solid fa-filter mr-1"></i>${guruTersaring.length} Guru Pengampu Terfilter</span>`;
+            } else {
+                labelFilter = `<span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Belum ada guru khusus mapel ini</span>`;
+            }
+        }
+        statusGuruEl.innerHTML = `
+            <div class="flex flex-wrap items-center gap-2 text-xs font-semibold mt-1">
+                ${labelFilter}
                 <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                     <i class="fa-solid fa-circle-check mr-1"></i>${guruTersedia.length} Bebas
                 </span>
@@ -1135,6 +1286,7 @@ async function openEditModalFromCell(sel) {
     byId('editKelas').value = kelas;
     byId('editMapel').value = mapel;
     byId('editRuang').value = ruang;
+    renderEditDropdownGuru(guru || '');
     byId('editGuru').value = guru || '';
 
     byId('editModal').classList.remove('hidden');
@@ -1173,6 +1325,8 @@ function onEditJamMulaiChange() {
 }
 
 function evaluasiEditForm() {
+    renderEditDropdownGuru();
+
     const hari = byId('editHari').value;
     const mulai = parseInt(byId('editMulai').value) || 1;
     const selesai = parseInt(byId('editSelesai').value) || mulai;

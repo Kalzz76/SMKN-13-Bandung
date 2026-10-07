@@ -99,8 +99,18 @@ class SekretarisDanLaporanTest extends TestCase
 
     public function test_sekretaris_dapat_mengabsen_siswa_di_kelas(): void
     {
-        $jadwal = \App\Models\Jadwal::with('kelas.siswa')->first();
-        $siswa = $jadwal->kelas->siswa->first();
+        $jadwal = \App\Models\Jadwal::whereHas('kelas.siswa')->with('kelas.siswa')->first();
+        if (!$jadwal) {
+            $jadwal = \App\Models\Jadwal::first();
+            $siswa = \App\Models\Siswa::firstOrCreate([
+                'nis' => '999901',
+                'nama' => 'Test Siswa',
+                'jenis_kelamin' => 'L',
+                'id_kelas' => $jadwal->id_kelas,
+            ]);
+        } else {
+            $siswa = $jadwal->kelas->siswa->first();
+        }
 
         $response = $this->actingAs($this->sekretaris)->post('/sekretaris/absensi-siswa/' . $jadwal->id, [
             'status' => [

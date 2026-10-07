@@ -33,7 +33,7 @@ class GaleriController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'kategori' => 'required|in:Fasilitas,Kegiatan',
+            'kategori' => 'required|string|max:100',
             'tanggal' => 'required|date',
             'foto' => 'required',
         ]);
@@ -86,7 +86,7 @@ class GaleriController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'kategori' => 'required|in:Fasilitas,Kegiatan',
+            'kategori' => 'required|string|max:100',
             'tanggal' => 'required|date',
         ]);
 

@@ -17,4 +17,29 @@ class Berita extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+
+    public function getGambarUrlAttribute(): ?string
+    {
+        if (empty($this->gambar)) {
+            return null;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($this->gambar, ['http://', 'https://'])) {
+            return $this->gambar;
+        }
+
+        if (file_exists(public_path('storage/' . $this->gambar)) || file_exists(storage_path('app/public/' . $this->gambar))) {
+            return asset('storage/' . $this->gambar);
+        }
+
+        if (file_exists(public_path($this->gambar))) {
+            return asset($this->gambar);
+        }
+
+        if (file_exists(public_path('Assets/' . basename($this->gambar)))) {
+            return asset('Assets/' . basename($this->gambar));
+        }
+
+        return asset('storage/' . $this->gambar);
+    }
 }

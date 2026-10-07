@@ -165,8 +165,8 @@
                 @forelse($beritaTerbaru as $b)
                     <div class="py-3 flex items-start space-x-3">
                         <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200">
-                            @if($b->gambar)
-                                <img src="{{ asset('storage/' . $b->gambar) }}" alt="{{ $b->judul }}" class="w-full h-full object-cover">
+                            @if($b->gambar_url)
+                                <img src="{{ $b->gambar_url }}" alt="{{ $b->judul }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-400">
                                     <i class="fa-regular fa-image text-sm"></i>

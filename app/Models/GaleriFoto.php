@@ -17,4 +17,9 @@ class GaleriFoto extends Model
     {
         return $this->belongsTo(Galeri::class, 'galeri_id');
     }
+
+    public function getFotoUrlAttribute(): ?string
+    {
+        return Galeri::formatFotoUrl($this->foto);
+    }
 }

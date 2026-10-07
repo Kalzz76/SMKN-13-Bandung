@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\LogAktivitas;
 use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SiswaController extends Controller

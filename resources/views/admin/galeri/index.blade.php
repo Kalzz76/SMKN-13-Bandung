@@ -15,21 +15,31 @@
 
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <div class="flex items-center space-x-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
                 <a href="{{ route('admin.galeri.index') }}"
                    data-filter-name="kategori" data-filter-value=""
-                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition {{ !request('kategori') ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap {{ !request('kategori') ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     Semua
                 </a>
-                <a href="{{ route('admin.galeri.index', ['kategori' => 'Fasilitas']) }}"
-                   data-filter-name="kategori" data-filter-value="Fasilitas"
-                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition {{ request('kategori') === 'Fasilitas' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                    Fasilitas
+                <a href="{{ route('admin.galeri.index', ['kategori' => 'Akademik']) }}"
+                   data-filter-name="kategori" data-filter-value="Akademik"
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap {{ request('kategori') === 'Akademik' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                    Akademik
+                </a>
+                <a href="{{ route('admin.galeri.index', ['kategori' => 'Lomba']) }}"
+                   data-filter-name="kategori" data-filter-value="Lomba"
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap {{ request('kategori') === 'Lomba' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                    Lomba
                 </a>
                 <a href="{{ route('admin.galeri.index', ['kategori' => 'Kegiatan']) }}"
                    data-filter-name="kategori" data-filter-value="Kegiatan"
-                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition {{ request('kategori') === 'Kegiatan' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap {{ request('kategori') === 'Kegiatan' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     Kegiatan
+                </a>
+                <a href="{{ route('admin.galeri.index', ['kategori' => 'Fasilitas']) }}"
+                   data-filter-name="kategori" data-filter-value="Fasilitas"
+                   class="live-filter-tab px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap {{ request('kategori') === 'Fasilitas' ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                    Fasilitas
                 </a>
             </div>
 
@@ -58,23 +68,23 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach($daftarGaleri as $g)
                     @php
-                        $coverPath = $g->foto_utama;
+                        $coverUrl = $g->foto_utama_url;
                         $fotoCount = $g->fotos->count() ?: ($g->foto ? 1 : 0);
                         $fotosData = $g->fotos->map(function($f) {
                             return [
                                 'id' => $f->id,
-                                'url' => asset('storage/' . $f->foto),
+                                'url' => $f->foto_url,
                             ];
                         });
-                        if ($fotosData->isEmpty() && $g->foto) {
+                        if ($fotosData->isEmpty() && $g->foto_url) {
                             $fotosData = collect([
-                                ['id' => 0, 'url' => asset('storage/' . $g->foto)]
+                                ['id' => 0, 'url' => $g->foto_url]
                             ]);
                         }
                     @endphp
                     <div class="group relative rounded-2xl overflow-hidden bg-slate-900 aspect-video shadow-sm border border-slate-100">
-                        @if($coverPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($coverPath))
-                            <img src="{{ asset('storage/' . $coverPath) }}" alt="{{ $g->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        @if($coverUrl)
+                            <img src="{{ $coverUrl }}" alt="{{ $g->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         @else
                             <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">
                                 <i class="fa-solid fa-image text-3xl"></i>
@@ -156,8 +166,10 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Kategori Galeri</label>
                     <select name="kategori" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                        <option value="Fasilitas">Fasilitas Sekolah</option>
                         <option value="Kegiatan">Kegiatan Siswa</option>
+                        <option value="Fasilitas">Fasilitas Sekolah</option>
+                        <option value="Akademik">Akademik</option>
+                        <option value="Lomba">Lomba & Prestasi</option>
                     </select>
                 </div>
                 <div>
@@ -254,8 +266,10 @@
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1">Kategori Galeri</label>
                 <select id="editKategori" name="kategori" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                    <option value="Fasilitas">Fasilitas Sekolah</option>
                     <option value="Kegiatan">Kegiatan Siswa</option>
+                    <option value="Fasilitas">Fasilitas Sekolah</option>
+                    <option value="Akademik">Akademik</option>
+                    <option value="Lomba">Lomba & Prestasi</option>
                 </select>
             </div>
             <div>

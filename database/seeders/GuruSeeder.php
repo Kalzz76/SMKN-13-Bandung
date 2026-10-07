@@ -173,6 +173,10 @@ class GuruSeeder extends Seeder
             'DEDI EPENDI, S.Kom' => ['ASJ'],
         ];
 
+        if (Mapel::count() === 0) {
+            $this->call(MapelSeeder::class);
+        }
+
         $allMapels = Mapel::all()->keyBy('kode');
         $mapelLookup = [];
         foreach ($mapelMapping as $gNama => $kodes) {

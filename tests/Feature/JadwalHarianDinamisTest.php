@@ -120,15 +120,50 @@ class JadwalHarianDinamisTest extends TestCase
         $selasaTanpaIstirahat = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Selasa', 1, 4));
         $selasaTanpaIstirahat->assertSessionMissing('error');
 
+        $guruBebas = Guru::firstOrCreate(
+            ['nama' => 'GURU UJI BEBAS'],
+            ['jenis' => 'Guru', 'tampil_publik' => true]
+        );
+        $ruangBebas = Ruangan::firstOrCreate(
+            ['kode' => 'R.TEST'],
+            ['nama' => 'Ruang Uji Bebas']
+        );
+
         $senin = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Senin', 3, 4, [
-            'id_ruangan' => Ruangan::where('kode', 'R.53')->first()->id,
+            'id_guru' => $guruBebas->id,
+            'id_ruangan' => $ruangBebas->id,
         ]));
-        $senin->assertSessionHas('error');
+        $senin->assertSessionMissing('error');
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Senin', 'jam_ke_mulai' => 3, 'jam_ke_selesai' => 4]);
 
-        $jumatMelewati = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Jumat', 5, 7));
-        $jumatMelewati->assertSessionHas('error');
+        $jumatMelewati = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Jumat', 5, 7, [
+            'id_guru' => $guruBebas->id,
+            'id_ruangan' => $ruangBebas->id,
+        ]));
+        $jumatMelewati->assertSessionMissing('error');
+        $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'jam_ke_mulai' => 5, 'jam_ke_selesai' => 7]);
 
-        $jumatPanjang = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Jumat', 1, 6));
+        $kelasJumatPanjang = Kelas::firstOrCreate(
+            ['nama' => 'X RPL 98'],
+            [
+                'id_ruangan' => $ruangBebas->id,
+                'id_wali_kelas' => $guruBebas->id,
+            ]
+        );
+        $ruangJumatPanjang = Ruangan::firstOrCreate(
+            ['kode' => 'R.TEST2'],
+            ['nama' => 'Ruang Uji Bebas 2']
+        );
+        $guruJumatPanjang = Guru::firstOrCreate(
+            ['nama' => 'GURU UJI BEBAS 2'],
+            ['jenis' => 'Guru', 'tampil_publik' => true]
+        );
+
+        $jumatPanjang = $this->actingAs($this->admin)->post('/admin/jadwal', $this->payload('Jumat', 1, 6, [
+            'id_kelas' => $kelasJumatPanjang->id,
+            'id_guru' => $guruJumatPanjang->id,
+            'id_ruangan' => $ruangJumatPanjang->id,
+        ]));
         $jumatPanjang->assertSessionMissing('error');
         $this->assertDatabaseHas('jadwal', ['hari' => 'Jumat', 'jam_ke_mulai' => 1, 'jam_ke_selesai' => 6]);
     }
@@ -198,5 +233,18 @@ class JadwalHarianDinamisTest extends TestCase
         $this->assertSame('XII', (new Kelas(['nama' => 'XII TKJ 1']))->tingkat);
         $this->assertSame('XIII', (new Kelas(['nama' => 'XIII KA 1']))->tingkat);
         $this->assertNull((new Kelas(['nama' => 'Lainnya']))->tingkat);
+    }
+
+    public function test_halaman_jadwal_memuat_relasi_mapel_guru_untuk_filter_otomatis(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/admin/jadwal');
+        $response->assertOk()
+            ->assertSee('guruMengampuMapel', false)
+            ->assertSee('onTambahMapelChange', false)
+            ->assertSee('onEditMapelChange', false);
+
+        $daftarGuru = $response->viewData('daftarGuru');
+        $this->assertNotEmpty($daftarGuru);
+        $this->assertTrue($daftarGuru->first()->relationLoaded('mapels'));
     }
 }

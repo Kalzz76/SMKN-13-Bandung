@@ -27,5 +27,40 @@ class Galeri extends Model
         $pertama = $this->fotos->first();
         return $pertama ? $pertama->foto : null;
     }
+
+    public static function formatFotoUrl(?string $path): ?string
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        if (file_exists(public_path('storage/' . $path)) || file_exists(storage_path('app/public/' . $path))) {
+            return asset('storage/' . $path);
+        }
+
+        if (file_exists(public_path($path))) {
+            return asset($path);
+        }
+
+        if (file_exists(public_path('Assets/' . basename($path)))) {
+            return asset('Assets/' . basename($path));
+        }
+
+        return asset('storage/' . $path);
+    }
+
+    public function getFotoUtamaUrlAttribute(): ?string
+    {
+        return self::formatFotoUrl($this->foto_utama);
+    }
+
+    public function getFotoUrlAttribute(): ?string
+    {
+        return self::formatFotoUrl($this->foto);
+    }
 }
 

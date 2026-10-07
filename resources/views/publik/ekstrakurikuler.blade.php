@@ -16,108 +16,105 @@
     </div>
 
     @php
-        $semuaEkskul = [
-            [
-                'id' => 'ek1',
-                'nama' => 'PMR (Palang Merah Remaja)',
+        $presetMeta = [
+            'pmr' => [
                 'icon' => 'fa-kit-medical',
-                'desc' => 'Pelatihan pertolongan pertama, kesehatan remaja, dan kesiapsiagaan bencana.',
                 'ig' => '@pmrsmkn13_bdg',
                 'link' => 'https://www.instagram.com/pmrsmkn13_bdg?stkn=Z3o4Z3FzdnU4MDc2',
-                'gambar' => asset('Assets/ekskul/pmr.jpg')
+                'default_img' => asset('Assets/ekskul/pmr.jpg'),
             ],
-            [
-                'id' => 'ek2',
-                'nama' => 'IRMA Al-Hikmah',
+            'irma' => [
                 'icon' => 'fa-mosque',
-                'desc' => 'Wadah pembinaan keislaman dan akhlak mulia melalui kegiatan keagamaan di lingkungan sekolah.',
                 'ig' => '@irmaalhikmah13',
                 'link' => 'https://www.instagram.com/irmaalhikmah13?stkn=ZjllZWM3dmk3YW9h',
-                'gambar' => asset('Assets/ekskul/irma.jpg')
+                'default_img' => asset('Assets/ekskul/irma.jpg'),
             ],
-            [
-                'id' => 'ek3',
-                'nama' => 'Sastrala',
+            'sastrala' => [
                 'icon' => 'fa-feather-pointed',
-                'desc' => 'Mengembangkan minat dan bakat siswa di bidang sastra, menulis, dan berkarya kreatif.',
                 'ig' => '@sastrala.id',
                 'link' => 'https://www.instagram.com/sastrala.id?stkn=ZzN6Ynlxdmg5ajE2',
-                'gambar' => asset('Assets/ekskul/sastrala.jpeg')
+                'default_img' => asset('Assets/ekskul/sastrala.jpeg'),
             ],
-            [
-                'id' => 'ek4',
-                'nama' => 'Padus (Paduan Suara)',
+            'padus' => [
                 'icon' => 'fa-music',
-                'desc' => 'Melatih olah vokal, harmoni, dan penampilan paduan suara untuk berbagai acara sekolah.',
                 'ig' => '@voice.smkn13',
                 'link' => 'https://www.instagram.com/voice.smkn13?stkn=MXVmdWNheGVlbjk5eQ==',
-                'gambar' => asset('Assets/ekskul/padus.jpeg')
+                'default_img' => asset('Assets/ekskul/padus.jpeg'),
             ],
-            [
-                'id' => 'ek5',
-                'nama' => 'Banzai',
+            'banzai' => [
                 'icon' => 'fa-star',
-                'desc' => 'Wadah kreativitas dan pengembangan minat siswa SMKN 13 Bandung.',
                 'ig' => '@banzai13vhs',
                 'link' => 'https://www.instagram.com/banzai13vhs?stkn=aGNqZWphazBvMzRy',
-                'gambar' => asset('Assets/ekskul/banzai.jpg')
+                'default_img' => asset('Assets/ekskul/banzai.jpg'),
             ],
-            [
-                'id' => 'ek6',
-                'nama' => 'Karawitan',
+            'karawitan' => [
                 'icon' => 'fa-drum',
-                'desc' => 'Melestarikan seni musik tradisional Sunda melalui latihan dan pementasan karawitan.',
                 'ig' => '@aleutan_13',
                 'link' => 'https://www.instagram.com/aleutan_13?stkn=MXU0YmwzeWJvMDNxdQ==',
-                'gambar' => asset('Assets/ekskul/karawitan.jpg')
+                'default_img' => asset('Assets/ekskul/karawitan.jpg'),
             ],
-            [
-                'id' => 'ek7',
-                'nama' => 'Pramuka',
+            'pramuka' => [
                 'icon' => 'fa-campground',
-                'desc' => 'Gerakan pramuka berlandaskan Dasa Darma untuk mencetak siswa berkarakter dan berjiwa kepemimpinan.',
                 'ig' => '@pramukasmkn13bdg',
                 'link' => 'https://www.instagram.com/pramukasmkn13bdg?stkn=bDEyZXpsYXhrbTZx',
-                'gambar' => asset('Assets/ekskul/pramuka.jpeg')
+                'default_img' => asset('Assets/ekskul/pramuka.jpeg'),
             ],
-            [
-                'id' => 'ek8',
-                'nama' => 'Paskibra',
+            'paskibra' => [
                 'icon' => 'fa-flag',
-                'desc' => 'Melatih kedisiplinan, baris-berbaris, dan nasionalisme untuk petugas upacara bendera.',
                 'ig' => '@paskibra_paramartha13',
                 'link' => 'https://www.instagram.com/paskibra_paramartha13?stkn=MXE1M2VvaHN4dTVvNQ==',
-                'gambar' => asset('Assets/ekskul/paskibra.jpeg')
+                'default_img' => asset('Assets/ekskul/paskibra.jpeg'),
             ],
-            [
-                'id' => 'ek9',
-                'nama' => 'English Club',
+            'english' => [
                 'icon' => 'fa-language',
-                'desc' => 'Melatih kemampuan berbahasa Inggris lewat percakapan, debat, dan berbagai kegiatan seru.',
                 'ig' => '@beengo.smkn13',
                 'link' => 'https://www.instagram.com/beengo.smkn13?stkn=bjF5bmloODEwYWo4',
-                'gambar' => asset('Assets/LOGOS.jpg')
-            ]
+                'default_img' => asset('Assets/LOGOS.jpg'),
+            ],
         ];
 
-        // Jika ada ekskul dari database yang belum terdaftar di preset, tambahkan secara dinamis
-        foreach($daftarEkskul as $dbEk) {
-            $sudahAda = collect($semuaEkskul)->contains(function($p) use ($dbEk) {
-                return stripos($p['nama'], $dbEk->nama) !== false || stripos($dbEk->nama, $p['nama']) !== false;
-            });
-            if (!$sudahAda) {
+        $semuaEkskul = [];
+        if ($daftarEkskul && $daftarEkskul->isNotEmpty()) {
+            foreach ($daftarEkskul as $dbEk) {
+                $lower = strtolower($dbEk->nama);
+                $meta = [
+                    'icon' => 'fa-star',
+                    'ig' => '@smkn13bandung',
+                    'link' => 'https://www.instagram.com/smkn13bandung?stkn=NnhydHlmaTV2NHMy',
+                    'default_img' => asset('Assets/LOGOS.jpg'),
+                ];
+
+                foreach ($presetMeta as $key => $val) {
+                    if (str_contains($lower, $key)) {
+                        $meta = $val;
+                        break;
+                    }
+                }
+
+                $gambarSrc = $dbEk->gambar_url ?: $meta['default_img'];
+
                 $semuaEkskul[] = [
                     'id' => 'db_' . $dbEk->id,
                     'nama' => $dbEk->nama,
-                    'icon' => 'fa-star',
-                    'desc' => $dbEk->deskripsi ?? 'Wadah kreativitas siswa SMKN 13 Bandung.',
-                    'ig' => '@smkn13bandung',
-                    'link' => 'https://www.instagram.com/smkn13bandung?stkn=NnhydHlmaTV2NHMy',
-                    'gambar' => !empty($dbEk->gambar) && file_exists(public_path('storage/' . $dbEk->gambar))
-                        ? asset('storage/' . $dbEk->gambar)
-                        : asset('Assets/LOGOS.jpg')
+                    'icon' => $meta['icon'],
+                    'desc' => $dbEk->deskripsi ?? 'Wadah kreativitas dan minat bakat siswa SMKN 13 Bandung.',
+                    'ig' => $meta['ig'],
+                    'link' => $meta['link'],
+                    'gambar' => $gambarSrc,
                 ];
             }
+        } else {
+            $semuaEkskul = [
+                ['id' => 'ek1', 'nama' => 'PMR (Palang Merah Remaja)', 'icon' => 'fa-kit-medical', 'desc' => 'Pelatihan pertolongan pertama, kesehatan remaja, dan kesiapsiagaan bencana.', 'ig' => '@pmrsmkn13_bdg', 'link' => 'https://www.instagram.com/pmrsmkn13_bdg?stkn=Z3o4Z3FzdnU4MDc2', 'gambar' => asset('Assets/ekskul/pmr.jpg')],
+                ['id' => 'ek2', 'nama' => 'IRMA Al-Hikmah', 'icon' => 'fa-mosque', 'desc' => 'Wadah pembinaan keislaman dan akhlak mulia melalui kegiatan keagamaan di lingkungan sekolah.', 'ig' => '@irmaalhikmah13', 'link' => 'https://www.instagram.com/irmaalhikmah13?stkn=ZjllZWM3dmk3YW9h', 'gambar' => asset('Assets/ekskul/irma.jpg')],
+                ['id' => 'ek3', 'nama' => 'Sastrala', 'icon' => 'fa-feather-pointed', 'desc' => 'Mengembangkan minat dan bakat siswa di bidang sastra, menulis, dan berkarya kreatif.', 'ig' => '@sastrala.id', 'link' => 'https://www.instagram.com/sastrala.id?stkn=ZzN6Ynlxdmg5ajE2', 'gambar' => asset('Assets/ekskul/sastrala.jpeg')],
+                ['id' => 'ek4', 'nama' => 'Padus (Paduan Suara)', 'icon' => 'fa-music', 'desc' => 'Melatih olah vokal, harmoni, dan penampilan paduan suara untuk berbagai acara sekolah.', 'ig' => '@voice.smkn13', 'link' => 'https://www.instagram.com/voice.smkn13?stkn=MXVmdWNheGVlbjk5eQ==', 'gambar' => asset('Assets/ekskul/padus.jpeg')],
+                ['id' => 'ek5', 'nama' => 'Banzai', 'icon' => 'fa-star', 'desc' => 'Wadah kreativitas dan pengembangan minat siswa SMKN 13 Bandung.', 'ig' => '@banzai13vhs', 'link' => 'https://www.instagram.com/banzai13vhs?stkn=aGNqZWphazBvMzRy', 'gambar' => asset('Assets/ekskul/banzai.jpg')],
+                ['id' => 'ek6', 'nama' => 'Karawitan', 'icon' => 'fa-drum', 'desc' => 'Melestarikan seni musik tradisional Sunda melalui latihan dan pementasan karawitan.', 'ig' => '@aleutan_13', 'link' => 'https://www.instagram.com/aleutan_13?stkn=MXU0YmwzeWJvMDNxdQ==', 'gambar' => asset('Assets/ekskul/karawitan.jpg')],
+                ['id' => 'ek7', 'nama' => 'Pramuka', 'icon' => 'fa-campground', 'desc' => 'Gerakan pramuka berlandaskan Dasa Darma untuk mencetak siswa berkarakter dan berjiwa kepemimpinan.', 'ig' => '@pramukasmkn13bdg', 'link' => 'https://www.instagram.com/pramukasmkn13bdg?stkn=bDEyZXpsYXhrbTZx', 'gambar' => asset('Assets/ekskul/pramuka.jpeg')],
+                ['id' => 'ek8', 'nama' => 'Paskibra', 'icon' => 'fa-flag', 'desc' => 'Melatih kedisiplinan, baris-berbaris, dan nasionalisme untuk petugas upacara bendera.', 'ig' => '@paskibra_paramartha13', 'link' => 'https://www.instagram.com/paskibra_paramartha13?stkn=MXE1M2VvaHN4dTVvNQ==', 'gambar' => asset('Assets/ekskul/paskibra.jpeg')],
+                ['id' => 'ek9', 'nama' => 'English Club', 'icon' => 'fa-language', 'desc' => 'Melatih kemampuan berbahasa Inggris lewat percakapan, debat, dan berbagai kegiatan seru.', 'ig' => '@beengo.smkn13', 'link' => 'https://www.instagram.com/beengo.smkn13?stkn=bjF5bmloODEwYWo4', 'gambar' => asset('Assets/LOGOS.jpg')]
+            ];
         }
     @endphp
 

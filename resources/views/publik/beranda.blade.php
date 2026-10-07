@@ -58,7 +58,7 @@
                 <p class="text-sm text-text-muted">Laboratorium & sarana prasarana penunjang pembelajaran abad ke-21.</p>
             </a>
 
-            <a href="{{ route('publik.berita') }}" class="flex flex-col items-center btn-animate group cursor-pointer">
+            <a href="{{ route('publik.berita') }}?kategori=Prestasi" class="flex flex-col items-center btn-animate group cursor-pointer">
                 <div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-award"></i>
                 </div>
@@ -139,23 +139,43 @@
                     @foreach($beritaTerbaru as $b)
                         <a href="{{ route('publik.detail-berita', $b->id) }}"
                             class="bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col hover:shadow-lg transition-all hover:-translate-y-1 group">
-                            @if(!empty($b->gambar) && file_exists(public_path('storage/' . $b->gambar)))
-                                <img src="{{ asset('storage/' . $b->gambar) }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
+                            @if(!empty($b->gambar_url))
+                                <div class="overflow-hidden relative">
+                                    <img src="{{ $b->gambar_url }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
+                                    @if(!empty($b->is_prestasi))
+                                        <div class="absolute top-4 right-4 bg-amber-500 text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5">
+                                            <i class="fa-solid fa-trophy text-xs"></i>
+                                            <span>Prestasi</span>
+                                        </div>
+                                    @endif
+                                </div>
                             @else
-                                <div class="h-56 w-full bg-navy-mid/10 flex flex-col items-center justify-center text-teal-primary">
-                                    <i class="fa-solid fa-newspaper text-4xl mb-2"></i>
-                                    <span class="text-xs font-bold text-navy-dark">{{ $b->kategori }}</span>
+                                <div class="h-56 w-full {{ !empty($b->is_prestasi) ? 'bg-amber-500/10 text-amber-600' : 'bg-navy-mid/10 text-teal-primary' }} flex flex-col items-center justify-center">
+                                    <i class="fa-solid {{ !empty($b->is_prestasi) ? 'fa-trophy' : 'fa-newspaper' }} text-4xl mb-2"></i>
+                                    <span class="text-xs font-bold text-navy-dark">{{ !empty($b->is_prestasi) ? 'Prestasi Siswa' : $b->kategori }}</span>
                                 </div>
                             @endif
 
                             <div class="p-8 space-y-4 flex flex-col flex-grow">
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="bg-teal-tint text-teal-primary font-bold px-3 py-1.5 rounded-full">{{ $b->kategori }}</span>
+                                    @if(!empty($b->is_prestasi))
+                                        <span class="bg-amber-100 text-amber-800 font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                                            <i class="fa-solid fa-trophy text-amber-600 text-xs"></i> Prestasi
+                                        </span>
+                                    @else
+                                        <span class="bg-teal-tint text-teal-primary font-bold px-3 py-1.5 rounded-full">{{ $b->kategori }}</span>
+                                    @endif
                                     <span class="text-text-muted">{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('D MMMM Y') }}</span>
                                 </div>
                                 <h4 class="text-xl font-black text-navy-dark leading-snug group-hover:text-teal-primary transition-colors line-clamp-2">
                                     {{ $b->judul }}
                                 </h4>
+                                @if(!empty($b->nama_peraih))
+                                    <p class="text-xs font-semibold text-amber-700 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-user-graduate"></i>
+                                        <span>{{ $b->nama_peraih }} ({{ $b->tingkat ?? 'Sekolah' }} - {{ $b->tahun ?? date('Y') }})</span>
+                                    </p>
+                                @endif
                                 <p class="text-text-muted text-sm leading-relaxed line-clamp-3 flex-grow">
                                     {{ Str::limit(strip_tags($b->isi), 130) }}
                                 </p>

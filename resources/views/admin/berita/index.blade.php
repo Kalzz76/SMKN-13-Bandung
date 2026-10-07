@@ -54,8 +54,8 @@
                             <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-3.5 font-medium text-slate-400">{{ $daftarBerita->firstItem() + $index }}</td>
                                 <td class="p-3.5">
-                                    @if($b->gambar)
-                                        <img src="{{ asset('storage/' . $b->gambar) }}" alt="{{ $b->judul }}" class="w-14 h-10 object-cover rounded-lg border border-slate-200">
+                                    @if($b->gambar_url)
+                                        <img src="{{ $b->gambar_url }}" alt="{{ $b->judul }}" class="w-14 h-10 object-cover rounded-lg border border-slate-200">
                                     @else
                                         <div class="w-14 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 border border-slate-200 text-xs">
                                             <i class="fa-solid fa-image"></i>

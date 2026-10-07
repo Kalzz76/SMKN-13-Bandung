@@ -49,35 +49,35 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="beritaGridContainer">
             @foreach($daftarBerita as $b)
-                @php
-                    $imgUrl = null;
-                    if (!empty($b->gambar)) {
-                        if (\Illuminate\Support\Str::startsWith($b->gambar, ['http://', 'https://'])) {
-                            $imgUrl = $b->gambar;
-                        } elseif (file_exists(public_path('storage/' . $b->gambar))) {
-                            $imgUrl = asset('storage/' . $b->gambar);
-                        } elseif (file_exists(public_path('Assets/' . basename($b->gambar)))) {
-                            $imgUrl = asset('Assets/' . basename($b->gambar));
-                        }
-                    }
-                @endphp
                 <div class="berita-card bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col hover:shadow-lg transition-all hover:-translate-y-1 group"
                     data-kategori="{{ $b->kategori }}"
                     data-judul="{{ strtolower($b->judul) }}">
-                    @if($imgUrl)
-                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="overflow-hidden block">
-                            <img src="{{ $imgUrl }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
+                    @if($b->gambar_url)
+                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="overflow-hidden block relative">
+                            <img src="{{ $b->gambar_url }}" class="h-56 w-full object-cover group-hover:scale-105 transition duration-500" alt="{{ $b->judul }}">
+                            @if(!empty($b->is_prestasi))
+                                <div class="absolute top-4 right-4 bg-amber-500 text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5">
+                                    <i class="fa-solid fa-trophy text-xs"></i>
+                                    <span>Prestasi</span>
+                                </div>
+                            @endif
                         </a>
                     @else
-                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="h-56 w-full bg-navy-mid/10 flex flex-col items-center justify-center text-teal-primary group-hover:bg-navy-mid/15 transition">
-                            <i class="fa-solid fa-newspaper text-4xl mb-2"></i>
-                            <span class="text-xs font-bold text-navy-dark">{{ $b->kategori }}</span>
+                        <a href="{{ route('publik.detail-berita', $b->id) }}" class="h-56 w-full {{ !empty($b->is_prestasi) ? 'bg-amber-500/10 text-amber-600' : 'bg-navy-mid/10 text-teal-primary' }} flex flex-col items-center justify-center group-hover:opacity-90 transition">
+                            <i class="fa-solid {{ !empty($b->is_prestasi) ? 'fa-trophy' : 'fa-newspaper' }} text-4xl mb-2"></i>
+                            <span class="text-xs font-bold text-navy-dark">{{ !empty($b->is_prestasi) ? 'Prestasi Siswa' : $b->kategori }}</span>
                         </a>
                     @endif
 
                     <div class="p-8 space-y-4 flex flex-col flex-grow">
                         <div class="flex justify-between items-center text-xs">
-                            <span class="bg-teal-tint text-teal-primary font-bold px-3 py-1.5 rounded-full">{{ $b->kategori }}</span>
+                            @if(!empty($b->is_prestasi))
+                                <span class="bg-amber-100 text-amber-800 font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                                    <i class="fa-solid fa-trophy text-amber-600 text-xs"></i> Prestasi
+                                </span>
+                            @else
+                                <span class="bg-teal-tint text-teal-primary font-bold px-3 py-1.5 rounded-full">{{ $b->kategori }}</span>
+                            @endif
                             <span class="text-text-muted flex items-center">
                                 <i class="fa-regular fa-calendar mr-1.5 text-teal-primary"></i>
                                 {{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('D MMMM Y') }}
@@ -90,6 +90,26 @@
                             </a>
                         </h3>
 
+                        @if(!empty($b->is_prestasi) && (!empty($b->nama_peraih) || !empty($b->tingkat)))
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                @if(!empty($b->nama_peraih))
+                                    <span class="bg-slate-100 text-navy-dark font-medium px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-slate-200">
+                                        <i class="fa-solid fa-user-graduate text-teal-primary"></i> {{ $b->nama_peraih }}
+                                    </span>
+                                @endif
+                                @if(!empty($b->tingkat))
+                                    <span class="bg-amber-50 text-amber-800 font-medium px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-amber-200">
+                                        <i class="fa-solid fa-medal text-amber-600"></i> Tingkat {{ $b->tingkat }}
+                                    </span>
+                                @endif
+                                @if(!empty($b->tahun))
+                                    <span class="bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-lg flex items-center gap-1 border border-slate-200">
+                                        {{ $b->tahun }}
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
+
                         <p class="text-text-muted text-sm leading-relaxed line-clamp-3 flex-grow">
                             {{ Str::limit(strip_tags($b->isi), 130) }}
                         </p>
@@ -100,7 +120,7 @@
                                 <span>Baca Selengkapnya</span>
                                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </a>
-                            <span class="text-[11px] text-text-muted">
+                            <span class="text-[11px] text-text-muted flex items-center gap-1">
                                 <i class="fa-regular fa-user mr-1"></i> {{ $b->user->name ?? 'Admin' }}
                             </span>
                         </div>
@@ -130,7 +150,8 @@
         activeKategori = kat;
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            if (btn.getAttribute('data-kategori') === kat) {
+            const btnKat = btn.getAttribute('data-kategori');
+            if (btnKat && btnKat.toLowerCase() === kat.toLowerCase()) {
                 btn.className = 'filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-navy-dark text-white border-navy-dark';
             } else {
                 btn.className = 'filter-btn px-5 py-2.5 rounded-full text-xs font-bold border transition whitespace-nowrap bg-white text-navy-dark border-teal-tint hover:bg-teal-tint';
@@ -171,5 +192,14 @@
             pagination.style.display = (query !== '' || activeKategori !== 'Semua') ? 'none' : 'flex';
         }
     }
+
+    // Auto-filter jika ada query param kategori (misal: /berita?kategori=Prestasi)
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const katParam = urlParams.get('kategori');
+        if (katParam) {
+            filterByKategori(katParam);
+        }
+    });
 </script>
 @endsection

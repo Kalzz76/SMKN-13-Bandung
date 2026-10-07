@@ -385,10 +385,10 @@ berita:[
 {id:'b2',judul:'Workshop Sinkronisasi Kurikulum',kategori:'Agenda',tanggal:'28 September 2026',gambar:IMG('photo-1524178232363-1fb2b075b655',600),isi:'Langkah strategis penyesuaian kurikulum APL, TKJ, dan RPL dengan kompetensi nyata yang dibutuhkan ekosistem startup dan manufaktur saat ini.\nKegiatan diikuti oleh para kepala program, guru produktif, serta perwakilan dunia usaha dan dunia industri yang memberikan masukan mengenai kompetensi terbaru yang dibutuhkan lulusan.\nHasil workshop akan dituangkan dalam perangkat ajar yang diterapkan mulai semester berikutnya.'},
 {id:'b3',judul:'Penerimaan Tamu Ambalan Pramuka',kategori:'Ekskul',tanggal:'20 September 2026',gambar:IMG('photo-1533630654593-b222d5d44449',600),isi:'Membangun karakter siswa yang disiplin, mandiri, tangguh, serta peka terhadap pelestarian lingkungan lewat kegiatan perkemahan.\nRangkaian acara meliputi upacara penerimaan, penjelajahan, permainan kelompok, dan api unggun yang diikuti seluruh calon anggota baru.\nPembina berharap kegiatan ini menumbuhkan jiwa kepemimpinan dan kebersamaan antarsiswa.'}],
 galeriAlbums:[
-{id:'gal1',judul:'Uji Kompetensi APL',kategori:'Akademik',mainPhoto:IMG('photo-1581093458791-9f3c3900df4b',600),subPhotos:[IMG('photo-1532094349884-543bc11b234d'),IMG('photo-1576086213369-97a306d36557')]},
-{id:'gal2',judul:'Hackathon Siswa RPL',kategori:'Lomba',mainPhoto:IMG('photo-1522202176988-66273c2fd55f',600),subPhotos:[IMG('photo-1531482615713-2afd69097998'),IMG('photo-1573164713988-8665fc963095')]},
-{id:'gal3',judul:'Gelar Karya P5 (Pancasila)',kategori:'Kegiatan',mainPhoto:IMG('photo-1511632765486-a01c80cf59af',600),subPhotos:[IMG('photo-1523580494863-6f3031224c94'),IMG('photo-1491438590914-bc09fcaaf77a')]},
-{id:'gal4',judul:'Fasilitas & Lab Jaringan',kategori:'Fasilitas',mainPhoto:IMG('photo-1558494949-ef010cbdcc31',600),subPhotos:[IMG('photo-1544197150-b99a580bb7a8'),IMG('photo-1563986768494-4dee2763ff3f')]}],
+{id:'gal1',judul:'Uji Kompetensi APL',kategori:'Akademik',mainPhoto:IMG('photo-1582719478250-c89cae4dc85b',600),subPhotos:[IMG('photo-1532094349884-543bc11b234d',600),IMG('photo-1576086213369-97a306d36557',600),IMG('photo-1579154204601-01588f351e67',600),IMG('photo-1532187863486-abf9dbad1b69',600)]},
+{id:'gal2',judul:'Hackathon Siswa RPL',kategori:'Lomba',mainPhoto:IMG('photo-1522202176988-66273c2fd55f',600),subPhotos:[IMG('photo-1531482615713-2afd69097998',600),IMG('photo-1573164713988-8665fc963095',600),IMG('photo-1504384308090-c894fdcc538d',600),IMG('photo-1517245386807-bb43f82c33c4',600)]},
+{id:'gal3',judul:'Gelar Karya P5 (Pancasila)',kategori:'Kegiatan',mainPhoto:IMG('photo-1517048676732-d65bc937f952',600),subPhotos:[IMG('photo-1523580494863-6f3031224c94',600),IMG('photo-1491438590914-bc09fcaaf77a',600),IMG('photo-1524178232363-1fb2b075b655',600),IMG('photo-1529070538774-1843cb3265df',600)]},
+{id:'gal4',judul:'Fasilitas & Lab Jaringan',kategori:'Fasilitas',mainPhoto:IMG('photo-1558494949-ef010cbdcc31',600),subPhotos:[IMG('photo-1544197150-b99a580bb7a8',600),IMG('photo-1563986768494-4dee2763ff3f',600),IMG('photo-1562774053-701939374585',600),IMG('photo-1581092160607-ee22621dd758',600)]}],
 ekskul:[
 {id:'ek1',nama:'PMR (Palang Merah Remaja)',icon:'fa-kit-medical',desc:'Pelatihan pertolongan pertama, kesehatan remaja, dan kesiapsiagaan bencana.',ig:'@pmrsmkn13_bdg',link:'https://www.instagram.com/pmrsmkn13_bdg?stkn=Z3o4Z3FzdnU4MDc2',gambar:EK('pmr.jpg')},
 {id:'ek2',nama:'IRMA Al-Hikmah',icon:'fa-mosque',desc:'Wadah pembinaan keislaman dan akhlak mulia melalui kegiatan keagamaan di lingkungan sekolah.',ig:'@irmaalhikmah13',link:'https://www.instagram.com/irmaalhikmah13?stkn=ZjllZWM3dmk3YW9h',gambar:EK('irma.jpg')},
@@ -516,20 +516,23 @@ function filterBerita(){const q=$('searchBeritaInput').value.toLowerCase();
 const f=db.berita.filter(b=>(curBeritaFilter==='Semua'||b.kategori===curBeritaFilter)&&(b.judul+b.isi).toLowerCase().includes(q));
 $('pubBeritaGrid').innerHTML=f.length?f.map(beritaCard).join(''):'<p class="col-span-3 text-center text-text-muted py-10">Pencarian tidak ditemukan.</p>'}
 let galFilter='Semua',galIdx=0,galTimer=null,galPaused=false;
-function galItems(){const o=[];db.galeriAlbums.forEach(a=>[a.mainPhoto,...(a.subPhotos||[])].forEach(u=>o.push({src:u,judul:a.judul,kat:a.kategori})));return galFilter==='Semua'?o:o.filter(x=>x.kat===galFilter)}
-function renderGaleriPage(){const kats=['Semua',...new Set(db.galeriAlbums.map(a=>a.kategori))];
+function galRawItems(){const o=[];db.galeriAlbums.forEach(a=>[a.mainPhoto,...(a.subPhotos||[])].filter(Boolean).forEach(u=>o.push({src:u,judul:a.judul,kat:a.kategori})));return galFilter==='Semua'?o:o.filter(x=>x.kat===galFilter)}
+function galItems(){const r=galRawItems();if(!r.length)return[];if(r.length>=5)return r;let exp=[...r];while(exp.length<5){exp=exp.concat(r)}return exp}
+function renderGaleriPage(immediate=true){const kats=['Semua',...new Set(db.galeriAlbums.map(a=>a.kategori))];
 $('galFilters').innerHTML=kats.map(k=>`<button onclick="setGalFilter('${k}')" class="px-5 py-2 rounded-full text-sm font-semibold border transition ${galFilter===k?'bg-navy-dark text-white border-navy-dark':'border-navy-dark/40 text-navy-dark hover:bg-teal-tint'}">${k}</button>`).join('');
-const it=galItems();$('galTrack').innerHTML=it.map((x,i)=>`<div class="gal-card" onclick="galGo(${i})"><img src="${x.src}" alt="${x.judul}"><div class="gal-shade"></div><div class="gal-info"><span class="text-xs font-black uppercase tracking-widest text-teal-accent">${x.kat}</span><h5 class="text-xl font-bold mt-1">${x.judul}</h5></div></div>`).join('');
-galIdx=Math.min(galIdx,Math.max(it.length-1,0));positionGal();startGalAuto()}
-function positionGal(){const cards=[...document.querySelectorAll('#galTrack .gal-card')],N=cards.length;if(!N)return;
+const it=galItems();$('galTrack').innerHTML=it.map((x,i)=>`<div class="gal-card" onclick="galGo(${i})"><img src="${x.src}" alt="${x.judul}" onerror="imgErr(this)"><div class="gal-shade"></div><div class="gal-info"><span class="text-xs font-black uppercase tracking-widest text-teal-accent">${x.kat}</span><h5 class="text-xl font-bold mt-1">${x.judul}</h5></div></div>`).join('');
+galIdx=Math.min(galIdx,Math.max(it.length-1,0));positionGal(immediate);startGalAuto()}
+function positionGal(immediate=false){const cards=[...document.querySelectorAll('#galTrack .gal-card')],N=cards.length;if(!N)return;
 const W=$('galTrack').clientWidth||900,cw=Math.min(380,W*.62),step=cw*.78;
-cards.forEach((c,i)=>{let d=((i-galIdx)%N+N)%N;if(d>N/2)d-=N;const a=Math.abs(d),x=d*step*(a>1?1.02:1);
+cards.forEach((c,i)=>{if(immediate){c.style.transition='none'}else{c.style.transition='transform .7s cubic-bezier(.4,0,.2,1),opacity .7s ease'}
+let d=((i-galIdx)%N+N)%N;if(d>N/2)d-=N;const a=Math.abs(d),x=d*step*(a>1?1.02:1);
 c.style.width=cw+'px';c.style.transform=`translateX(calc(-50% + ${x}px)) scale(${a===0?1:a===1?.84:.7})`;
-c.style.zIndex=10-a;c.style.opacity=a>2?0:1;c.style.pointerEvents=a>2?'none':'auto';c.classList.toggle('is-active',a===0)})}
-function galGo(i){galIdx=i;positionGal();startGalAuto()}
-function galNext(){const N=galItems().length;if(!N)return;galIdx=(galIdx+1)%N;positionGal();startGalAuto()}
-function galPrev(){const N=galItems().length;if(!N)return;galIdx=(galIdx-1+N)%N;positionGal();startGalAuto()}
-function setGalFilter(k){galFilter=k;galIdx=0;renderGaleriPage()}
+c.style.zIndex=10-a;c.style.opacity=a>2?0:1;c.style.pointerEvents=a>2?'none':'auto';c.classList.toggle('is-active',a===0)});
+if(immediate){$('galTrack').offsetHeight;setTimeout(()=>cards.forEach(c=>c.style.transition='transform .7s cubic-bezier(.4,0,.2,1),opacity .7s ease'),50)}}
+function galGo(i){galIdx=i;positionGal(false);startGalAuto()}
+function galNext(){const N=galItems().length;if(!N)return;galIdx=(galIdx+1)%N;positionGal(false);startGalAuto()}
+function galPrev(){const N=galItems().length;if(!N)return;galIdx=(galIdx-1+N)%N;positionGal(false);startGalAuto()}
+function setGalFilter(k){if(galFilter===k)return;galFilter=k;galIdx=0;renderGaleriPage(true)}
 function startGalAuto(){clearInterval(galTimer);galTimer=setInterval(()=>{if(galPaused||!$('pubPage_galeri').classList.contains('active'))return;const N=galItems().length;if(N){galIdx=(galIdx+1)%N;positionGal()}},3200)}
 window.addEventListener('resize',()=>{if($('pubPage_galeri').classList.contains('active'))positionGal()});
 function renderEkskulPage(){$('pubEkskulList').innerHTML=db.ekskul.map((e,i)=>`<div class="bg-bg-card rounded-3xl overflow-hidden shadow-sm border border-teal-tint flex flex-col md:flex-row ${i%2?'md:flex-row-reverse':''}"><div class="w-full md:w-5/12 h-64 md:h-auto relative bg-teal-tint"><img src="${e.gambar}" alt="${e.nama}" onerror="imgErr(this)" class="w-full h-full object-cover absolute inset-0"></div><div class="w-full md:w-7/12 p-8 sm:p-12 space-y-6"><div class="flex items-center space-x-4"><div class="w-12 h-12 rounded-xl bg-teal-tint text-teal-primary flex items-center justify-center text-2xl"><i class="fa-solid ${e.icon}"></i></div><h4 class="text-3xl font-black text-navy-dark">${e.nama}</h4></div><p class="font-medium leading-relaxed">${e.desc}</p><div class="text-sm bg-bg-page p-5 rounded-2xl border border-teal-tint/50"><span class="block text-text-muted text-xs font-bold uppercase mb-1">Instagram</span><b class="text-navy-dark"><i class="fa-brands fa-instagram mr-1"></i>${e.ig}</b></div><a href="${e.link}" target="_blank" rel="noopener noreferrer" class="btn-animate inline-block bg-brick-red hover:bg-brick-dark text-white font-bold px-8 py-3.5 rounded-full shadow-md">Bergabung Sekarang <i class="fa-solid fa-arrow-right ml-2"></i></a></div></div>`).join('')}

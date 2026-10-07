@@ -121,7 +121,7 @@
             border-radius: 1.5rem;
             overflow: hidden;
             cursor: pointer;
-            background: #E1ECEE;
+            background: #0f2a47;
             box-shadow: 0 25px 50px -12px rgba(15, 42, 71, 0.35);
             transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease;
         }

@@ -55,8 +55,8 @@
                             <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-3.5 font-medium text-slate-400">{{ $daftarEkskul->firstItem() + $index }}</td>
                                 <td class="p-3.5">
-                                    @if($e->gambar)
-                                        <img src="{{ asset('storage/' . $e->gambar) }}" alt="{{ $e->nama }}" class="w-12 h-12 object-cover rounded-xl border border-slate-200">
+                                    @if($e->gambar_url)
+                                        <img src="{{ $e->gambar_url }}" alt="{{ $e->nama }}" class="w-12 h-12 object-cover rounded-xl border border-slate-200">
                                     @else
                                         <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-base">
                                             <i class="fa-solid fa-volleyball"></i>

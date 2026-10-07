@@ -363,7 +363,8 @@ class DataMasterDanJadwalTest extends TestCase
         ]);
         $responseSelesaiKecil->assertSessionHas('error');
 
-        $responseLewatIstirahat = $this->actingAs($this->admin)->post('/admin/jadwal', [
+        // Jadwal melewati jam istirahat (jam 3-5 di hari Selasa melintasi istirahat jam 4) kini diizinkan
+        $responseValid = $this->actingAs($this->admin)->post('/admin/jadwal', [
             'hari' => 'Selasa',
             'id_kelas' => $kelas1->id,
             'id_mapel' => $mapel->id,
@@ -372,23 +373,12 @@ class DataMasterDanJadwalTest extends TestCase
             'jam_ke_mulai' => 3,
             'jam_ke_selesai' => 5,
         ]);
-        $responseLewatIstirahat->assertSessionHas('error');
-
-        $responseValid = $this->actingAs($this->admin)->post('/admin/jadwal', [
-            'hari' => 'Selasa',
-            'id_kelas' => $kelas1->id,
-            'id_mapel' => $mapel->id,
-            'id_guru' => $guru->id,
-            'id_ruangan' => $ruang->id,
-            'jam_ke_mulai' => 1,
-            'jam_ke_selesai' => 3,
-        ]);
         $responseValid->assertRedirect('/admin/jadwal?hari=Selasa');
         $this->assertDatabaseHas('jadwal', [
             'hari' => 'Selasa',
             'id_kelas' => $kelas1->id,
-            'jam_ke_mulai' => 1,
-            'jam_ke_selesai' => 3,
+            'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 5,
         ]);
 
         $responseBentrokGuru = $this->actingAs($this->admin)->post('/admin/jadwal', [
@@ -397,8 +387,8 @@ class DataMasterDanJadwalTest extends TestCase
             'id_mapel' => $mapel->id,
             'id_guru' => $guru->id,
             'id_ruangan' => Ruangan::where('kode', 'R.52')->first()->id,
-            'jam_ke_mulai' => 2,
-            'jam_ke_selesai' => 3,
+            'jam_ke_mulai' => 4,
+            'jam_ke_selesai' => 5,
         ]);
         $responseBentrokGuru->assertSessionHas('error');
 
@@ -408,8 +398,8 @@ class DataMasterDanJadwalTest extends TestCase
             'id_mapel' => Mapel::where('id', '!=', $mapel->id)->first()->id,
             'id_guru' => Guru::where('id', '!=', $guru->id)->first()->id,
             'id_ruangan' => Ruangan::where('kode', 'R.52')->first()->id,
-            'jam_ke_mulai' => 2,
-            'jam_ke_selesai' => 3,
+            'jam_ke_mulai' => 4,
+            'jam_ke_selesai' => 5,
         ]);
         $responseBentrokKelas->assertSessionHas('error');
 

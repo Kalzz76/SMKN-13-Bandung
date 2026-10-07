@@ -71,7 +71,7 @@ class JadwalController extends Controller
         }
 
         $daftarMapel = Mapel::orderBy('nama')->get();
-        $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $daftarGuru = Guru::where('jenis', 'Guru')->with('mapels:id,nama,kode')->orderBy('nama')->get();
         $daftarRuangan = Ruangan::orderBy('kode')->get();
 
         return view('admin.jadwal.index', compact(
@@ -205,10 +205,6 @@ class JadwalController extends Controller
 
         if ($mulai > $maksimal || $selesai > $maksimal) {
             return "Hari {$request->hari} hanya memiliki Jam 1 sampai Jam {$maksimal}. Jam yang dipilih tidak tersedia.";
-        }
-
-        if (JamPelajaran::melewatiIstirahat($ringkasan, $mulai, $selesai)) {
-            return 'Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.';
         }
 
         return null;
