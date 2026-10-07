@@ -10,32 +10,37 @@
 @endphp
 <style>
     #viewMatriksKelas,
-    #viewMatriksRuangan {
+    #viewMatriksRuangan,
+    #topScrollWrapper {
         overflow-x: auto !important;
         scrollbar-width: auto !important;
         scrollbar-color: #047857 #f1f5f9 !important;
         -ms-overflow-style: auto !important;
     }
     #viewMatriksKelas::-webkit-scrollbar,
-    #viewMatriksRuangan::-webkit-scrollbar {
+    #viewMatriksRuangan::-webkit-scrollbar,
+    #topScrollWrapper::-webkit-scrollbar {
         display: block !important;
         height: 14px !important;
         width: 14px !important;
     }
     #viewMatriksKelas::-webkit-scrollbar-track,
-    #viewMatriksRuangan::-webkit-scrollbar-track {
+    #viewMatriksRuangan::-webkit-scrollbar-track,
+    #topScrollWrapper::-webkit-scrollbar-track {
         background: #f1f5f9 !important;
         border-radius: 9999px !important;
         border: 1px solid #e2e8f0 !important;
     }
     #viewMatriksKelas::-webkit-scrollbar-thumb,
-    #viewMatriksRuangan::-webkit-scrollbar-thumb {
+    #viewMatriksRuangan::-webkit-scrollbar-thumb,
+    #topScrollWrapper::-webkit-scrollbar-thumb {
         background: #047857 !important;
         border-radius: 9999px !important;
         border: 3px solid #f1f5f9 !important;
     }
     #viewMatriksKelas::-webkit-scrollbar-thumb:hover,
-    #viewMatriksRuangan::-webkit-scrollbar-thumb:hover {
+    #viewMatriksRuangan::-webkit-scrollbar-thumb:hover,
+    #topScrollWrapper::-webkit-scrollbar-thumb:hover {
         background: #065f46 !important;
     }
 </style>
@@ -157,6 +162,10 @@
                     </button>
                 </div>
             </div>
+        </div>
+
+        <div id="topScrollWrapper" class="overflow-x-auto overflow-y-hidden rounded-xl border border-slate-200 bg-slate-50/60 mb-2" style="height: 16px;">
+            <div id="topScrollDummy" style="height: 1px; min-width: {{ 220 + $jumlahKolom * 180 }}px; width: {{ 220 + $jumlahKolom * 180 }}px;"></div>
         </div>
 
         <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs bg-white">
@@ -931,6 +940,7 @@ function switchMatriksView(view) {
         btnKelas.className = aktifClass;
         btnRuang.className = nonAktifClass;
     }
+    syncTopScrollDimension();
 }
 
 function openTambahModal() {
@@ -1597,5 +1607,53 @@ function scrollMatriksHorizontal(direction) {
         target.scrollBy({ left: direction, behavior: 'smooth' });
     }
 }
+
+const topScrollWrapper = byId('topScrollWrapper');
+const topScrollDummy = byId('topScrollDummy');
+let isSyncingScroll = false;
+
+function syncTopScrollDimension() {
+    const active = getActiveMatriksElement();
+    if (!active || !topScrollDummy) return;
+    const targetWidth = active.scrollWidth;
+    topScrollDummy.style.width = targetWidth + 'px';
+    topScrollDummy.style.minWidth = targetWidth + 'px';
+    if (topScrollWrapper) {
+        topScrollWrapper.scrollLeft = active.scrollLeft;
+    }
+}
+
+if (topScrollWrapper) {
+    topScrollWrapper.addEventListener('scroll', function() {
+        if (isSyncingScroll) return;
+        isSyncingScroll = true;
+        const active = getActiveMatriksElement();
+        if (active) {
+            active.scrollLeft = topScrollWrapper.scrollLeft;
+        }
+        isSyncingScroll = false;
+    });
+}
+
+function attachMatriksScrollListener(el) {
+    if (!el) return;
+    el.addEventListener('scroll', function() {
+        if (isSyncingScroll) return;
+        isSyncingScroll = true;
+        if (topScrollWrapper) {
+            topScrollWrapper.scrollLeft = el.scrollLeft;
+        }
+        isSyncingScroll = false;
+    });
+}
+
+attachMatriksScrollListener(byId('viewMatriksKelas'));
+attachMatriksScrollListener(byId('viewMatriksRuangan'));
+
+window.addEventListener('resize', syncTopScrollDimension);
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(syncTopScrollDimension, 60);
+});
+setTimeout(syncTopScrollDimension, 120);
 </script>
 @endsection
