@@ -172,7 +172,7 @@
                 <div class="card-scale-wrapper w-full max-w-[480px] flex justify-center items-start overflow-hidden">
                     <div class="card-scaler origin-top transition-transform duration-150" style="width: 480px; height: 276px; flex-shrink: 0;">
                         <div class="card-id" id="card_{{ $g->id }}">
-                            <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; padding: 14px 6px 14px 14px; box-sizing: border-box; text-align: left; position: relative; z-index: 2;">
+                            <div style="width: 46%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 6px 14px 14px; box-sizing: border-box; text-align: left; position: relative; z-index: 2;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     @if(!empty($pengaturan?->logo_url))
                                         <img src="{{ $pengaturan->logo_url }}" alt="Logo" style="width: 35px; height: 35px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 2px; border: 2px solid #fbbf24; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
@@ -191,7 +191,7 @@
                                     </div>
                                 </div>
 
-                                <div style="width: 100%; max-width: 172px; font-size: 7.5px; color: #f1f5f9; line-height: 1.3; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif; background: rgba(11, 34, 62, 0.78); padding: 7px 8px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.25); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                                <div style="width: fit-content; max-width: 172px; font-size: 7.5px; color: #f1f5f9; line-height: 1.3; display: flex; flex-direction: column; gap: 3.5px; font-family: 'Inter', sans-serif; background: rgba(11, 34, 62, 0.85); padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
                                     <div style="display: flex; align-items: flex-start; gap: 5px;">
                                         <i class="fa-solid fa-house" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; margin-top: 1.5px; font-size: 7.5px;"></i>
                                         <span style="color: #f1f5f9; line-height: 1.25; word-break: break-word;">{{ $pengaturan->alamat ?? 'Jl. Soekarno-Hatta Km. 10 Gedebage, Bandung' }}</span>
@@ -208,12 +208,6 @@
                                         <i class="fa-solid fa-globe" style="color: #fbbf24; width: 12px; text-align: center; flex-shrink: 0; font-size: 7.5px;"></i>
                                         <span style="color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pengaturan->social_media ?? 'smkn13bdg.sch.id' }}</span>
                                     </div>
-                                </div>
-
-                                <div style="margin-top: auto; display: flex; align-items: center; gap: 4px; padding-bottom: 2px;">
-                                    <span style="font-size: 6.5px; font-weight: 700; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Inter', sans-serif; opacity: 0.9;">
-                                        Pusat Keunggulan · SMKN 13
-                                    </span>
                                 </div>
                             </div>
 
