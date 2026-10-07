@@ -16,14 +16,55 @@
     <style>
         [x-cloak] { display: none !important; }
         body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar {
-            width: 0px;
-            height: 0px;
-            display: none;
+        #adminMainScroll::-webkit-scrollbar,
+        #adminSidebar::-webkit-scrollbar {
+            width: 6px;
         }
-        * {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        #adminMainScroll::-webkit-scrollbar-track,
+        #adminSidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #adminMainScroll::-webkit-scrollbar-thumb,
+        #adminSidebar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+        }
+        #adminMainScroll::-webkit-scrollbar-thumb:hover,
+        #adminSidebar::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+        }
+        .overflow-x-auto,
+        .overflow-x-scroll,
+        .custom-scrollbar-x {
+            scrollbar-width: auto;
+            scrollbar-color: #047857 #f1f5f9;
+            -ms-overflow-style: auto;
+        }
+        .overflow-x-auto::-webkit-scrollbar,
+        .overflow-x-scroll::-webkit-scrollbar,
+        .custom-scrollbar-x::-webkit-scrollbar {
+            display: block;
+            height: 14px;
+            width: 14px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track,
+        .overflow-x-scroll::-webkit-scrollbar-track,
+        .custom-scrollbar-x::-webkit-scrollbar-track {
+            background-color: #f1f5f9;
+            border-radius: 9999px;
+            border: 1px solid #e2e8f0;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb,
+        .overflow-x-scroll::-webkit-scrollbar-thumb,
+        .custom-scrollbar-x::-webkit-scrollbar-thumb {
+            background-color: #047857;
+            border-radius: 9999px;
+            border: 3px solid #f1f5f9;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+        .overflow-x-scroll::-webkit-scrollbar-thumb:hover,
+        .custom-scrollbar-x::-webkit-scrollbar-thumb:hover {
+            background-color: #065f46;
         }
 
         /* Animasi Buka Tutup Mini Sidebar (Icon-Only Mode) */

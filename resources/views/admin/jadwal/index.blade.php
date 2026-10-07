@@ -8,6 +8,37 @@
     $kelompokLabel = ['A' => 'Tingkat XII & XIII', 'B' => 'Tingkat X & XI'];
     $aturanSesiAktif = $aturanRotasi->where('sesi', $sesiTerpilih)->sortBy('kelompok');
 @endphp
+<style>
+    #viewMatriksKelas,
+    #viewMatriksRuangan {
+        overflow-x: auto !important;
+        scrollbar-width: auto !important;
+        scrollbar-color: #047857 #f1f5f9 !important;
+        -ms-overflow-style: auto !important;
+    }
+    #viewMatriksKelas::-webkit-scrollbar,
+    #viewMatriksRuangan::-webkit-scrollbar {
+        display: block !important;
+        height: 14px !important;
+        width: 14px !important;
+    }
+    #viewMatriksKelas::-webkit-scrollbar-track,
+    #viewMatriksRuangan::-webkit-scrollbar-track {
+        background: #f1f5f9 !important;
+        border-radius: 9999px !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+    #viewMatriksKelas::-webkit-scrollbar-thumb,
+    #viewMatriksRuangan::-webkit-scrollbar-thumb {
+        background: #047857 !important;
+        border-radius: 9999px !important;
+        border: 3px solid #f1f5f9 !important;
+    }
+    #viewMatriksKelas::-webkit-scrollbar-thumb:hover,
+    #viewMatriksRuangan::-webkit-scrollbar-thumb:hover {
+        background: #065f46 !important;
+    }
+</style>
 <div class="space-y-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -107,31 +138,39 @@
                     <i class="fa-solid fa-door-open"></i>
                     <span>Matriks Ruangan (PDF)</span>
                 </button>
+                <div class="hidden sm:flex items-center space-x-1 border-l border-slate-300 pl-2">
+                    <button type="button" onclick="scrollMatriksHorizontal(-350)" title="Geser Kiri" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-200 text-xs">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" onclick="scrollMatriksHorizontal(350)" title="Geser Kanan" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-200 text-xs">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl">
-            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 230 + $jumlahKolom * 95 }}px">
+        <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs">
+            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 260 + $jumlahKolom * 125 }}px">
                 <thead>
                     <tr>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-28">KELAS</th>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-20">JAM KE</th>
+                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[110px] w-28">KELAS</th>
+                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[80px] w-20">JAM KE</th>
                         @foreach($slotHari as $slot)
                             @if($slot->jenis === 'Pembiasaan')
-                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 w-28" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
+                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 min-w-[130px] w-32" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
                             @elseif($slot->jenis === 'Istirahat')
-                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24" title="{{ $slot->nama }}">ISTIRAHAT</th>
+                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 min-w-[105px] w-28" title="{{ $slot->nama }}">ISTIRAHAT</th>
                             @else
-                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM {{ $slot->jam_ke }}</th>
+                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 min-w-[125px] w-32">JAM {{ $slot->jam_ke }}</th>
                             @endif
                         @endforeach
                     </tr>
                     <tr class="text-[11px] text-slate-600 bg-slate-50">
                         @foreach($slotHari as $slot)
                             @if($slot->jenis === 'Istirahat')
-                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700 min-w-[105px]">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
                             @else
-                                <th class="p-1 border border-slate-200 font-medium">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                                <th class="p-1 border border-slate-200 font-medium {{ $slot->jenis === 'Pembiasaan' ? 'min-w-[130px]' : 'min-w-[125px]' }}">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
                             @endif
                         @endforeach
                     </tr>
@@ -229,29 +268,29 @@
             </table>
         </div>
 
-        <div id="viewMatriksRuangan" class="hidden overflow-x-auto border border-slate-200 rounded-2xl">
-            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 290 + $jumlahKolom * 95 }}px">
+        <div id="viewMatriksRuangan" class="hidden overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs">
+            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 340 + $jumlahKolom * 125 }}px">
                 <thead>
                     <tr>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-12">NO</th>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-48 text-left">NAMA RUANG</th>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 w-24">KODE</th>
+                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[50px] w-12">NO</th>
+                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[200px] w-48 text-left">NAMA RUANG</th>
+                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[90px] w-24">KODE</th>
                         @foreach($slotHari as $slot)
                             @if($slot->jenis === 'Pembiasaan')
-                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 w-28" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
+                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 min-w-[130px] w-32" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
                             @elseif($slot->jenis === 'Istirahat')
-                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 w-24" title="{{ $slot->nama }}">ISTIRAHAT</th>
+                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 min-w-[105px] w-28" title="{{ $slot->nama }}">ISTIRAHAT</th>
                             @else
-                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 w-24">JAM {{ $slot->jam_ke }}</th>
+                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 min-w-[125px] w-32">JAM {{ $slot->jam_ke }}</th>
                             @endif
                         @endforeach
                     </tr>
                     <tr class="text-[11px] text-slate-600 bg-slate-50">
                         @foreach($slotHari as $slot)
                             @if($slot->jenis === 'Istirahat')
-                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700 min-w-[105px]">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
                             @else
-                                <th class="p-1 border border-slate-200 font-medium">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                                <th class="p-1 border border-slate-200 font-medium {{ $slot->jenis === 'Pembiasaan' ? 'min-w-[130px]' : 'min-w-[125px]' }}">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
                             @endif
                         @endforeach
                     </tr>
@@ -344,6 +383,33 @@
                     </tr>
                 </tfoot>
             </table>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-600">
+            <div class="flex items-center space-x-2">
+                <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-arrows-left-right text-xs"></i>
+                </span>
+                <span class="font-medium text-slate-700">Geser horizontal scroll bar di atas atau gunakan tombol kontrol untuk melihat seluruh jam pelajaran:</span>
+            </div>
+            <div class="flex items-center space-x-1.5 flex-shrink-0">
+                <button type="button" onclick="scrollMatriksHorizontal('start')" title="Ke Jam Pertama" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1 transition shadow-xs">
+                    <i class="fa-solid fa-backward-step text-[10px]"></i>
+                    <span>Awal</span>
+                </button>
+                <button type="button" onclick="scrollMatriksHorizontal(-350)" title="Geser Kiri" class="px-3 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1.5 transition shadow-xs">
+                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    <span>Geser Kiri</span>
+                </button>
+                <button type="button" onclick="scrollMatriksHorizontal(350)" title="Geser Kanan" class="px-3 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1.5 transition shadow-xs">
+                    <span>Geser Kanan</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+                <button type="button" onclick="scrollMatriksHorizontal('end')" title="Ke Jam Terakhir" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1 transition shadow-xs">
+                    <span>Akhir</span>
+                    <i class="fa-solid fa-forward-step text-[10px]"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1124,6 +1190,20 @@ function hapusJadwalAktif() {
     bukaKonfirmasi('Apakah Anda yakin ingin menghapus jadwal ini?', function() {
         byId('deleteForm').submit();
     }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
+}
+
+function scrollMatriksHorizontal(direction) {
+    const vKelas = byId('viewMatriksKelas');
+    const vRuang = byId('viewMatriksRuangan');
+    const target = (!vKelas || vKelas.classList.contains('hidden')) ? vRuang : vKelas;
+    if (!target) return;
+    if (direction === 'start') {
+        target.scrollTo({ left: 0, behavior: 'smooth' });
+    } else if (direction === 'end') {
+        target.scrollTo({ left: target.scrollWidth, behavior: 'smooth' });
+    } else {
+        target.scrollBy({ left: direction, behavior: 'smooth' });
+    }
 }
 </script>
 @endsection
