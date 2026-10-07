@@ -159,19 +159,6 @@
             </div>
         </div>
 
-        <div id="topScrollContainer" class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 mb-3 shadow-xs">
-            <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1.5 px-1">
-                <span class="flex items-center space-x-1.5 text-emerald-800">
-                    <i class="fa-solid fa-arrows-left-right text-xs"></i>
-                    <span>Scrollbar Horizontal (Bagian Atas)</span>
-                </span>
-                <span class="text-slate-400 font-normal hidden sm:inline text-[10px]">Geser scrollbar ini untuk menggeser matriks jadwal secara langsung</span>
-            </div>
-            <div id="topScrollWrapper" class="overflow-x-auto overflow-y-hidden custom-scrollbar-x bg-white border border-slate-200 rounded-xl p-0.5">
-                <div id="topScrollDummy" class="h-2" style="min-width: {{ 220 + $jumlahKolom * 180 }}px; width: {{ 220 + $jumlahKolom * 180 }}px;"></div>
-            </div>
-        </div>
-
         <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs bg-white">
             <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 220 + $jumlahKolom * 180 }}px">
                 <thead>
@@ -425,33 +412,6 @@
                     </tr>
                 </tfoot>
             </table>
-        </div>
-
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-600">
-            <div class="flex items-center space-x-2">
-                <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-arrows-left-right text-xs"></i>
-                </span>
-                <span class="font-medium text-slate-700">Geser horizontal scroll bar di atas atau gunakan tombol navigasi jam:</span>
-            </div>
-            <div class="flex items-center space-x-1.5 flex-shrink-0">
-                <button type="button" onclick="scrollMatriksHorizontal('start')" title="Ke Jam Pertama" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1 transition shadow-xs">
-                    <i class="fa-solid fa-backward-step text-[10px]"></i>
-                    <span>Awal</span>
-                </button>
-                <button type="button" onclick="scrollMatriksHorizontal(-350)" title="Geser Kiri" class="px-3 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1.5 transition shadow-xs">
-                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
-                    <span>Geser Kiri</span>
-                </button>
-                <button type="button" onclick="scrollMatriksHorizontal(350)" title="Geser Kanan" class="px-3 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1.5 transition shadow-xs">
-                    <span>Geser Kanan</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
-                <button type="button" onclick="scrollMatriksHorizontal('end')" title="Ke Jam Terakhir" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1 transition shadow-xs">
-                    <span>Akhir</span>
-                    <i class="fa-solid fa-forward-step text-[10px]"></i>
-                </button>
-            </div>
         </div>
     </div>
 
@@ -971,7 +931,6 @@ function switchMatriksView(view) {
         btnKelas.className = aktifClass;
         btnRuang.className = nonAktifClass;
     }
-    syncTopScrollDimension();
 }
 
 function openTambahModal() {
@@ -1227,7 +1186,6 @@ function renderDropdownGuru(targetGuruId = null) {
         selectGuru.appendChild(groupSibuk);
     }
 
-    // Jika guru khusus mapel terpilih hanya 1 orang dan belum ada guru yang dipilih sebelumnya, otomatis pilih guru tersebut jika bebas
     if (mapelId && guruTersaring.length === 1 && (!nilaiLama || !sumberGuru.some(g => String(g.id) === String(nilaiLama)))) {
         const satuGuru = guruTersaring[0];
         const sedangBentrok = guruMengajar.some(item => item.guru.id === satuGuru.id);
@@ -1639,53 +1597,5 @@ function scrollMatriksHorizontal(direction) {
         target.scrollBy({ left: direction, behavior: 'smooth' });
     }
 }
-
-const topScrollWrapper = byId('topScrollWrapper');
-const topScrollDummy = byId('topScrollDummy');
-let isSyncingScroll = false;
-
-function syncTopScrollDimension() {
-    const active = getActiveMatriksElement();
-    if (!active || !topScrollDummy) return;
-    const targetWidth = active.scrollWidth;
-    topScrollDummy.style.width = targetWidth + 'px';
-    topScrollDummy.style.minWidth = targetWidth + 'px';
-    if (topScrollWrapper) {
-        topScrollWrapper.scrollLeft = active.scrollLeft;
-    }
-}
-
-if (topScrollWrapper) {
-    topScrollWrapper.addEventListener('scroll', function() {
-        if (isSyncingScroll) return;
-        isSyncingScroll = true;
-        const active = getActiveMatriksElement();
-        if (active) {
-            active.scrollLeft = topScrollWrapper.scrollLeft;
-        }
-        isSyncingScroll = false;
-    });
-}
-
-function attachMatriksScrollListener(el) {
-    if (!el) return;
-    el.addEventListener('scroll', function() {
-        if (isSyncingScroll) return;
-        isSyncingScroll = true;
-        if (topScrollWrapper) {
-            topScrollWrapper.scrollLeft = el.scrollLeft;
-        }
-        isSyncingScroll = false;
-    });
-}
-
-attachMatriksScrollListener(byId('viewMatriksKelas'));
-attachMatriksScrollListener(byId('viewMatriksRuangan'));
-
-window.addEventListener('resize', syncTopScrollDimension);
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(syncTopScrollDimension, 60);
-});
-setTimeout(syncTopScrollDimension, 120);
 </script>
 @endsection
