@@ -98,7 +98,7 @@
 
             <div class="rv w-full md:w-7/12 space-y-6" data-rv="right">
                 <div class="inline-block bg-teal-tint text-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
-                    Sambutan Pimpinan
+                    Sambutan Kepala Sekolah
                 </div>
                 <h2 class="text-3xl sm:text-4xl font-black text-navy-dark">
                     {{ $pengaturan->judul_sambutan ?? 'Sambutan Kepala Sekolah' }}
