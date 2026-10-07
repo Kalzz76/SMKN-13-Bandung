@@ -88,11 +88,11 @@
                 @if(!empty($pengaturan->foto_kepsek) && file_exists(public_path('storage/' . $pengaturan->foto_kepsek)))
                     <img src="{{ asset('storage/' . $pengaturan->foto_kepsek) }}"
                         alt="{{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}"
-                        class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[340px] md:h-[450px] bg-teal-tint border border-teal-tint">
+                        class="rounded-3xl shadow-xl w-full max-w-xs sm:max-w-sm aspect-[4/5] object-cover object-top bg-teal-tint border border-teal-tint">
                 @else
                     <img src="{{ asset('Assets/agus.webp') }}"
                         alt="Agus Nugroho, S.Pd., M.T."
-                        class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[340px] md:h-[450px] bg-teal-tint border border-teal-tint">
+                        class="rounded-3xl shadow-xl w-full max-w-xs sm:max-w-sm aspect-[4/5] object-cover object-top bg-teal-tint border border-teal-tint">
                 @endif
             </div>
 

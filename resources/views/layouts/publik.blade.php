@@ -210,19 +210,24 @@
             background: #E1ECEE;
         }
 
-        /* Marquee Guru */
         .marquee {
             overflow: hidden;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
             -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
             mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
         }
         .marquee-track {
             display: flex;
             width: max-content;
-            animation: marquee 180s linear infinite;
+            animation: marquee 80s linear infinite;
         }
-        .marquee:hover .marquee-track {
+        .marquee-track-reverse {
+            display: flex;
+            width: max-content;
+            animation: marquee-reverse 80s linear infinite;
+        }
+        .marquee:hover .marquee-track,
+        .marquee:hover .marquee-track-reverse {
             animation-play-state: paused;
         }
         .marquee-group {
@@ -234,6 +239,15 @@
         @keyframes marquee {
             from { transform: translateX(0); }
             to { transform: translateX(-50%); }
+        }
+        @keyframes marquee-reverse {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-track, .marquee-track-reverse {
+                animation: none !important;
+            }
         }
 
         .hero-slide {
