@@ -31,6 +31,12 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 .marquee-group{display:flex;gap:1.5rem;padding-right:1.5rem;flex-shrink:0}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* SLIDER BACKGROUND */
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;background-color:#0F2A47;opacity:0;transform:scale(1.1);transition:opacity 1.3s ease,transform 7s ease-out}
+.hero-slide.active{opacity:1;transform:scale(1)}
+.slider-dot{width:.6rem;height:.6rem;border-radius:9999px;background:rgba(255,255,255,.45);transition:all .3s}
+.slider-dot.active{width:1.8rem;background:#9ED6CF}
+@media (prefers-reduced-motion:reduce){.hero-slide{transition:opacity .5s;transform:none!important}}
 /* GALERI COVERFLOW */
 .gal-card{position:absolute;top:10px;left:50%;height:440px;border-radius:1.5rem;overflow:hidden;cursor:pointer;background:#E1ECEE;box-shadow:0 25px 50px -12px rgba(15,42,71,.35);transition:transform .7s cubic-bezier(.4,0,.2,1),opacity .7s ease}
 .gal-card img{width:100%;height:100%;object-fit:cover;display:block}
@@ -50,7 +56,7 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between h-20 items-center">
 <div class="flex items-center space-x-3 cursor-pointer btn-animate" onclick="switchPublicPage('home')">
 <img src="assets/LOGOS.png" alt="Logo SMKN 13 Bandung" onerror="imgErr(this)" class="h-12 w-12 object-contain">
-<div><span class="text-lg font-bold block leading-tight">SMKN 13 BANDUNG</span><span class="text-xs text-teal-accent tracking-wider uppercase">Official Portal</span></div></div>
+<div><span class="text-base sm:text-lg font-bold block leading-tight">SMKN 13 BANDUNG</span><span class="text-xs text-teal-accent tracking-wider uppercase">Official Portal</span></div></div>
 <div class="hidden md:flex items-center space-x-8 text-sm font-bold uppercase tracking-wider">
 <button id="navBtn_home" onclick="switchPublicPage('home')" class="nav-item text-teal-accent">Beranda</button>
 <div class="relative group">
@@ -67,29 +73,45 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <button id="navBtn_ekskul" onclick="switchPublicPage('ekskul')" class="nav-item hover:text-teal-accent">Ekskul</button>
 <button id="navBtn_kontak" onclick="switchPublicPage('kontak')" class="nav-item hover:text-teal-accent">Kontak</button>
 </div>
-<button onclick="openLoginModal()" class="btn-animate bg-teal-primary hover:bg-teal-light px-6 py-2.5 rounded-full text-sm font-bold shadow-md"><i class="fa-solid fa-lock mr-2"></i>Login</button>
-</div></div></nav>
+<div class="flex items-center gap-2"><button onclick="openLoginModal()" class="btn-animate bg-teal-primary hover:bg-teal-light px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-sm font-bold shadow-md"><i class="fa-solid fa-lock sm:mr-2"></i><span class="hidden sm:inline">Login</span></button><button id="menuBtn" onclick="toggleMobileMenu()" aria-label="Menu" class="md:hidden w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center"><i id="menuIcon" class="fa-solid fa-bars text-lg"></i></button></div>
+</div></div>
+<div id="mobileMenu" class="hidden md:hidden border-t border-navy-mid bg-navy-dark px-4 pb-4 max-h-[75vh] overflow-y-auto">
+<button onclick="mobileGo('home')" class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid">Beranda</button>
+<div class="py-3 border-b border-navy-mid"><span class="block font-bold uppercase text-sm tracking-wider text-teal-accent mb-2">Profil</span>
+<button onclick="mobileGo('profil','visi-misi')" class="block w-full text-left py-2 pl-4 text-sm font-semibold">Visi & Misi</button>
+<button onclick="mobileGo('profil','sejarah')" class="block w-full text-left py-2 pl-4 text-sm font-semibold">Sejarah Sekolah</button>
+<button onclick="mobileGo('profil','struktur')" class="block w-full text-left py-2 pl-4 text-sm font-semibold">Struktur Organisasi</button>
+<button onclick="mobileGo('profil','pengajar')" class="block w-full text-left py-2 pl-4 text-sm font-semibold">Tenaga Pengajar</button></div>
+<button onclick="mobileGo('jurusan')" class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid">Jurusan</button>
+<button onclick="mobileGo('berita')" class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid">Berita</button>
+<button onclick="mobileGo('galeri')" class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid">Galeri</button>
+<button onclick="mobileGo('ekskul')" class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider border-b border-navy-mid">Ekskul</button>
+<button onclick="mobileGo('kontak')" class="block w-full text-left py-3 font-bold uppercase text-sm tracking-wider">Kontak</button>
+</div></nav>
 
 <div id="publicContentContainer" class="flex-grow flex flex-col bg-bg-page">
 
 <!-- HOME -->
 <div id="pubPage_home" class="page-section active flex-grow">
-<div class="relative bg-gradient-to-r from-navy-dark to-navy-mid py-32 px-4 overflow-hidden">
+<div class="relative bg-navy-dark py-24 sm:py-40 px-4 overflow-hidden min-h-[75vh] flex items-center">
+<div class="absolute inset-0" data-slider data-offset="0" data-dots="1"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-navy-dark/75 via-navy-dark/55 to-navy-dark/85"></div>
 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#9ED6CF_1px,transparent_1px)] [background-size:24px_24px]"></div>
-<div class="max-w-4xl mx-auto relative z-10 text-center">
-<h1 class="text-6xl sm:text-7xl font-black mb-6 tracking-tighter text-white">SMK Negeri 13 <br><span class="text-teal-accent">Bandung.</span></h1>
-<p class="text-xl sm:text-2xl text-teal-tint/90 max-w-2xl mx-auto font-medium leading-relaxed">Pusat Keunggulan Vokasi yang berfokus pada <b class="text-teal-accent">akhlak mulia</b>, <b class="text-teal-accent">kompetensi</b>, dan <b class="text-teal-accent">daya saing internasional</b>.</p>
+<div class="max-w-4xl mx-auto w-full relative z-10 text-center [text-shadow:0_2px_16px_rgba(0,0,0,.35)]">
+<span class="inline-block mb-5 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/20 text-xs font-bold uppercase tracking-[.25em] text-teal-accent">Selamat Datang di</span>
+<h1 class="text-4xl sm:text-6xl lg:text-7xl font-black mb-6 tracking-tighter text-white">SMK Negeri 13 <br><span class="text-teal-accent">Bandung.</span></h1>
+<p class="text-base sm:text-xl lg:text-2xl text-teal-tint/90 max-w-2xl mx-auto font-medium leading-relaxed">Pusat Keunggulan Vokasi yang berfokus pada <b class="text-teal-accent">akhlak mulia</b>, <b class="text-teal-accent">kompetensi</b>, dan <b class="text-teal-accent">daya saing internasional</b>.</p>
 </div></div>
-<section class="py-20 max-w-7xl mx-auto px-4 text-center"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+<section class="py-12 sm:py-20 max-w-7xl mx-auto px-4 text-center"><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
 <div class="flex flex-col items-center btn-animate cursor-pointer" onclick="switchPublicPage('jurusan')"><div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6"><i class="fa-solid fa-flask"></i></div><h4 class="font-bold text-navy-dark text-lg uppercase mb-3">Konsentrasi Keahlian</h4><p class="text-sm text-text-muted">Kurikulum mendalam dengan standar industri nasional dan global.</p></div>
 <div class="flex flex-col items-center btn-animate cursor-pointer" onclick="switchPublicPage('galeri')"><div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6"><i class="fa-solid fa-building-columns"></i></div><h4 class="font-bold text-navy-dark text-lg uppercase mb-3">Fasilitas Standar SNP</h4><p class="text-sm text-text-muted">Laboratorium & sarana prasarana penunjang pembelajaran abad ke-21.</p></div>
 <div class="flex flex-col items-center btn-animate cursor-pointer" onclick="switchPublicPage('berita')"><div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6"><i class="fa-solid fa-award"></i></div><h4 class="font-bold text-navy-dark text-lg uppercase mb-3">Prestasi & Asesmen</h4><p class="text-sm text-text-muted">Evaluasi otentik berkesinambungan mencetak juara di berbagai bidang.</p></div>
 <div class="flex flex-col items-center btn-animate cursor-pointer" onclick="switchAndScroll('profil','sejarah')"><div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6"><i class="fa-solid fa-handshake"></i></div><h4 class="font-bold text-navy-dark text-lg uppercase mb-3">Kemitraan Global</h4><p class="text-sm text-text-muted">Terhubung dengan dunia industri serta institusi pendidikan dalam & luar negeri.</p></div>
 </div></section>
 <section class="py-20 bg-bg-card border-y border-teal-tint/50"><div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
-<div class="w-full md:w-5/12 flex justify-center"><img src="assets/agus.webp" alt="Agus Nugroho, S.Pd., M.T." onerror="imgErr(this)" class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[450px] bg-teal-tint"></div>
+<div class="w-full md:w-5/12 flex justify-center"><img src="assets/agus.webp" alt="Agus Nugroho, S.Pd., M.T." onerror="imgErr(this)" class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[340px] md:h-[450px] bg-teal-tint"></div>
 <div class="w-full md:w-7/12 space-y-6">
-<h2 class="text-4xl font-black text-navy-dark">Sambutan Kepala Sekolah</h2>
+<h2 class="text-3xl sm:text-4xl font-black text-navy-dark">Sambutan Kepala Sekolah</h2>
 <p class="font-medium">Assalamu'alaikum warahmatullahi wabarakatuh, Salam sejahtera untuk kita semua.</p>
 <p class="text-text-muted leading-relaxed">Dengan rasa syukur, saya menyampaikan <b class="text-teal-primary">apresiasi kepada seluruh warga SMK Negeri 13 Bandung</b> atas dedikasi dan semangat dalam memajukan pendidikan. Kami berkomitmen mencetak lulusan yang unggul, berkarakter, dan siap menghadapi tantangan dunia kerja.</p>
 <p class="text-text-muted leading-relaxed">SMK Negeri 13 Bandung terus berkomitmen memberikan <b class="text-navy-dark">pendidikan berkualitas tinggi</b> dengan berbagai program unggulan yang disesuaikan dengan kebutuhan industri.</p>
@@ -97,7 +119,7 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <div><h4 class="font-bold text-xl text-navy-dark">Agus Nugroho, S.Pd., M.T.</h4><p class="text-sm font-semibold text-teal-primary">Kepala SMK Negeri 13 Bandung</p></div>
 </div></div></section>
 <section class="py-20"><div class="max-w-7xl mx-auto px-4 text-center">
-<h3 class="text-4xl font-black text-navy-dark mb-12">Warta & Berita Terkini</h3>
+<h3 class="text-3xl sm:text-4xl font-black text-navy-dark mb-12">Warta & Berita Terkini</h3>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left" id="homeBeritaGrid"></div>
 <button onclick="switchPublicPage('berita')" class="mt-12 btn-animate bg-navy-dark hover:bg-navy-mid text-white font-bold py-3 px-8 rounded-full shadow-md">Lihat Semua Berita</button>
 </div></section>
@@ -106,15 +128,15 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <!-- PROFIL -->
 <div id="pubPage_profil" class="page-section flex-grow py-16 px-4 max-w-7xl mx-auto space-y-24 w-full">
 <div id="visi-misi" class="scroll-mt-32 space-y-12">
-<div class="text-center max-w-3xl mx-auto"><h3 class="text-5xl font-black text-navy-dark mb-4">Profil & Visi Misi</h3><p class="text-lg text-text-muted">Landasan, arah kebijakan, dan penggerak mutu pendidikan SMK Negeri 13 Bandung.</p></div>
-<div class="bg-bg-card p-10 rounded-3xl shadow-sm border-t-8 border-teal-primary text-center max-w-4xl mx-auto">
+<div class="text-center max-w-3xl mx-auto"><h3 class="text-3xl sm:text-5xl font-black text-navy-dark mb-4">Profil & Visi Misi</h3><p class="text-lg text-text-muted">Landasan, arah kebijakan, dan penggerak mutu pendidikan SMK Negeri 13 Bandung.</p></div>
+<div class="bg-bg-card p-6 sm:p-10 rounded-3xl shadow-sm border-t-8 border-teal-primary text-center max-w-4xl mx-auto">
 <span class="bg-teal-tint text-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">VISI SEKOLAH</span>
 <h4 class="text-2xl sm:text-3xl font-black text-navy-dark leading-relaxed italic">"Terwujudnya lulusan yang <span class="text-teal-primary underline decoration-teal-accent">berakhlak mulia</span>, <span class="text-navy-mid underline">kompeten</span> dan <span class="text-brick-red underline">berdaya suai di tingkat internasional</span> pada tahun <span class="bg-teal-tint px-2 rounded">2030</span>"</h4></div>
-<div class="bg-bg-card p-10 sm:p-14 rounded-3xl shadow-sm border border-teal-tint space-y-8">
+<div class="bg-bg-card p-5 sm:p-10 md:p-14 rounded-3xl shadow-sm border border-teal-tint space-y-8">
 <div class="text-center"><span class="bg-navy-dark text-teal-accent text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-2">MISI SEKOLAH</span><h4 class="text-3xl font-black text-navy-dark">Langkah Strategis Pencapaian</h4></div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm" id="misiGrid"></div></div></div>
 <div id="sejarah" class="scroll-mt-32 bg-bg-card p-6 sm:p-10 lg:p-14 rounded-3xl shadow-sm border border-teal-tint">
-<h4 class="text-3xl font-black text-navy-dark mb-10 text-center">Sejarah SMKN 13 Bandung</h4>
+<h4 class="text-2xl sm:text-3xl font-black text-navy-dark mb-10 text-center">Sejarah SMKN 13 Bandung</h4>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
 <div class="order-2 lg:order-1"><div class="relative timeline-line space-y-8 pl-12 pr-2" id="timelineBox"></div></div>
 <div class="order-1 lg:order-2 lg:sticky lg:top-28 self-start min-w-0" id="sejGallery">
@@ -128,9 +150,9 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 </div></div></div>
 
 <!-- STRUKTUR ORGANISASI -->
-<div id="struktur" class="scroll-mt-32 bg-bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-teal-tint">
+<div id="struktur" class="scroll-mt-24 bg-bg-card p-4 sm:p-10 rounded-3xl shadow-sm border border-teal-tint">
 <div class="text-center mb-8"><span class="text-xs font-black uppercase tracking-widest text-teal-primary">Bagan Resmi Kepemimpinan</span><h4 class="text-3xl font-black text-navy-dark mt-1">Struktur Organisasi Sekolah</h4><p id="strukturTahun" class="text-sm text-text-muted mt-1"></p></div>
-<div class="overflow-x-auto"><div id="strukturChart" class="min-w-[1000px] space-y-6"></div></div>
+<div class="overflow-x-auto"><div id="strukturChart" class="space-y-6"></div></div>
 </div>
 
 <div id="pengajar" class="scroll-mt-32 text-center">
@@ -142,12 +164,18 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 
 <!-- JURUSAN -->
 <div id="pubPage_jurusan" class="page-section flex-grow py-16 px-4 max-w-7xl mx-auto space-y-12 w-full">
-<div class="text-center max-w-3xl mx-auto"><h3 class="text-5xl font-black text-navy-dark mb-6">Konsentrasi Keahlian</h3><p class="text-lg text-text-muted">Informasi mendalam seputar kurikulum, fasilitas, dan pimpinan program studi.</p></div>
+<div class="relative rounded-3xl overflow-hidden shadow-xl bg-navy-dark min-h-[260px] sm:min-h-[340px] flex items-center justify-center text-center px-6 py-14">
+<div class="absolute inset-0" data-slider data-offset="1"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-navy-dark/70 via-navy-dark/60 to-navy-dark/80"></div>
+<div class="relative z-10 max-w-3xl [text-shadow:0_2px_14px_rgba(0,0,0,.35)]"><span class="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/20 text-xs font-bold uppercase tracking-[.25em] text-teal-accent">Program Keahlian</span><h3 class="text-3xl sm:text-5xl font-black text-white mb-4">Konsentrasi Keahlian</h3><p class="text-base sm:text-lg text-teal-tint/90">Informasi mendalam seputar kurikulum, fasilitas, dan pimpinan program studi.</p></div></div>
 <div class="space-y-6" id="pubJurusanAccordion"></div></div>
 
 <!-- BERITA -->
 <div id="pubPage_berita" class="page-section flex-grow py-16 px-4 max-w-7xl mx-auto space-y-8 w-full">
-<div class="text-center"><h3 class="text-5xl font-black text-navy-dark mb-4">Warta & Berita</h3></div>
+<div class="relative rounded-3xl overflow-hidden shadow-lg bg-navy-dark min-h-[200px] sm:min-h-[240px] flex items-center justify-center text-center px-6 py-10 border-b-8 border-teal-primary">
+<div class="absolute inset-0" data-slider data-offset="2"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/75 to-navy-mid/85"></div>
+<div class="relative z-10 [text-shadow:0_2px_12px_rgba(0,0,0,.3)]"><span class="inline-block mb-3 px-4 py-1.5 rounded-full bg-teal-primary text-xs font-black uppercase tracking-widest text-white">Informasi Terkini</span><h3 class="text-3xl sm:text-5xl font-black text-white">Warta & Berita</h3><p class="mt-3 text-sm sm:text-base text-teal-tint/90">Kabar, prestasi, dan agenda terbaru SMKN 13 Bandung.</p></div></div>
 <div class="bg-bg-card p-6 rounded-3xl shadow-sm border border-teal-tint flex flex-col md:flex-row justify-between items-center gap-4">
 <div class="flex space-x-2 overflow-x-auto w-full md:w-auto" id="beritaFilters"></div>
 <div class="relative w-full md:w-72"><i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"></i>
@@ -159,7 +187,7 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 
 <!-- GALERI -->
 <div id="pubPage_galeri" class="page-section flex-grow py-16 px-4 max-w-7xl mx-auto w-full">
-<div class="text-center max-w-2xl mx-auto"><span class="text-xs font-bold uppercase tracking-[.25em] text-teal-primary">Galeri</span><h3 class="text-4xl sm:text-5xl font-black text-navy-dark mt-3 mb-4">Galeri & Dokumentasi</h3><p class="text-lg text-text-muted">Koleksi album foto kegiatan dan fasilitas sekolah SMKN 13 Bandung.</p></div>
+<div class="text-center max-w-2xl mx-auto"><span class="text-xs font-bold uppercase tracking-[.25em] text-teal-primary">Galeri</span><h3 class="text-4xl sm:text-3xl sm:text-5xl font-black text-navy-dark mt-3 mb-4">Galeri & Dokumentasi</h3><p class="text-lg text-text-muted">Koleksi album foto kegiatan dan fasilitas sekolah SMKN 13 Bandung.</p></div>
 <div id="galFilters" class="flex flex-wrap justify-center gap-3 mt-10"></div>
 <div class="relative overflow-hidden mt-10 -mx-4" onmouseenter="galPaused=true" onmouseleave="galPaused=false"><div id="galTrack" class="relative h-[470px]"></div></div>
 <div class="flex justify-center gap-3 mt-6"><button onclick="galPrev()" aria-label="Sebelumnya" class="w-11 h-11 rounded-full border border-navy-dark/60 text-navy-dark hover:bg-navy-dark hover:text-white transition flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button><button onclick="galNext()" aria-label="Berikutnya" class="w-11 h-11 rounded-full border border-navy-dark/60 text-navy-dark hover:bg-navy-dark hover:text-white transition flex items-center justify-center"><i class="fa-solid fa-arrow-right"></i></button></div>
@@ -167,16 +195,16 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 
 <!-- EKSKUL -->
 <div id="pubPage_ekskul" class="page-section flex-grow py-16 px-4 max-w-5xl mx-auto space-y-12 w-full">
-<div class="bg-navy-dark rounded-3xl p-10 sm:p-16 text-center shadow-lg text-white border-b-8 border-teal-primary">
+<div class="bg-navy-dark rounded-3xl p-6 sm:p-16 text-center shadow-lg text-white border-b-8 border-teal-primary">
 <span class="bg-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">Pengembangan Diri</span>
-<h3 class="text-4xl sm:text-5xl font-black mb-4">Ekstrakurikuler Pilihan</h3>
+<h3 class="text-3xl sm:text-5xl font-black mb-4">Ekstrakurikuler Pilihan</h3>
 <p class="text-teal-tint max-w-2xl mx-auto text-lg">Pilih wadah pengembangan bakat dan minatmu.</p></div>
 <div class="space-y-8" id="pubEkskulList"></div></div>
 
 <!-- KONTAK -->
 <div id="pubPage_kontak" class="page-section flex-grow py-16 px-4 max-w-7xl mx-auto w-full space-y-10">
-<div class="text-center"><h3 class="text-5xl font-black text-navy-dark mb-6">Pusat Bantuan & Lokasi</h3></div>
-<div class="bg-bg-card rounded-3xl p-10 sm:p-14 shadow-sm border border-teal-tint flex flex-col md:flex-row gap-12">
+<div class="text-center"><h3 class="text-3xl sm:text-5xl font-black text-navy-dark mb-6">Pusat Bantuan & Lokasi</h3></div>
+<div class="bg-bg-card rounded-3xl p-6 sm:p-14 shadow-sm border border-teal-tint flex flex-col md:flex-row gap-8 md:gap-12">
 <div class="w-full md:w-1/2 space-y-8">
 <div class="flex items-start space-x-5"><div class="w-14 h-14 bg-teal-tint text-teal-primary rounded-full flex items-center justify-center text-2xl flex-shrink-0"><i class="fa-solid fa-location-dot"></i></div><div><h4 class="font-bold text-xl text-navy-dark">Alamat Kampus</h4><p class="mt-2">Jl. Soekarno-Hatta Km. 10, Babakan Penghulu, Cinambo, Kota Bandung, Jawa Barat 40294</p></div></div>
 <div class="flex items-start space-x-5"><div class="w-14 h-14 bg-teal-tint text-teal-primary rounded-full flex items-center justify-center text-2xl flex-shrink-0"><i class="fa-solid fa-envelope"></i></div><div><h4 class="font-bold text-xl text-navy-dark">Email Resmi</h4><p class="mt-2">smkn13bandung@gmail.com</p></div></div>
@@ -206,16 +234,16 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <!-- ============ VIEW 2: ADMIN ============ -->
 <div id="viewAdmin" class="portal-view flex-col md:flex-row flex-grow min-h-screen bg-bg-page">
 <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0">
-<div class="p-6 border-b border-slate-800 flex items-center space-x-3">
+<div class="p-4 md:p-6 border-b border-slate-800 flex items-center space-x-3">
 <img src="assets/LOGOS.png" alt="Logo" onerror="imgErr(this)" class="h-10 w-10 object-contain bg-white rounded-xl p-1">
 <div><span class="text-white font-bold block text-sm">ADMINISTRATOR</span><span class="text-xs text-slate-400">CMS SMKN 13 Bandung</span></div></div>
-<div class="flex-grow overflow-y-auto py-4 px-3 space-y-1 text-sm" id="adminSidebar"></div>
-<div class="p-4 border-t border-slate-800"><button onclick="logout()" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar ke Portal</span></button></div>
+<div class="flex md:block md:flex-grow overflow-x-auto md:overflow-x-visible md:overflow-y-auto py-2 md:py-4 px-3 gap-2 md:gap-0 md:space-y-1 text-sm" id="adminSidebar"></div>
+<div class="p-3 md:p-4 border-t border-slate-800"><button onclick="logout()" class="w-full bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar ke Portal</span></button></div>
 </aside>
 
-<main class="flex-grow p-6 sm:p-10 overflow-y-auto min-w-0">
+<main class="flex-grow p-4 sm:p-10 overflow-y-auto min-w-0">
 
-<div id="adminTab_barcode" class="admin-tab-content space-y-6"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_barcode" class="admin-tab-content space-y-6"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <h3 class="text-xl font-bold text-slate-900 mb-2">Generator Barcode Absensi Guru</h3><p class="text-sm text-slate-500 mb-6">Pilih guru untuk menghasilkan barcode absensi unik.</p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 <div class="space-y-4"><div><label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru</label><select id="selectGuruForBarcode" class="crud-input"></select></div>
@@ -224,27 +252,27 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <div id="qrcodeContainer" class="bg-white p-4 rounded-xl shadow-sm mb-4 min-h-[160px] min-w-[160px] flex items-center justify-center"><span class="text-xs text-slate-400">Barcode tampil di sini</span></div>
 <p id="barcodeInfoLabel" class="text-sm font-bold text-slate-800"></p></div></div></div></div>
 
-<div id="adminTab_siswa" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_siswa" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">A. Data Siswa</h3><button onclick="openSiswaModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus mr-2"></i>Tambah Siswa</button></div>
 <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-slate-100 text-slate-700 uppercase text-xs"><tr><th class="p-3">No</th><th class="p-3">NIS/NISN</th><th class="p-3">Nama Lengkap</th><th class="p-3">L/P</th><th class="p-3">Kelas</th><th class="p-3">Tahun Ajaran</th><th class="p-3 text-right">Aksi</th></tr></thead><tbody id="adminSiswaTableBody" class="divide-y divide-slate-100"></tbody></table></div></div></div>
 
-<div id="adminTab_manajemenKelas" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_manajemenKelas" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">B. Manajemen Kelas</h3><button onclick="openKelasModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus mr-2"></i>Tambah Kelas</button></div>
 <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-slate-100 text-slate-700 uppercase text-xs"><tr><th class="p-3">Nama Kelas</th><th class="p-3">Ruangan</th><th class="p-3">Wali Kelas</th><th class="p-3 text-right">Aksi</th></tr></thead><tbody id="adminKelasTableBody" class="divide-y divide-slate-100"></tbody></table></div></div></div>
 
-<div id="adminTab_guru" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_guru" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">C. Data Guru & Staff</h3><button onclick="openGuruModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-user-plus mr-2"></i>Tambah Guru</button></div>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="adminGuruGrid"></div></div></div>
 
-<div id="adminTab_ruangan" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_ruangan" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">D. Data Ruangan</h3><button onclick="openRuanganModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus mr-2"></i>Tambah Ruangan</button></div>
 <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-slate-100 text-slate-700 uppercase text-xs"><tr><th class="p-3">Kode Ruang</th><th class="p-3">Nama Ruangan</th><th class="p-3">Kapasitas</th><th class="p-3 text-right">Aksi</th></tr></thead><tbody id="adminRuanganTableBody" class="divide-y divide-slate-100"></tbody></table></div></div></div>
 
-<div id="adminTab_mapel" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_mapel" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">E. Mata Pelajaran</h3><button onclick="openMapelModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus mr-2"></i>Tambah Mapel</button></div>
 <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-slate-100 text-slate-700 uppercase text-xs"><tr><th class="p-3">Kode Mapel</th><th class="p-3">Nama Mata Pelajaran</th><th class="p-3">Kelompok</th><th class="p-3 text-right">Aksi</th></tr></thead><tbody id="adminMapelTableBody" class="divide-y divide-slate-100"></tbody></table></div></div></div>
 
-<div id="adminTab_jadwal" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_jadwal" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex flex-wrap justify-between items-center gap-3 mb-6"><div><h3 class="text-xl font-bold text-slate-900">F. Jadwal Pelajaran Sekolah</h3><p class="text-sm text-slate-500">Matriks jadwal harian (Kelas di kiri, Jam Ke & Waktu di atas)</p></div>
 <div class="flex items-center gap-3"><select id="jadwalHariFilter" onchange="renderJadwalMatrix()" class="crud-input !w-auto"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option></select>
 <button onclick="openJadwalModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus mr-2"></i>Tambah Jadwal</button></div></div>
@@ -254,19 +282,19 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <tr class="bg-slate-100 text-slate-700 text-[10px]"><th class="border border-slate-300 p-1 bg-yellow-200">06.30-07.30</th><th class="border border-slate-300 p-1">07.30-08.15</th><th class="border border-slate-300 p-1">08.15-09.00</th><th class="border border-slate-300 p-1">09.00-09.45</th><th class="border border-slate-300 p-1 bg-pink-200">09.45-10.00</th><th class="border border-slate-300 p-1">10.00-10.45</th><th class="border border-slate-300 p-1">10.45-11.30</th><th class="border border-slate-300 p-1 bg-pink-200">11.30-12.30</th><th class="border border-slate-300 p-1">12.30-13.15</th><th class="border border-slate-300 p-1">13.15-14.00</th></tr>
 </thead><tbody id="matrixJadwalTableBody"></tbody></table></div></div></div>
 
-<div id="adminTab_rekap" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_rekap" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <h3 class="text-xl font-bold text-slate-900 mb-2">G. Laporan & Rekap Absensi</h3><p class="text-sm text-slate-500 mb-6">Memantau catatan kehadiran guru secara real-time.</p>
 <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-slate-100 text-slate-700 uppercase text-xs"><tr><th class="p-3.5">Waktu</th><th class="p-3.5">Nama Guru / Subjek</th><th class="p-3.5">Kelas</th><th class="p-3.5">Status</th><th class="p-3.5">Keterangan / Lokasi</th><th class="p-3.5">Pencatat</th></tr></thead><tbody id="adminAbsensiTableBody" class="divide-y divide-slate-100"></tbody></table></div></div></div>
 
-<div id="adminTab_berita" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_berita" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">H. Manajemen Berita</h3><button onclick="openBeritaModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-pen-to-square mr-2"></i>Tulis Berita</button></div>
 <div class="space-y-4" id="adminBeritaList"></div></div></div>
 
-<div id="adminTab_galeri" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_galeri" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-slate-900">I. Manajemen Galeri & Fasilitas</h3><button onclick="openGaleriModal()" class="bg-teal-primary hover:bg-teal-light text-white px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-camera mr-2"></i>Tambah Foto</button></div>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="adminGaleriGrid"></div></div></div>
 
-<div id="adminTab_akun" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div id="adminTab_akun" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
 <h3 class="text-xl font-bold text-slate-900 mb-2">J. Manajemen Akun Pengguna</h3><p class="text-sm text-slate-500 mb-6">Kelola akses kredensial login Admin, Guru, dan Sekretaris</p>
 <div class="space-y-4">
 <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center"><div><h4 class="font-bold text-slate-900">Administrator</h4><p class="text-xs text-slate-500">Full Akses CMS & Pengaturan Sekolah</p></div><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Aktif</span></div>
@@ -274,7 +302,7 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center"><div><h4 class="font-bold text-slate-900">Sekretaris Sekolah</h4><p class="text-xs text-slate-500">Pengganti Absensi Guru Berhalangan</p></div><span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Aktif</span></div>
 </div></div></div>
 
-<div id="adminTab_pengaturan" class="admin-tab-content hidden"><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+<div id="adminTab_pengaturan" class="admin-tab-content hidden"><div class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
 <h3 class="text-xl font-bold text-slate-900 mb-2">K. Pengaturan Identitas Sekolah & Logo</h3>
 <div><label class="block text-sm font-semibold text-slate-700 mb-1">Nama Instansi</label><input class="crud-input" value="SMK Negeri 13 Bandung"></div>
 <div><label class="block text-sm font-semibold text-slate-700 mb-1">Alamat Resmi</label><input class="crud-input" value="Jl. Soekarno-Hatta Km. 10, Babakan Penghulu, Cinambo, Bandung"></div>
@@ -286,36 +314,36 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 </main></div>
 
 <!-- ============ VIEW 3: GURU ============ -->
-<div id="viewGuru" class="portal-view flex-col flex-grow p-6 sm:p-10 max-w-7xl mx-auto w-full space-y-8 bg-bg-page">
-<div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-bg-card p-8 rounded-3xl shadow-sm border-t-4 border-navy-dark gap-4">
+<div id="viewGuru" class="portal-view flex-col flex-grow p-4 sm:p-10 max-w-7xl mx-auto w-full space-y-6 sm:space-y-8 bg-bg-page">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-bg-card p-5 sm:p-8 rounded-3xl shadow-sm border-t-4 border-navy-dark gap-4">
 <div><span class="bg-teal-tint text-teal-primary text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">Portal Guru</span><h1 class="text-3xl font-black text-navy-dark mt-3" id="guruWelcomeTitle">Dashboard Guru</h1></div>
 <button onclick="logout()" class="btn-animate bg-white text-brick-red hover:bg-brick-red hover:text-white px-5 py-2.5 rounded-xl text-sm font-bold border-2 border-brick-red/20 flex items-center space-x-2"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar Sesi</span></button></div>
 <div class="flex space-x-3 bg-bg-card p-3 rounded-2xl shadow-sm border border-teal-tint overflow-x-auto">
 <button onclick="switchGuruTab('jadwal')" class="guru-tab-btn px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap"><i class="fa-solid fa-calendar-week mr-2"></i>A. Jadwal Mengajar</button>
 <button onclick="switchGuruTab('validasi')" class="guru-tab-btn px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap"><i class="fa-solid fa-camera mr-2"></i>B. Scan Presensi & Jurnal</button>
 <button onclick="switchGuruTab('rekap')" class="guru-tab-btn px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap"><i class="fa-solid fa-clipboard-list mr-2"></i>C. Riwayat Absensi</button></div>
-<div id="guruTab_jadwal" class="guru-tab-content"><div class="bg-bg-card p-8 rounded-3xl shadow-sm border border-teal-tint"><h3 class="text-2xl font-black text-navy-dark mb-6">Jadwal Mengajar Anda</h3>
+<div id="guruTab_jadwal" class="guru-tab-content"><div class="bg-bg-card p-5 sm:p-8 rounded-3xl shadow-sm border border-teal-tint"><h3 class="text-2xl font-black text-navy-dark mb-6">Jadwal Mengajar Anda</h3>
 <div class="overflow-x-auto rounded-xl border border-teal-tint"><table class="w-full text-left text-sm"><thead class="bg-teal-tint text-navy-dark uppercase text-xs font-black"><tr><th class="p-4">Hari</th><th class="p-4">Kelas</th><th class="p-4">Mata Pelajaran</th><th class="p-4">Ruangan</th><th class="p-4">Jam Ke</th></tr></thead><tbody id="guruJadwalTableBody" class="divide-y divide-teal-tint"></tbody></table></div></div></div>
 <div id="guruTab_validasi" class="guru-tab-content hidden"><div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-<div class="bg-bg-card p-8 rounded-3xl shadow-sm border border-teal-tint space-y-5"><h3 class="text-xl font-black text-navy-dark"><i class="fa-solid fa-camera mr-2 text-teal-primary"></i>Scan Barcode Kehadiran</h3><p class="text-sm text-text-muted">Arahkan kamera ke barcode harian di Ruang Piket.</p>
+<div class="bg-bg-card p-5 sm:p-8 rounded-3xl shadow-sm border border-teal-tint space-y-5"><h3 class="text-xl font-black text-navy-dark"><i class="fa-solid fa-camera mr-2 text-teal-primary"></i>Scan Barcode Kehadiran</h3><p class="text-sm text-text-muted">Arahkan kamera ke barcode harian di Ruang Piket.</p>
 <div id="reader" class="w-full rounded-2xl overflow-hidden bg-navy-dark min-h-[250px]"></div>
 <div id="scanResultCard" class="hidden p-5 rounded-2xl bg-teal-tint border border-teal-light text-sm"><p class="font-bold text-teal-primary text-lg"><i class="fa-solid fa-check-circle mr-2"></i>Hadir Terekam!</p><p id="scanResultDetails" class="text-navy-dark font-medium mt-2"></p></div></div>
-<div class="bg-bg-card p-8 rounded-3xl shadow-sm border border-teal-tint space-y-5"><h3 class="text-xl font-black text-navy-dark">Isi Jurnal Kelas (PBM)</h3>
+<div class="bg-bg-card p-5 sm:p-8 rounded-3xl shadow-sm border border-teal-tint space-y-5"><h3 class="text-xl font-black text-navy-dark">Isi Jurnal Kelas (PBM)</h3>
 <form onsubmit="submitGuruAbsensi(event)" class="space-y-5">
 <div><label class="block text-sm font-bold text-navy-dark mb-2">Pilih Kelas / Jadwal</label><select id="guruSelectKelasMapel" class="crud-input" required></select></div>
 <div><label class="block text-sm font-bold text-navy-dark mb-2">Kehadiran</label><select id="guruStatusKehadiran" class="crud-input"><option>Hadir</option><option>Sakit</option><option>Izin</option></select></div>
 <div><label class="block text-sm font-bold text-navy-dark mb-2">Materi / Jurnal Pembelajaran</label><textarea id="guruCatatanMateri" rows="4" class="crud-input" placeholder="Tuliskan KD atau materi ringkas..."></textarea></div>
 <button type="submit" class="btn-animate w-full bg-teal-primary text-white font-bold py-3.5 rounded-xl shadow">Kirim Jurnal</button></form></div></div></div>
-<div id="guruTab_rekap" class="guru-tab-content hidden"><div class="bg-bg-card p-8 rounded-3xl shadow-sm border border-teal-tint"><h3 class="text-2xl font-black text-navy-dark mb-6">Riwayat Mengajar & Jurnal</h3>
+<div id="guruTab_rekap" class="guru-tab-content hidden"><div class="bg-bg-card p-5 sm:p-8 rounded-3xl shadow-sm border border-teal-tint"><h3 class="text-2xl font-black text-navy-dark mb-6">Riwayat Mengajar & Jurnal</h3>
 <div class="overflow-x-auto rounded-xl border border-teal-tint"><table class="w-full text-left text-sm"><thead class="bg-teal-tint text-navy-dark uppercase text-xs font-black"><tr><th class="p-4">Waktu</th><th class="p-4">Kelas / Subjek</th><th class="p-4">Kehadiran</th><th class="p-4">Catatan Materi</th></tr></thead><tbody id="guruRiwayatTableBody" class="divide-y divide-teal-tint"></tbody></table></div></div></div>
 </div>
 
 <!-- ============ VIEW 4: SEKRETARIS ============ -->
-<div id="viewSekretaris" class="portal-view flex-col flex-grow p-6 sm:p-10 max-w-4xl mx-auto w-full space-y-8 bg-bg-page">
-<div class="flex justify-between items-center bg-bg-card p-8 rounded-3xl shadow-sm border-t-4 border-brick-red">
+<div id="viewSekretaris" class="portal-view flex-col flex-grow p-4 sm:p-10 max-w-4xl mx-auto w-full space-y-6 sm:space-y-8 bg-bg-page">
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-bg-card p-5 sm:p-8 rounded-3xl shadow-sm border-t-4 border-brick-red">
 <div><span class="bg-brick-tint text-brick-dark text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">Portal Sekretaris</span><h1 class="text-3xl font-black text-navy-dark mt-3">Dashboard Tata Usaha</h1></div>
 <button onclick="logout()" class="btn-animate bg-white text-brick-red hover:bg-brick-red hover:text-white px-5 py-2.5 rounded-xl text-sm font-bold border-2 border-brick-red flex items-center space-x-2"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar</span></button></div>
-<div class="bg-bg-card p-10 rounded-3xl shadow-sm border border-teal-tint space-y-8">
+<div class="bg-bg-card p-5 sm:p-10 rounded-3xl shadow-sm border border-teal-tint space-y-8">
 <div class="text-center"><div class="w-16 h-16 bg-brick-tint text-brick-dark rounded-full flex items-center justify-center text-3xl mx-auto mb-5"><i class="fa-solid fa-user-pen"></i></div><h3 class="text-2xl font-black text-navy-dark">Form Input Izin Guru Berhalangan</h3><p class="text-sm text-text-muted mt-2">Bypass pencatatan jurnal untuk guru yang izin/sakit.</p></div>
 <form onsubmit="submitSekreAbsensi(event)" class="space-y-6">
 <div><label class="block text-sm font-bold text-navy-dark mb-2">Pilih Guru</label><select id="sekreSelectGuru" onchange="fillSekreJadwal()" class="crud-input" required></select></div>
@@ -335,7 +363,7 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <h2 id="modalBeritaJudul" class="text-3xl font-black text-navy-dark"></h2><div id="modalBeritaIsi" class="leading-relaxed"></div></div></div></div>
 
 <div id="loginModal" class="fixed inset-0 bg-navy-dark/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-<div class="bg-bg-card rounded-[2rem] p-10 max-w-md w-full shadow-2xl relative border-t-8 border-teal-primary">
+<div class="bg-bg-card rounded-[2rem] p-6 sm:p-10 max-w-md w-full shadow-2xl relative border-t-8 border-teal-primary">
 <button onclick="closeLoginModal()" class="absolute top-6 right-6 text-text-muted hover:text-brick-red"><i class="fa-solid fa-xmark text-2xl"></i></button>
 <div class="text-center mb-8"><div class="w-16 h-16 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-shield-halved"></i></div><h3 class="text-3xl font-black text-navy-dark">Login SSO</h3><p class="text-sm text-text-muted mt-2">Akses Sistem Manajemen SMKN 13</p></div>
 <form onsubmit="handleLogin(event)" class="space-y-5">
@@ -357,6 +385,16 @@ body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
 <div class="w-16 h-16 bg-teal-tint text-teal-primary rounded-full flex items-center justify-center text-3xl mx-auto"><i class="fa-solid fa-circle-check"></i></div>
 <h4 id="customModalTitle" class="text-2xl font-black text-navy-dark">Sukses</h4><p id="customModalMessage" class="text-sm font-medium text-text-muted"></p>
 <button onclick="closeCustomModal()" class="btn-animate w-full bg-teal-primary text-white font-bold py-3 rounded-xl mt-4 shadow">Tutup Pesan</button></div></div>
+
+<!-- LIGHTBOX GALERI -->
+<div id="galLightbox" class="fixed inset-0 z-[80] hidden items-center justify-center bg-navy-dark/95 backdrop-blur-md p-4 sm:p-10" onclick="if(event.target===this)galClose()">
+<button onclick="galClose()" aria-label="Tutup" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center z-10"><i class="fa-solid fa-xmark text-xl"></i></button>
+<button onclick="galLbStep(-1)" aria-label="Sebelumnya" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center z-10"><i class="fa-solid fa-chevron-left"></i></button>
+<button onclick="galLbStep(1)" aria-label="Berikutnya" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center z-10"><i class="fa-solid fa-chevron-right"></i></button>
+<figure class="max-w-6xl w-full m-0 flex flex-col items-center">
+<img id="galLbImg" src="" alt="" class="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl">
+<figcaption class="mt-4 text-center text-white"><span id="galLbKat" class="text-xs font-black uppercase tracking-widest text-teal-accent"></span><h5 id="galLbJudul" class="text-xl font-bold mt-1"></h5><span id="galLbCount" class="text-sm text-teal-tint/70"></span></figcaption>
+</figure></div>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -465,22 +503,37 @@ const S=STRUKTUR,line='<div class="w-1 h-6 bg-teal-primary mx-auto rounded"></di
 box=(l,n,x='')=>`<div class="p-2.5 rounded-xl border border-teal-tint bg-white ${x}"><span class="text-[10px] uppercase font-bold text-text-muted block leading-tight">${l}</span><span class="text-xs font-bold text-navy-dark block">${n||'-'}</span></div>`;
 $('strukturTahun').innerText='Tahun Pelajaran '+S.tahun;
 $('strukturChart').innerHTML=`
-<div class="flex items-center justify-center gap-6">
- <div class="w-60 p-3 rounded-xl border-2 border-dashed border-teal-light bg-teal-tint text-center"><span class="text-[10px] font-black uppercase text-teal-primary block">Komite Sekolah</span><b class="text-xs text-navy-dark">${S.komite}</b></div>
- <div class="w-72 p-4 rounded-2xl bg-navy-dark text-white text-center shadow-lg border-b-4 border-teal-primary"><span class="text-[10px] font-black uppercase tracking-wider text-teal-accent block">Kepala Sekolah</span><b class="text-sm">${S.kepsek}</b></div>
- <div class="w-60 p-3 rounded-xl border-2 border-dashed border-teal-light bg-teal-tint text-center"><span class="text-[10px] font-black uppercase text-teal-primary block">Pendamping Sekolah</span><b class="text-xs text-navy-dark">${S.pendamping}</b></div>
+<div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+ <div class="w-full max-w-xs md:w-60 p-3 rounded-xl border-2 border-dashed border-teal-light bg-teal-tint text-center"><span class="text-[10px] font-black uppercase text-teal-primary block">Komite Sekolah</span><b class="text-xs text-navy-dark">${S.komite}</b></div>
+ <div class="w-full max-w-xs md:w-72 p-4 rounded-2xl bg-navy-dark text-white text-center shadow-lg border-b-4 border-teal-primary"><span class="text-[10px] font-black uppercase tracking-wider text-teal-accent block">Kepala Sekolah</span><b class="text-sm">${S.kepsek}</b></div>
+ <div class="w-full max-w-xs md:w-60 p-3 rounded-xl border-2 border-dashed border-teal-light bg-teal-tint text-center"><span class="text-[10px] font-black uppercase text-teal-primary block">Pendamping Sekolah</span><b class="text-xs text-navy-dark">${S.pendamping}</b></div>
 </div>${line}
-<div class="grid grid-cols-5 gap-3 items-start">${S.bidang.map(b=>`<div class="space-y-2"><div class="p-3 rounded-xl ${b.c} text-white text-center shadow"><span class="text-[10px] font-black uppercase tracking-wider block opacity-90">${b.j}</span><b class="text-xs">${b.n}</b></div><div class="space-y-1.5 border-t-2 border-teal-tint pt-2">${b.s.map(s=>box(s[0],s[1])).join('')}</div></div>`).join('')}</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-3 items-start">${S.bidang.map(b=>`<div class="space-y-2"><div class="p-3 rounded-xl ${b.c} text-white text-center shadow"><span class="text-[10px] font-black uppercase tracking-wider block opacity-90">${b.j}</span><b class="text-xs">${b.n}</b></div><div class="space-y-1.5 border-t-2 border-teal-tint pt-2">${b.s.map(s=>box(s[0],s[1])).join('')}</div></div>`).join('')}</div>
 ${line}
-<div class="max-w-md mx-auto space-y-2"><div class="p-3 rounded-xl bg-teal-primary text-white text-center shadow"><span class="text-[10px] font-black uppercase tracking-wider block opacity-90">Wakil Manajemen Mutu & SDM</span><b class="text-xs">${S.mutu.n}</b></div><div class="grid grid-cols-3 gap-2">${S.mutu.s.map(s=>box(s[0],s[1],'text-center')).join('')}</div></div>
+<div class="max-w-md mx-auto space-y-2"><div class="p-3 rounded-xl bg-teal-primary text-white text-center shadow"><span class="text-[10px] font-black uppercase tracking-wider block opacity-90">Wakil Manajemen Mutu & SDM</span><b class="text-xs">${S.mutu.n}</b></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-2">${S.mutu.s.map(s=>box(s[0],s[1],'text-center')).join('')}</div></div>
 ${line}
-<div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto">${S.kaprog.map(k=>box(k[0],k[1],'border-2 border-navy-mid')).join('')}</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto">${S.kaprog.map(k=>box(k[0],k[1],'border-2 border-navy-mid')).join('')}</div>
 ${line}
-<div class="flex items-center justify-center gap-3 text-xs font-black uppercase tracking-wider"><span class="px-5 py-2 rounded-xl bg-teal-tint text-navy-dark">Guru</span><i class="fa-solid fa-arrows-left-right text-teal-primary"></i><span class="px-5 py-2 rounded-xl bg-teal-tint text-navy-dark">Wali Kelas</span><i class="fa-solid fa-arrow-right text-teal-primary"></i><span class="px-5 py-2 rounded-xl bg-navy-dark text-white">Siswa</span></div>`}
+<div class="flex flex-wrap items-center justify-center gap-3 text-xs font-black uppercase tracking-wider"><span class="px-5 py-2 rounded-xl bg-teal-tint text-navy-dark">Guru</span><i class="fa-solid fa-arrows-left-right text-teal-primary"></i><span class="px-5 py-2 rounded-xl bg-teal-tint text-navy-dark">Wali Kelas</span><i class="fa-solid fa-arrow-right text-teal-primary"></i><span class="px-5 py-2 rounded-xl bg-navy-dark text-white">Siswa</span></div>`}
 
 document.addEventListener('DOMContentLoaded',()=>{renderPublicHome();setupSelectOptions();toggleLoginUsername();
-$('adminSidebar').innerHTML=adminMenu.map(([k,ic,l])=>`<button onclick="switchAdminTab('${k}')" data-tab="${k}" class="admin-sidebar-btn w-full text-left px-4 py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid ${ic} w-5"></i><span>${l}</span></button>`).join('');
+$('adminSidebar').innerHTML=adminMenu.map(([k,ic,l])=>`<button onclick="switchAdminTab('${k}')" data-tab="${k}" class="admin-sidebar-btn md:w-full whitespace-nowrap flex-shrink-0 text-left px-4 py-2.5 md:py-3 rounded-xl font-semibold transition hover:bg-slate-800 hover:text-white flex items-center space-x-3"><i class="fa-solid ${ic} w-5"></i><span>${l}</span></button>`).join('');
 switchAdminTab('barcode');});
+
+function toggleMobileMenu(force){const m=$('mobileMenu'),open=force===undefined?m.classList.contains('hidden'):force;m.classList.toggle('hidden',!open);$('menuIcon').className='fa-solid '+(open?'fa-xmark':'fa-bars')+' text-lg'}
+function mobileGo(p,s){toggleMobileMenu(false);if(s)switchAndScroll(p,s);else switchPublicPage(p)}
+window.addEventListener('resize',()=>{if(window.innerWidth>=768)toggleMobileMenu(false)});
+/* ===== SLIDER BACKGROUND ===== */
+const HOME_FILES=['home1.webp','home2.webp','home3.jpg','home4.jpg'];
+function initSliders(){document.querySelectorAll('[data-slider]').forEach(box=>{
+const off=(+box.dataset.offset||0)%HOME_FILES.length,files=HOME_FILES.slice(off).concat(HOME_FILES.slice(0,off));
+box.innerHTML=files.map((f,i)=>`<div class="hero-slide ${i?'':'active'}" style="background-image:url('${A(f)}')"></div>`).join('')+(box.dataset.dots?`<div class="absolute bottom-5 inset-x-0 flex justify-center gap-2 z-20">${files.map((_,i)=>`<button type="button" aria-label="Slide ${i+1}" class="slider-dot ${i?'':'active'}"></button>`).join('')}</div>`:'');
+const slides=[...box.querySelectorAll('.hero-slide')],dots=[...box.querySelectorAll('.slider-dot')];
+files.forEach((f,i)=>{const t=new Image();t.onerror=()=>{slides[i].style.backgroundImage=`url('${A(f).replace(/^assets\//,'Assets/')}')`};t.src=A(f)});
+let cur=0,timer;const go=n=>{slides[cur].classList.remove('active');dots[cur]&&dots[cur].classList.remove('active');cur=(n+slides.length)%slides.length;slides[cur].classList.add('active');dots[cur]&&dots[cur].classList.add('active')};
+const start=()=>{clearInterval(timer);timer=setInterval(()=>go(cur+1),5500)};
+dots.forEach((d,i)=>d.addEventListener('click',()=>{go(i);start()}));start()})}
+document.addEventListener('DOMContentLoaded',initSliders);
 
 /* ===== PUBLIC ===== */
 function switchPublicPage(p){document.querySelectorAll('#publicContentContainer > div').forEach(e=>e.classList.remove('active'));$('pubPage_'+p).classList.add('active');
@@ -492,7 +545,7 @@ function beritaCard(b,h){return `<div onclick="openBeritaDetail('${b.id}')" clas
 function renderPublicHome(){$('homeBeritaGrid').innerHTML=db.berita.slice(0,3).map(beritaCard).join('')}
 function renderProfilPage(){
 $('misiGrid').innerHTML=misi.map((m,i)=>`<div class="p-6 rounded-2xl bg-bg-page border border-teal-tint flex items-start space-x-4"><span class="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold flex-shrink-0">${i+1}</span><p class="leading-relaxed"><strong class="text-navy-dark">${m[0]}:</strong> ${m[1]}</p></div>`).join('');
-$('timelineBox').innerHTML=sejarah.map(s=>`<div class="relative z-10"><div class="absolute -left-12 mt-1 w-8 h-8 ${s[3]} rounded-full border-4 border-bg-page flex items-center justify-center text-white"><i class="fa-solid ${s[4]} text-xs"></i></div><h5 class="text-xl font-bold text-navy-dark">${s[0]}</h5><span class="text-sm font-bold text-teal-primary block mb-2">${s[1]}</span><p class="text-text-muted leading-relaxed text-justify">${s[2]}</p></div>`).join('');
+$('timelineBox').innerHTML=sejarah.map(s=>`<div class="relative z-10"><div class="absolute -left-12 mt-1 w-8 h-8 ${s[3]} rounded-full border-4 border-bg-page flex items-center justify-center text-white"><i class="fa-solid ${s[4]} text-xs"></i></div><h5 class="text-xl font-bold text-navy-dark">${s[0]}</h5><span class="text-sm font-bold text-teal-primary block mb-2">${s[1]}</span><p class="text-text-muted leading-relaxed md:text-justify">${s[2]}</p></div>`).join('');
 renderStruktur();
 renderGuruMarquee()}
 function renderGuruMarquee(){
@@ -501,12 +554,12 @@ const rep=db.guru.length<6?Math.ceil(6/Math.max(db.guru.length,1)):1;items=items
 const group=`<div class="marquee-group">${items}</div>`;
 $('profilGuruMarquee').innerHTML=group+group;
 $('profilGuruMarquee').style.animationDuration=Math.max(20,db.guru.length*rep*6)+'s'}
-function renderJurusanPage(){$('pubJurusanAccordion').innerHTML=db.jurusan.map(j=>`<div class="bg-bg-card rounded-3xl shadow-sm border border-teal-tint overflow-hidden"><button class="accordion-btn w-full px-8 py-6 flex justify-between items-center text-left hover:bg-bg-page" onclick="toggleAccordion('${j.id}')"><div class="flex items-center space-x-5"><div class="w-14 h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"><i class="fa-solid ${j.icon}"></i></div><h4 class="text-2xl font-black text-navy-dark">${j.nama}</h4></div><i class="fa-solid fa-chevron-down accordion-icon text-teal-primary text-xl"></i></button><div id="acc_${j.id}" class="accordion-content px-4 sm:px-10 bg-white border-t border-teal-tint">
-<div class="relative md:min-h-[620px]"><div class="md:w-[52%] md:h-[290px] pt-4 pb-6 md:pb-0"><h3 class="text-4xl lg:text-5xl font-black text-[#033A82] leading-[1.1]">${j.judul}</h3><p class="text-xl font-bold text-text-main mt-6">${j.sub}</p></div>
+function renderJurusanPage(){$('pubJurusanAccordion').innerHTML=db.jurusan.map(j=>`<div class="bg-bg-card rounded-3xl shadow-sm border border-teal-tint overflow-hidden"><button class="accordion-btn w-full px-4 sm:px-8 py-4 sm:py-6 flex justify-between items-center text-left hover:bg-bg-page" onclick="toggleAccordion('${j.id}')"><div class="flex items-center space-x-3 sm:space-x-5 min-w-0"><div class="w-12 h-12 sm:w-14 sm:h-14 bg-teal-tint text-teal-primary rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"><i class="fa-solid ${j.icon}"></i></div><h4 class="text-lg sm:text-2xl font-black text-navy-dark">${j.nama}</h4></div><i class="fa-solid fa-chevron-down accordion-icon text-teal-primary text-xl"></i></button><div id="acc_${j.id}" class="accordion-content px-4 sm:px-10 bg-white border-t border-teal-tint">
+<div class="relative md:min-h-[620px]"><div class="md:w-[52%] md:h-[290px] pt-4 pb-6 md:pb-0"><h3 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#033A82] leading-[1.1]">${j.judul}</h3><p class="text-xl font-bold text-text-main mt-6">${j.sub}</p></div>
 <div class="md:absolute md:top-0 md:right-6 md:bottom-16 md:w-[36%] bg-[#033A82] rounded-3xl overflow-hidden shadow-xl h-80 md:h-auto relative z-10 mb-6 md:mb-0"><img src="${j.kaprogFoto}" alt="${j.kaprogNama}" onerror="imgErr(this)" class="w-full h-full object-cover object-top"></div>
-<div class="bg-[#033A82] text-white rounded-3xl p-8 md:p-12 md:pr-[42%] md:min-h-[330px] flex items-center"><p class="text-justify leading-relaxed">${j.intro}</p></div></div>
-${j.apa?`<div class="mt-12 bg-bg-page border border-teal-tint rounded-3xl p-8 md:p-10"><h4 class="text-2xl md:text-3xl font-black text-[#033A82] mb-4">${j.apaTitle}</h4><p class="leading-loose text-justify whitespace-pre-line">${j.apa}</p></div>`:''}
-<div class="mt-12"><h4 class="text-2xl md:text-3xl font-black text-[#033A82]">${j.listTitle}</h4>${j.listSub?`<p class="mt-2 text-text-muted">${j.listSub}</p>`:''}<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">${j.items.map((it,i)=>`<div class="bg-bg-page border border-teal-tint rounded-2xl p-6 flex gap-4"><span class="w-9 h-9 rounded-full bg-[#033A82] text-white font-bold flex items-center justify-center flex-shrink-0">${i+1}</span><div>${it.t?`<h5 class="font-bold text-navy-dark mb-2">${it.t}</h5>`:''}<p class="text-sm leading-relaxed text-text-main text-justify whitespace-pre-line">${it.d}</p></div></div>`).join('')}</div></div>
+<div class="bg-[#033A82] text-white rounded-3xl p-8 md:p-12 md:pr-[42%] md:min-h-[330px] flex items-center"><p class="leading-relaxed md:text-justify">${j.intro}</p></div></div>
+${j.apa?`<div class="mt-12 bg-bg-page border border-teal-tint rounded-3xl p-8 md:p-10"><h4 class="text-2xl md:text-3xl font-black text-[#033A82] mb-4">${j.apaTitle}</h4><p class="leading-loose md:text-justify whitespace-pre-line">${j.apa}</p></div>`:''}
+<div class="mt-12"><h4 class="text-2xl md:text-3xl font-black text-[#033A82]">${j.listTitle}</h4>${j.listSub?`<p class="mt-2 text-text-muted">${j.listSub}</p>`:''}<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">${j.items.map((it,i)=>`<div class="bg-bg-page border border-teal-tint rounded-2xl p-6 flex gap-4"><span class="w-9 h-9 rounded-full bg-[#033A82] text-white font-bold flex items-center justify-center flex-shrink-0">${i+1}</span><div>${it.t?`<h5 class="font-bold text-navy-dark mb-2">${it.t}</h5>`:''}<p class="text-sm leading-relaxed text-text-main md:text-justify whitespace-pre-line">${it.d}</p></div></div>`).join('')}</div></div>
 </div></div>`).join('')}
 function toggleAccordion(id){const c=$('acc_'+id),b=c.previousElementSibling,open=c.classList.contains('expanded');
 document.querySelectorAll('.accordion-content,.accordion-btn').forEach(e=>e.classList.remove('expanded'));if(!open){c.classList.add('expanded');b.classList.add('expanded')}}
@@ -519,13 +572,18 @@ let galFilter='Semua',galIdx=0,galTimer=null,galPaused=false;
 function galItems(){const o=[];db.galeriAlbums.forEach(a=>[a.mainPhoto,...(a.subPhotos||[])].forEach(u=>o.push({src:u,judul:a.judul,kat:a.kategori})));return galFilter==='Semua'?o:o.filter(x=>x.kat===galFilter)}
 function renderGaleriPage(){const kats=['Semua',...new Set(db.galeriAlbums.map(a=>a.kategori))];
 $('galFilters').innerHTML=kats.map(k=>`<button onclick="setGalFilter('${k}')" class="px-5 py-2 rounded-full text-sm font-semibold border transition ${galFilter===k?'bg-navy-dark text-white border-navy-dark':'border-navy-dark/40 text-navy-dark hover:bg-teal-tint'}">${k}</button>`).join('');
-const it=galItems();$('galTrack').innerHTML=it.map((x,i)=>`<div class="gal-card" onclick="galGo(${i})"><img src="${x.src}" alt="${x.judul}"><div class="gal-shade"></div><div class="gal-info"><span class="text-xs font-black uppercase tracking-widest text-teal-accent">${x.kat}</span><h5 class="text-xl font-bold mt-1">${x.judul}</h5></div></div>`).join('');
+const it=galItems();$('galTrack').innerHTML=it.map((x,i)=>`<div class="gal-card" onclick="galOpen(${i})"><img src="${x.src}" alt="${x.judul}"><div class="gal-shade"></div><div class="gal-info"><span class="text-xs font-black uppercase tracking-widest text-teal-accent">${x.kat}</span><h5 class="text-xl font-bold mt-1">${x.judul}</h5></div></div>`).join('');
 galIdx=Math.min(galIdx,Math.max(it.length-1,0));positionGal();startGalAuto()}
 function positionGal(){const cards=[...document.querySelectorAll('#galTrack .gal-card')],N=cards.length;if(!N)return;
 const W=$('galTrack').clientWidth||900,cw=Math.min(380,W*.62),step=cw*.78;
 cards.forEach((c,i)=>{let d=((i-galIdx)%N+N)%N;if(d>N/2)d-=N;const a=Math.abs(d),x=d*step*(a>1?1.02:1);
 c.style.width=cw+'px';c.style.transform=`translateX(calc(-50% + ${x}px)) scale(${a===0?1:a===1?.84:.7})`;
 c.style.zIndex=10-a;c.style.opacity=a>2?0:1;c.style.pointerEvents=a>2?'none':'auto';c.classList.toggle('is-active',a===0)})}
+function galOpen(i){galIdx=i;positionGal();galLbShow();$('galLightbox').classList.remove('hidden');$('galLightbox').classList.add('flex');document.body.style.overflow='hidden';galPaused=true}
+function galLbShow(){const it=galItems(),x=it[galIdx];if(!x)return;$('galLbImg').src=x.src.replace(/w=\d+/,'w=1600');$('galLbImg').alt=x.judul;$('galLbKat').innerText=x.kat;$('galLbJudul').innerText=x.judul;$('galLbCount').innerText=(galIdx+1)+' / '+it.length}
+function galLbStep(d){const N=galItems().length;if(!N)return;galIdx=(galIdx+d+N)%N;galLbShow();positionGal()}
+function galClose(){$('galLightbox').classList.add('hidden');$('galLightbox').classList.remove('flex');document.body.style.overflow='';galPaused=false}
+document.addEventListener('keydown',e=>{if($('galLightbox').classList.contains('hidden'))return;if(e.key==='Escape')galClose();else if(e.key==='ArrowLeft')galLbStep(-1);else if(e.key==='ArrowRight')galLbStep(1)});
 function galGo(i){galIdx=i;positionGal();startGalAuto()}
 function galNext(){const N=galItems().length;if(!N)return;galIdx=(galIdx+1)%N;positionGal();startGalAuto()}
 function galPrev(){const N=galItems().length;if(!N)return;galIdx=(galIdx-1+N)%N;positionGal();startGalAuto()}

@@ -93,6 +93,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/template', [JadwalController::class, 'downloadTemplate'])->name('jadwal.template');
+    Route::post('/jadwal/import', [JadwalController::class, 'importExcel'])->name('jadwal.import');
+    Route::post('/jadwal/fix-teacher-ids', [JadwalController::class, 'fixTeacherIds'])->name('jadwal.fix-teacher-ids');
     Route::get('/jadwal/jam/{hari}', [JadwalController::class, 'jamHari'])->name('jadwal.jam');
     Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
     Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');

@@ -363,17 +363,6 @@ class DataMasterDanJadwalTest extends TestCase
         ]);
         $responseSelesaiKecil->assertSessionHas('error');
 
-        $responseLewatIstirahat = $this->actingAs($this->admin)->post('/admin/jadwal', [
-            'hari' => 'Selasa',
-            'id_kelas' => $kelas1->id,
-            'id_mapel' => $mapel->id,
-            'id_guru' => $guru->id,
-            'id_ruangan' => $ruang->id,
-            'jam_ke_mulai' => 3,
-            'jam_ke_selesai' => 5,
-        ]);
-        $responseLewatIstirahat->assertSessionHas('error');
-
         $responseValid = $this->actingAs($this->admin)->post('/admin/jadwal', [
             'hari' => 'Selasa',
             'id_kelas' => $kelas1->id,
@@ -389,6 +378,31 @@ class DataMasterDanJadwalTest extends TestCase
             'id_kelas' => $kelas1->id,
             'jam_ke_mulai' => 1,
             'jam_ke_selesai' => 3,
+        ]);
+
+        $guru2 = Guru::where('id', '!=', $guru->id)->first();
+        $ruang2 = Ruangan::where('kode', 'R.52')->first();
+        $responseLewatIstirahat = $this->actingAs($this->admin)->post('/admin/jadwal', [
+            'hari' => 'Selasa',
+            'id_kelas' => $kelas2->id,
+            'id_mapel' => $mapel->id,
+            'id_guru' => $guru2->id,
+            'id_ruangan' => $ruang2->id,
+            'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 5,
+        ]);
+        $responseLewatIstirahat->assertSessionMissing('error');
+        $this->assertDatabaseHas('jadwal', [
+            'hari' => 'Selasa',
+            'id_kelas' => $kelas2->id,
+            'jam_ke_mulai' => 3,
+            'jam_ke_selesai' => 4,
+        ]);
+        $this->assertDatabaseHas('jadwal', [
+            'hari' => 'Selasa',
+            'id_kelas' => $kelas2->id,
+            'jam_ke_mulai' => 5,
+            'jam_ke_selesai' => 5,
         ]);
 
         $responseBentrokGuru = $this->actingAs($this->admin)->post('/admin/jadwal', [

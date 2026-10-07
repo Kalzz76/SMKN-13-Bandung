@@ -2,11 +2,16 @@
 
 @section('content')
 <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10 w-full flex-grow">
-    <!-- Header Halaman -->
-    <div class="text-center max-w-3xl mx-auto">
-        <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Warta & Berita</span>
-        <h1 class="text-4xl sm:text-5xl font-black text-navy-dark mt-1 mb-3">Berita, Kegiatan & Prestasi Sekolah</h1>
-        <p class="text-base sm:text-lg text-text-muted">Kabar terbaru, agenda kegiatan, pengumuman resmi, dan torehan prestasi siswa SMKN 13 Bandung.</p>
+    <div class="relative rounded-3xl overflow-hidden shadow-lg bg-navy-dark min-h-[200px] sm:min-h-[240px] flex items-center justify-center text-center px-6 py-10 border-b-8 border-teal-primary">
+        <div class="absolute inset-0" data-slider data-offset="2"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/75 to-navy-mid/85"></div>
+        <div class="relative z-10 [text-shadow:0_2px_12px_rgba(0,0,0,.3)]">
+            <span class="inline-block mb-3 px-4 py-1.5 rounded-full bg-teal-primary text-xs font-black uppercase tracking-widest text-white">
+                Informasi Terkini
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white">Warta & Berita</h1>
+            <p class="mt-3 text-sm sm:text-base text-teal-tint/90">Kabar, prestasi, dan agenda terbaru SMKN 13 Bandung.</p>
+        </div>
     </div>
 
     <!-- Filter & Search Bar -->

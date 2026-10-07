@@ -2,15 +2,13 @@
 
 @section('content')
 <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 w-full flex-grow">
-    <!-- Header Halaman -->
     <div class="text-center max-w-3xl mx-auto">
         <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Layanan Informasi</span>
-        <h1 class="text-4xl sm:text-5xl font-black text-navy-dark mt-1 mb-3">Pusat Bantuan & Lokasi</h1>
+        <h1 class="text-3xl sm:text-5xl font-black text-navy-dark mt-1 mb-6">Pusat Bantuan & Lokasi</h1>
         <p class="text-base sm:text-lg text-text-muted">Hubungi layanan informasi resmi SMK Negeri 13 Bandung atau kunjungi kampus kami pada jam operasional kerja.</p>
     </div>
 
-    <!-- Main Card Info & Maps Embed -->
-    <div class="bg-bg-card rounded-3xl p-8 sm:p-14 shadow-sm border border-teal-tint flex flex-col lg:flex-row gap-12 items-stretch">
+    <div class="bg-bg-card rounded-3xl p-6 sm:p-14 shadow-sm border border-teal-tint flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch">
         <!-- Kolom Kiri: Informasi Kontak -->
         <div class="w-full lg:w-1/2 space-y-8">
             <!-- NPSN -->

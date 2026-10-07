@@ -6,20 +6,18 @@
         <div id="visi-misi" class="scroll-mt-32 space-y-12">
             <div class="text-center max-w-3xl mx-auto">
                 <span class="text-xs font-black uppercase tracking-widest text-teal-primary">Identitas Sekolah</span>
-                <h3 class="text-4xl sm:text-5xl font-black text-navy-dark mt-1 mb-4">Profil & Visi Misi</h3>
+                <h3 class="text-3xl sm:text-5xl font-black text-navy-dark mt-1 mb-4">Profil & Visi Misi</h3>
                 <p class="text-base sm:text-lg text-text-muted">Landasan, arah kebijakan, dan penggerak mutu pendidikan SMK Negeri 13 Bandung.</p>
             </div>
 
-            <!-- VISI SEKOLAH -->
-            <div class="bg-bg-card p-8 sm:p-12 rounded-3xl shadow-sm border-t-8 border-teal-primary border-x border-b border-teal-tint text-center max-w-4xl mx-auto">
+            <div class="bg-bg-card p-6 sm:p-10 rounded-3xl shadow-sm border-t-8 border-teal-primary border-x border-b border-teal-tint text-center max-w-4xl mx-auto">
                 <span class="bg-teal-tint text-teal-primary text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-4">VISI SEKOLAH</span>
                 <h4 class="text-2xl sm:text-3xl font-black text-navy-dark leading-relaxed italic">
                     "{{ $pengaturan->visi ?? 'Terwujudnya lulusan yang berakhlak mulia, kompeten dan berdaya suai di tingkat internasional pada tahun 2030' }}"
                 </h4>
             </div>
 
-            <!-- MISI SEKOLAH -->
-            <div class="bg-bg-card p-8 sm:p-14 rounded-3xl shadow-sm border border-teal-tint space-y-8">
+            <div class="bg-bg-card p-5 sm:p-10 md:p-14 rounded-3xl shadow-sm border border-teal-tint space-y-8">
                 <div class="text-center">
                     <span class="bg-navy-dark text-teal-accent text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-2">MISI SEKOLAH</span>
                     <h4 class="text-3xl font-black text-navy-dark">Langkah Strategis Pencapaian</h4>
@@ -61,9 +59,8 @@
             </div>
         </div>
 
-        <!-- 2. SEJARAH SMKN 13 BANDUNG -->
         <div id="sejarah" class="scroll-mt-32 bg-bg-card p-6 sm:p-10 lg:p-14 rounded-3xl shadow-sm border border-teal-tint">
-            <h4 class="text-3xl sm:text-4xl font-black text-navy-dark mb-10 text-center">Sejarah Singkat SMKN 13 Bandung</h4>
+            <h4 class="text-2xl sm:text-3xl font-black text-navy-dark mb-10 text-center">Sejarah Singkat SMKN 13 Bandung</h4>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
                 <!-- Kolom Kiri: Garis Waktu Sejarah -->
                 <div class="order-2 lg:order-1">

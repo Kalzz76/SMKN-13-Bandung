@@ -1,22 +1,21 @@
 @extends('layouts.publik', ['title' => 'Beranda - SMKN 13 Bandung'])
 
 @section('content')
-    <!-- HERO SECTION -->
-    <div class="relative bg-gradient-to-r from-navy-dark to-navy-mid py-28 sm:py-36 px-4 overflow-hidden text-white">
+    <div class="relative bg-navy-dark py-24 sm:py-40 px-4 overflow-hidden min-h-[75vh] flex items-center text-white">
+        <div class="absolute inset-0" data-slider data-offset="0" data-dots="1"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-navy-dark/75 via-navy-dark/55 to-navy-dark/85"></div>
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#9ED6CF_1px,transparent_1px)] [background-size:24px_24px]"></div>
         
-        <div class="max-w-4xl mx-auto relative z-10 text-center">
-            @if(!empty($pengaturan->slogan))
-                <span class="inline-block bg-teal-primary/40 text-teal-accent text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-teal-accent/30 mb-6">
-                    {{ $pengaturan->slogan }}
-                </span>
-            @endif
+        <div class="max-w-4xl mx-auto w-full relative z-10 text-center [text-shadow:0_2px_16px_rgba(0,0,0,.35)]">
+            <span class="inline-block mb-5 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/20 text-xs font-bold uppercase tracking-[.25em] text-teal-accent">
+                Selamat Datang di
+            </span>
 
-            <h1 class="text-5xl sm:text-7xl font-black mb-6 tracking-tighter text-white leading-tight">
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black mb-6 tracking-tighter text-white leading-tight">
                 SMK Negeri 13 <br><span class="text-teal-accent">Bandung.</span>
             </h1>
 
-            <p class="text-lg sm:text-2xl text-teal-tint/90 max-w-2xl mx-auto font-medium leading-relaxed mb-8">
+            <p class="text-base sm:text-xl lg:text-2xl text-teal-tint/90 max-w-2xl mx-auto font-medium leading-relaxed mb-8">
                 {{ $pengaturan->deskripsi_singkat ?? 'Pusat Keunggulan Vokasi yang berfokus pada akhlak mulia, kompetensi, dan daya saing internasional.' }}
             </p>
 
@@ -35,9 +34,8 @@
         </div>
     </div>
 
-    <!-- 4 KARTU KEUNGGULAN -->
-    <section class="py-20 max-w-7xl mx-auto px-4 text-center w-full">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+    <section class="py-12 sm:py-20 max-w-7xl mx-auto px-4 text-center w-full">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
             <a href="{{ route('publik.jurusan') }}" class="flex flex-col items-center btn-animate group cursor-pointer">
                 <div class="w-24 h-24 rounded-full bg-teal-tint flex items-center justify-center text-teal-primary text-4xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-flask"></i>
@@ -80,18 +78,17 @@
         </div>
     </section>
 
-    <!-- SAMBUTAN KEPALA SEKOLAH -->
     <section class="py-20 bg-bg-card border-y border-teal-tint/50 w-full">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
             <div class="w-full md:w-5/12 flex justify-center">
                 @if(!empty($pengaturan->foto_kepsek) && file_exists(public_path('storage/' . $pengaturan->foto_kepsek)))
                     <img src="{{ asset('storage/' . $pengaturan->foto_kepsek) }}"
                         alt="{{ $pengaturan->nama_kepsek ?? 'Agus Nugroho, S.Pd., M.T.' }}"
-                        class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[450px] bg-teal-tint border border-teal-tint">
+                        class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[340px] md:h-[450px] bg-teal-tint border border-teal-tint">
                 @else
                     <img src="{{ asset('Assets/agus.webp') }}"
                         alt="Agus Nugroho, S.Pd., M.T."
-                        class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[450px] bg-teal-tint border border-teal-tint">
+                        class="rounded-3xl shadow-xl w-full max-w-sm object-cover object-top h-[340px] md:h-[450px] bg-teal-tint border border-teal-tint">
                 @endif
             </div>
 
@@ -124,10 +121,9 @@
         </div>
     </section>
 
-    <!-- WARTA & BERITA TERKINI -->
     <section class="py-20 w-full">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-4xl font-black text-navy-dark mb-12">Warta & Berita Terkini</h3>
+            <h3 class="text-3xl sm:text-4xl font-black text-navy-dark mb-12">Warta & Berita Terkini</h3>
 
             @if($beritaTerbaru->isEmpty())
                 <div class="bg-bg-card p-12 rounded-3xl text-center text-text-muted border border-teal-tint max-w-lg mx-auto">

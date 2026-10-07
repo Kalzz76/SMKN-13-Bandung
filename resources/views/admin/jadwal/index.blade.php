@@ -40,21 +40,35 @@
     }
 </style>
 <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">Jadwal Pelajaran Sekolah</h1>
-            <p class="text-sm text-slate-500 mt-1">Matriks jadwal harian (Kelas di kiri, Jam Ke & Waktu di atas)</p>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Jadwal Pelajaran</h1>
+            <p class="text-sm text-slate-500 mt-1">Kelola jadwal belajar mengajar sesuai waktu operasional harian.</p>
         </div>
-        <button type="button" onclick="openTambahModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2 text-sm">
-            <i class="fa-solid fa-plus"></i>
-            <span>Tambah Jadwal</span>
-        </button>
+        <div class="flex flex-wrap items-center gap-2.5">
+            <a href="{{ route('admin.jadwal.template') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-xs transition flex items-center space-x-2">
+                <i class="fa-solid fa-download text-emerald-700"></i>
+                <span>Download Template</span>
+            </a>
+            <button type="button" onclick="openImportModal()" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs shadow-xs transition flex items-center space-x-2">
+                <i class="fa-solid fa-upload"></i>
+                <span>Import Excel</span>
+            </button>
+            <button type="button" onclick="triggerFixTeacherIds()" class="px-4 py-2.5 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs shadow-xs transition flex items-center space-x-2">
+                <i class="fa-solid fa-wrench text-amber-600"></i>
+                <span>Fix Teacher IDs</span>
+            </button>
+            <button type="button" onclick="openTambahModal()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition flex items-center space-x-2">
+                <i class="fa-solid fa-plus text-emerald-400"></i>
+                <span>Tambah Jadwal</span>
+            </button>
+        </div>
     </div>
 
-    <div class="flex items-center space-x-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
+    <div class="flex items-center space-x-2 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200 overflow-x-auto w-fit">
         @foreach($daftarHari as $h)
-            <a href="{{ route('admin.jadwal.index', array_merge(['hari' => $h], $parameterSesi)) }}" class="px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center space-x-2 whitespace-nowrap {{ $hariTerpilih === $h ? 'bg-emerald-700 text-white shadow' : 'text-slate-600 hover:bg-slate-100' }}">
-                <i class="fa-solid fa-calendar-day"></i>
+            <a href="{{ route('admin.jadwal.index', array_merge(['hari' => $h], $parameterSesi)) }}" class="px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 whitespace-nowrap {{ $hariTerpilih === $h ? 'bg-white text-emerald-800 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50' }}">
+                <i class="fa-solid fa-calendar-day {{ $hariTerpilih === $h ? 'text-emerald-700' : 'text-slate-400' }}"></i>
                 <span>{{ $h }}</span>
             </a>
         @endforeach
@@ -101,7 +115,7 @@
                         <i class="fa-solid {{ stripos($aturan->kegiatan, 'upacara') !== false ? 'fa-flag text-sky-600' : 'fa-people-roof text-amber-600' }}"></i>
                         <span class="font-bold text-slate-800">{{ $kelompokLabel[$aturan->kelompok] ?? 'Kelompok ' . $aturan->kelompok }}</span>
                         <span class="text-slate-500">&rarr;</span>
-                        <span class="font-semibold text-slate-700">{{ $aturan->kegiatan }}{{ $aturan->lokasi ? ' di ' . $aturan->lokasi : '' }}</span>
+                        <span class="font-semibold text-slate-700">{{ strtoupper($aturan->kegiatan) }}{{ $aturan->lokasi ? ' di ' . $aturan->lokasi : '' }}</span>
                     </div>
                 @endforeach
             </div>
@@ -124,7 +138,7 @@
                         </span>
                     </div>
                     <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                        Klik sel jadwal untuk mengedit, atau klik sel kosong di matriks ruangan untuk menjadwalkan
+                        Klik tanda (+) pada sel kosong untuk menjadwalkan, atau klik sel jadwal untuk mengubah/menghapus.
                     </p>
                 </div>
             </div>
@@ -136,7 +150,7 @@
                 </button>
                 <button type="button" id="tabBtnRuang" onclick="switchMatriksView('ruang')" class="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-white/60">
                     <i class="fa-solid fa-door-open"></i>
-                    <span>Matriks Ruangan (PDF)</span>
+                    <span>Matriks Ruangan</span>
                 </button>
                 <div class="hidden sm:flex items-center space-x-1 border-l border-slate-300 pl-2">
                     <button type="button" onclick="scrollMatriksHorizontal(-350)" title="Geser Kiri" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-200 text-xs">
@@ -149,6 +163,7 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <div id="topScrollContainer" class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 mb-3 shadow-xs">
             <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1.5 px-1">
                 <span class="flex items-center space-x-1.5 text-emerald-800">
@@ -164,124 +179,154 @@
 
         <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs">
             <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 260 + $jumlahKolom * 125 }}px">
+=======
+        <div id="viewMatriksKelas" class="overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs bg-white">
+            <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 220 + $jumlahKolom * 180 }}px">
+>>>>>>> 2798e98 (feat: auto-split jadwal melewati jam istirahat, modul jadwal flutter reference, dan update landing page)
                 <thead>
-                    <tr>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[110px] w-28">KELAS</th>
-                        <th rowspan="2" class="p-3 bg-slate-100 text-slate-800 font-extrabold border border-slate-200 min-w-[80px] w-20">JAM KE</th>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="p-3.5 bg-slate-100 text-slate-800 font-extrabold border-r border-slate-200 min-w-[150px] w-40 text-center">
+                            KELAS / WAKTU
+                        </th>
                         @foreach($slotHari as $slot)
                             @if($slot->jenis === 'Pembiasaan')
-                                <th class="p-2.5 bg-yellow-300 text-slate-900 font-black border border-yellow-400 min-w-[130px] w-32" title="{{ $slot->keterangan }}">{{ strtoupper($slot->nama) }}</th>
+                                <th class="p-3 bg-yellow-300 text-slate-900 font-black border-r border-yellow-400 min-w-[170px] w-44" title="{{ $slot->keterangan }}">
+                                    <div class="text-xs font-black uppercase">{{ $slot->nama }}</div>
+                                    <div class="text-[11px] font-semibold text-slate-700 mt-0.5">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</div>
+                                </th>
                             @elseif($slot->jenis === 'Istirahat')
-                                <th class="p-2.5 bg-pink-400 text-white font-black border border-pink-500 min-w-[105px] w-28" title="{{ $slot->nama }}">ISTIRAHAT</th>
+                                <th class="p-3 bg-pink-100 text-pink-900 font-black border-r border-pink-200 min-w-[150px] w-40" title="{{ $slot->nama }}">
+                                    <div class="text-xs font-black text-pink-700 uppercase">ISTIRAHAT</div>
+                                    <div class="text-[11px] font-medium text-pink-600 mt-0.5">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</div>
+                                </th>
                             @else
-                                <th class="p-2.5 bg-emerald-700 text-white font-black border border-emerald-800 min-w-[125px] w-32">JAM {{ $slot->jam_ke }}</th>
-                            @endif
-                        @endforeach
-                    </tr>
-                    <tr class="text-[11px] text-slate-600 bg-slate-50">
-                        @foreach($slotHari as $slot)
-                            @if($slot->jenis === 'Istirahat')
-                                <th class="p-1 border border-pink-200 bg-pink-50 font-medium text-pink-700 min-w-[105px]">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
-                            @else
-                                <th class="p-1 border border-slate-200 font-medium {{ $slot->jenis === 'Pembiasaan' ? 'min-w-[130px]' : 'min-w-[125px]' }}">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</th>
+                                <th class="p-3 bg-slate-50 text-slate-800 font-extrabold border-r border-slate-200 min-w-[180px] w-48">
+                                    <div class="text-xs font-black text-emerald-800">Jam {{ $slot->jam_ke }}</div>
+                                    <div class="text-[11px] text-slate-500 font-medium mt-0.5">{{ $formatWaktu($slot->jam_mulai) }} - {{ $formatWaktu($slot->jam_selesai) }}</div>
+                                </th>
                             @endif
                         @endforeach
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-200">
                     @forelse($daftarKelas as $k)
                         @php
                             $jadwalKelas = $daftarJadwal->where('id_kelas', $k->id);
                             $label = $labelPembiasaan[$k->id];
                             $kelasWarnaPembiasaan = $label['rotasi'] && stripos($label['kegiatan'], 'upacara') !== false
-                                ? 'bg-sky-100 text-sky-900'
-                                : 'bg-yellow-100/70 text-amber-900';
+                                ? 'bg-sky-50 text-sky-900 border-sky-200'
+                                : 'bg-yellow-50 text-amber-900 border-yellow-200';
+                            $lewatiSampai = 0;
                         @endphp
-                        @foreach(['mapel', 'ruang', 'guru'] as $indeksBaris => $baris)
-                            <tr>
-                                @if($indeksBaris === 0)
-                                    <td rowspan="3" class="p-3 font-black text-slate-900 bg-slate-50 border border-slate-200 whitespace-nowrap">
-                                        {{ $k->nama }}
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="p-4 font-black text-emerald-800 bg-slate-50/70 border-r border-slate-200 whitespace-nowrap text-center text-sm">
+                                {{ $k->nama }}
+                            </td>
+
+                            @foreach($slotHari as $slot)
+                                @if($slot->jenis === 'Pembiasaan')
+                                    <td class="p-3 {{ $kelasWarnaPembiasaan }} font-bold border-r border-slate-200 text-xs">
+                                        <div class="uppercase tracking-wide font-black text-[11px]">{{ strtoupper($label['kegiatan']) }}</div>
+                                        @if($label['lokasi'])
+                                            <div class="text-[10px] font-medium opacity-80 mt-1 flex items-center justify-center space-x-1">
+                                                <i class="fa-solid fa-location-dot text-[9px]"></i>
+                                                <span>{{ $label['lokasi'] }}</span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    @continue
+                                @endif
+
+                                @if($slot->jenis === 'Istirahat')
+                                    <td class="p-3 bg-pink-50/50 text-pink-700 font-bold border-r border-slate-200 text-xs text-center" title="{{ $slot->nama }}">
+                                        <span class="tracking-widest font-black text-[11px]">ISTIRAHAT</span>
+                                    </td>
+                                    @continue
+                                @endif
+
+                                @if($slot->jam_ke <= $lewatiSampai)
+                                    @continue
+                                @endif
+
+                                @php
+                                    $jdw = $jadwalKelas->first(fn ($i) => $i->jam_ke_mulai == $slot->jam_ke);
+                                @endphp
+
+                                @if($jdw)
+                                    @php
+                                        $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
+                                        $lewatiSampai = $jdw->jam_ke_selesai;
+                                        $namaGuru = $jdw->guru ? $jdw->guru->nama : '-';
+                                        $namaRuangan = $jdw->ruangan ? $jdw->ruangan->nama : ($jdw->ruangan ? $jdw->ruangan->kode : '-');
+                                    @endphp
+
+                                    @if($jdw->is_kegiatan)
+                                        <td colspan="{{ $span }}" class="p-3 border-r border-slate-200 bg-emerald-50/30 text-left align-top">
+                                            <div class="bg-emerald-100/70 border border-emerald-200 rounded-xl p-2.5 text-center flex flex-col justify-between h-full min-h-[92px]">
+                                                <div>
+                                                    <span class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-800 bg-emerald-200/60 px-2 py-0.5 rounded-md inline-block mb-1">
+                                                        Kegiatan
+                                                    </span>
+                                                    <h4 class="font-black text-slate-900 text-xs leading-tight">
+                                                        {{ $jdw->nama_kegiatan ?: 'Kegiatan' }}
+                                                    </h4>
+                                                </div>
+                                                <div class="flex items-center justify-center space-x-3 pt-2 border-t border-emerald-200/60 text-[10px]">
+                                                    <button type="button" onclick="openEditModalFromDirect('{{ $jdw->id }}', '{{ $jdw->hari }}', '{{ $jdw->id_kelas }}', '', '', '', '{{ $jdw->jam_ke_mulai }}', '{{ $jdw->jam_ke_selesai }}', true, '{{ addslashes($jdw->nama_kegiatan) }}')" class="font-bold text-emerald-800 hover:underline">
+                                                        Edit
+                                                    </button>
+                                                    <span class="text-slate-300">|</span>
+                                                    <button type="button" onclick="hapusJadwalDirect({{ $jdw->id }}, event)" class="font-bold text-rose-600 hover:text-rose-800">
+                                                        Hapus
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @else
+                                        <td colspan="{{ $span }}" class="p-3 border-r border-slate-200 bg-white text-left align-top group hover:bg-slate-50 transition">
+                                            <div class="bg-indigo-50/50 hover:bg-indigo-50/80 border border-indigo-100 rounded-xl p-2.5 flex flex-col justify-between h-full min-h-[96px] transition cursor-pointer" onclick="openEditModalFromDirect('{{ $jdw->id }}', '{{ $jdw->hari }}', '{{ $jdw->id_kelas }}', '{{ $jdw->id_mapel }}', '{{ $jdw->id_ruangan }}', '{{ $jdw->id_guru }}', '{{ $jdw->jam_ke_mulai }}', '{{ $jdw->jam_ke_selesai }}', false, '')">
+                                                <div>
+                                                    <div class="bg-indigo-600 text-white font-bold text-[11px] px-2 py-1 rounded-lg truncate text-center shadow-2xs mb-1.5" title="{{ $jdw->mapel ? $jdw->mapel->nama : '-' }}">
+                                                        {{ $jdw->mapel ? $jdw->mapel->nama : '-' }}
+                                                    </div>
+                                                    <div class="flex items-center space-x-1.5 text-[11px] text-slate-600 mb-1">
+                                                        <i class="fa-solid fa-door-open text-slate-400 text-[10px] w-3.5 text-center"></i>
+                                                        <span class="font-semibold truncate">{{ $namaRuangan }}</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-1.5 text-[11px] text-slate-600">
+                                                        <i class="fa-solid fa-user-tie text-slate-400 text-[10px] w-3.5 text-center"></i>
+                                                        <span class="truncate" title="{{ $namaGuru }}">{{ $namaGuru }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center justify-between pt-2 border-t border-indigo-100 text-[10px] mt-2">
+                                                    <span class="text-indigo-600 font-bold">Jam {{ $jdw->jam_ke_mulai }}-{{ $jdw->jam_ke_selesai }}</span>
+                                                    <button type="button" onclick="hapusJadwalDirect({{ $jdw->id }}, event)" class="font-bold text-rose-600 hover:text-rose-800 transition">
+                                                        Hapus
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @endif
+                                @else
+                                    <td class="p-3 border-r border-slate-200 bg-white text-center align-middle hover:bg-emerald-50/30 transition cursor-pointer" onclick="openTambahModalForCell({{ $k->id }}, {{ $slot->jam_ke }}, '{{ $hariTerpilih }}')" title="Tambah Jadwal {{ $k->nama }} - Jam {{ $slot->jam_ke }}">
+                                        <div class="w-full h-24 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-slate-300 hover:border-emerald-400 hover:text-emerald-600 hover:bg-white transition group/btn">
+                                            <i class="fa-solid fa-plus text-base group-hover/btn:scale-125 transition-transform duration-200"></i>
+                                            <span class="text-[9px] font-bold mt-1 text-slate-400 group-hover/btn:text-emerald-700">Atur</span>
+                                        </div>
                                     </td>
                                 @endif
-                                <td class="p-2 font-bold text-slate-500 bg-slate-100/70 border border-slate-200 text-[10px]">
-                                    {{ strtoupper($baris) }}
-                                </td>
-
-                                @php $lewatiSampai = 0; @endphp
-                                @foreach($slotHari as $slot)
-                                    @if($slot->jenis === 'Pembiasaan')
-                                        @if($indeksBaris === 0)
-                                            <td rowspan="3" class="p-2 {{ $kelasWarnaPembiasaan }} font-bold border border-slate-200 text-xs">
-                                                {{ strtoupper($label['kegiatan']) }}
-                                                @if($label['lokasi'])
-                                                    <span class="block text-[9px] font-medium opacity-80 mt-0.5">{{ $label['lokasi'] }}</span>
-                                                @endif
-                                            </td>
-                                        @endif
-                                        @continue
-                                    @endif
-
-                                    @if($slot->jenis === 'Istirahat')
-                                        @if($indeksBaris === 0)
-                                            <td rowspan="3" class="p-2 bg-pink-100 text-pink-700 font-bold border border-slate-200 text-[11px]" title="{{ $slot->nama }}">
-                                                ISTIRAHAT
-                                            </td>
-                                        @endif
-                                        @continue
-                                    @endif
-
-                                    @if($slot->jam_ke <= $lewatiSampai)
-                                        @continue
-                                    @endif
-
-                                    @php
-                                        $jdw = $jadwalKelas->first(fn ($i) => $i->jam_ke_mulai == $slot->jam_ke);
-                                    @endphp
-                                    @if($jdw)
-                                        @php
-                                            $span = $jdw->jam_ke_selesai - $jdw->jam_ke_mulai + 1;
-                                            $lewatiSampai = $jdw->jam_ke_selesai;
-                                            $namaGuru = $jdw->guru ? explode(',', $jdw->guru->nama)[0] : '-';
-                                        @endphp
-                                        @if($baris === 'mapel')
-                                            <td colspan="{{ $span }}" onclick="openEditModalFromCell(this)"
-                                                data-id="{{ $jdw->id }}"
-                                                data-hari="{{ $jdw->hari }}"
-                                                data-kelas="{{ $jdw->id_kelas }}"
-                                                data-mapel="{{ $jdw->id_mapel }}"
-                                                data-ruang="{{ $jdw->id_ruangan }}"
-                                                data-guru="{{ $jdw->id_guru }}"
-                                                data-mulai="{{ $jdw->jam_ke_mulai }}"
-                                                data-selesai="{{ $jdw->jam_ke_selesai }}"
-                                                class="p-2 font-bold bg-emerald-100 text-emerald-900 border border-emerald-200 hover:bg-emerald-200 cursor-pointer transition text-xs" title="Klik untuk edit">
-                                                {{ $jdw->mapel ? $jdw->mapel->nama : '-' }}
-                                            </td>
-                                        @elseif($baris === 'ruang')
-                                            <td colspan="{{ $span }}" class="p-1 font-semibold text-slate-600 bg-slate-50 border border-slate-200 text-[11px]">
-                                                {{ $jdw->ruangan ? $jdw->ruangan->kode : '-' }}
-                                            </td>
-                                        @else
-                                            <td colspan="{{ $span }}" class="p-1 text-slate-700 bg-slate-50 border border-slate-200 text-[11px]">
-                                                {{ $namaGuru }}
-                                            </td>
-                                        @endif
-                                    @else
-                                        <td class="p-{{ $baris === 'mapel' ? '2' : '1' }} {{ $baris === 'mapel' ? 'text-slate-400' : 'text-slate-300' }} border border-slate-200">-</td>
-                                    @endif
-                                @endforeach
-                            </tr>
-                        @endforeach
+                            @endforeach
+                        </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $jumlahKolom + 2 }}" class="p-8 text-center text-slate-400">Belum ada data kelas yang terdaftar.</td>
+                            <td colspan="{{ $jumlahKolom + 1 }}" class="p-8 text-center text-slate-400">Belum ada data kelas yang terdaftar.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div id="viewMatriksRuangan" class="hidden overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs">
+        <div id="viewMatriksRuangan" class="hidden overflow-x-auto border border-slate-200 rounded-2xl custom-scrollbar-x shadow-xs bg-white">
             <table class="w-full text-center text-xs border-collapse" style="min-width: {{ 340 + $jumlahKolom * 125 }}px">
                 <thead>
                     <tr>
@@ -332,7 +377,7 @@
 
                                 @php
                                     $jam = $slot->jam_ke;
-                                    $pakai = $daftarJadwal->first(fn ($j) => $j->id_ruangan == $r->id && $jam >= $j->jam_ke_mulai && $jam <= $j->jam_ke_selesai);
+                                    $pakai = $daftarJadwal->first(fn ($j) => !$j->is_kegiatan && $j->id_ruangan == $r->id && $jam >= $j->jam_ke_mulai && $jam <= $j->jam_ke_selesai);
                                     if ($pakai) {
                                         $rekapTerpakai[$jam]++;
                                     } else {
@@ -340,15 +385,8 @@
                                     }
                                 @endphp
                                 @if($pakai)
-                                    <td class="p-2 bg-rose-100 text-rose-900 font-bold border border-rose-200 text-xs cursor-pointer hover:bg-rose-200 transition" onclick="openEditModalFromCell(this)"
-                                        data-id="{{ $pakai->id }}"
-                                        data-hari="{{ $pakai->hari }}"
-                                        data-kelas="{{ $pakai->id_kelas }}"
-                                        data-mapel="{{ $pakai->id_mapel }}"
-                                        data-ruang="{{ $pakai->id_ruangan }}"
-                                        data-guru="{{ $pakai->id_guru }}"
-                                        data-mulai="{{ $pakai->jam_ke_mulai }}"
-                                        data-selesai="{{ $pakai->jam_ke_selesai }}"
+                                    <td class="p-2 bg-rose-100 text-rose-900 font-bold border border-rose-200 text-xs cursor-pointer hover:bg-rose-200 transition"
+                                        onclick="openEditModalFromDirect('{{ $pakai->id }}', '{{ $pakai->hari }}', '{{ $pakai->id_kelas }}', '{{ $pakai->id_mapel }}', '{{ $pakai->id_ruangan }}', '{{ $pakai->id_guru }}', '{{ $pakai->jam_ke_mulai }}', '{{ $pakai->jam_ke_selesai }}', false, '')"
                                         title="Terpakai oleh {{ $pakai->kelas ? $pakai->kelas->nama : 'Kelas' }} - Klik untuk edit">
                                         <span class="block font-black text-rose-700">1</span>
                                         <span class="text-[10px] leading-tight block truncate max-w-[85px] mx-auto">{{ $pakai->kelas ? $pakai->kelas->nama : '-' }}</span>
@@ -403,7 +441,7 @@
                 <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-arrows-left-right text-xs"></i>
                 </span>
-                <span class="font-medium text-slate-700">Geser horizontal scroll bar di atas atau gunakan tombol kontrol untuk melihat seluruh jam pelajaran:</span>
+                <span class="font-medium text-slate-700">Geser horizontal scroll bar di atas atau gunakan tombol navigasi jam:</span>
             </div>
             <div class="flex items-center space-x-1.5 flex-shrink-0">
                 <button type="button" onclick="scrollMatriksHorizontal('start')" title="Ke Jam Pertama" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl font-bold text-slate-700 flex items-center space-x-1 transition shadow-xs">
@@ -442,7 +480,7 @@
                     <thead class="bg-slate-100 text-slate-700 uppercase text-xs font-bold">
                         <tr>
                             <th class="p-3.5 rounded-tl-xl whitespace-nowrap min-w-[120px]">Kelas</th>
-                            <th class="p-3.5 whitespace-nowrap min-w-[160px]">Mata Pelajaran</th>
+                            <th class="p-3.5 whitespace-nowrap min-w-[160px]">Mata Pelajaran / Kegiatan</th>
                             <th class="p-3.5 whitespace-nowrap min-w-[180px]">Guru Pengajar</th>
                             <th class="p-3.5 whitespace-nowrap min-w-[140px]">Ruangan</th>
                             <th class="p-3.5 whitespace-nowrap min-w-[150px]">Jam Ke</th>
@@ -461,15 +499,28 @@
                                         {{ $j->kelas ? $j->kelas->nama : '-' }}
                                     </span>
                                 </td>
-                                <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">{{ $j->mapel ? $j->mapel->nama : '-' }}</td>
+                                <td class="p-3.5 font-bold text-slate-900 whitespace-nowrap">
+                                    @if($j->is_kegiatan)
+                                        <span class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800">
+                                            <i class="fa-solid fa-flag text-[10px]"></i>
+                                            <span>{{ $j->nama_kegiatan ?: 'Kegiatan' }}</span>
+                                        </span>
+                                    @else
+                                        {{ $j->mapel ? $j->mapel->nama : '-' }}
+                                    @endif
+                                </td>
                                 <td class="p-3.5 text-slate-700 text-xs font-semibold whitespace-nowrap">
-                                    @if($j->guru)
+                                    @if($j->is_kegiatan)
+                                        <span class="text-slate-400 italic font-normal">-</span>
+                                    @elseif($j->guru)
                                         {{ $j->guru->nama }}
                                     @else
                                         <span class="text-slate-400 italic font-normal">Tanpa Guru / -</span>
                                     @endif
                                 </td>
-                                <td class="p-3.5 text-slate-600 text-xs whitespace-nowrap">{{ $j->ruangan ? $j->ruangan->nama : '-' }}</td>
+                                <td class="p-3.5 text-slate-600 text-xs whitespace-nowrap">
+                                    {{ $j->ruangan ? $j->ruangan->nama : '-' }}
+                                </td>
                                 <td class="p-3.5 font-mono whitespace-nowrap">
                                     <div class="text-xs font-bold text-emerald-700 whitespace-nowrap">
                                         Jam {{ $j->jam_ke_mulai }} s/d {{ $j->jam_ke_selesai }}
@@ -483,25 +534,13 @@
                                 <td class="p-3.5 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end space-x-2">
                                         <button type="button"
-                                            data-id="{{ $j->id }}"
-                                            data-hari="{{ $j->hari }}"
-                                            data-kelas="{{ $j->id_kelas }}"
-                                            data-mapel="{{ $j->id_mapel }}"
-                                            data-ruang="{{ $j->id_ruangan }}"
-                                            data-guru="{{ $j->id_guru ?? '' }}"
-                                            data-mulai="{{ $j->jam_ke_mulai }}"
-                                            data-selesai="{{ $j->jam_ke_selesai }}"
-                                            onclick="openEditModalFromCell(this)"
-                                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                                            onclick="openEditModalFromDirect('{{ $j->id }}', '{{ $j->hari }}', '{{ $j->id_kelas }}', '{{ $j->id_mapel }}', '{{ $j->id_ruangan }}', '{{ $j->id_guru }}', '{{ $j->jam_ke_mulai }}', '{{ $j->jam_ke_selesai }}', {{ $j->is_kegiatan ? 'true' : 'false' }}, '{{ addslashes($j->nama_kegiatan ?? '') }}')"
+                                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
                                             <i class="fa-solid fa-pen mr-1"></i> Edit
                                         </button>
-                                        <form method="POST" action="{{ route('admin.jadwal.destroy', $j->id) }}" data-confirm="Apakah Anda yakin ingin menghapus jadwal ini?">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
-                                                <i class="fa-solid fa-trash mr-1"></i> Hapus
-                                            </button>
-                                        </form>
+                                        <button type="button" onclick="hapusJadwalDirect({{ $j->id }}, event)" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
+                                            <i class="fa-solid fa-trash mr-1"></i> Hapus
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -514,20 +553,27 @@
 </div>
 
 <div id="tambahModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-8 max-w-xl w-full shadow-2xl relative max-h-[92vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl p-7 max-w-xl w-full shadow-2xl relative max-h-[92vh] overflow-y-auto">
         <button type="button" onclick="closeTambahModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <div class="mb-4">
-            <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                <i class="fa-solid fa-calendar-plus text-emerald-700"></i>
-                <span>Tambah Jadwal Pelajaran</span>
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">Sistem otomatis mendeteksi ketersediaan ruangan, guru, dan jadwal kelas agar tidak bentrok.</p>
+        <div class="flex items-center justify-between mb-4 pr-8">
+            <div>
+                <h3 id="tambahModalTitle" class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-plus text-emerald-700"></i>
+                    <span>Atur Jadwal</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">Atur jadwal belajar mengajar atau kegiatan operasional sekolah.</p>
+            </div>
+            <label class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-xl cursor-pointer select-none border border-slate-200">
+                <input type="checkbox" id="tambahIsKegiatan" name="is_kegiatan" value="1" onchange="toggleKegiatanMode('tambah', this.checked)" class="rounded text-emerald-600 focus:ring-emerald-500">
+                <span class="text-xs font-bold text-slate-700">Kegiatan</span>
+            </label>
         </div>
 
         <form method="POST" action="{{ route('admin.jadwal.store') }}" class="space-y-4">
             @csrf
+            <input type="hidden" id="tambahIsKegiatanHidden" name="is_kegiatan" value="0">
 
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -558,81 +604,94 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Kelas</label>
+                <select name="id_kelas" id="tambahKelas" onchange="onKelasChange()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
+                    <option value="">-- Pilih Kelas --</option>
+                    @foreach($daftarKelas as $k)
+                        <option value="{{ $k->id }}" data-ruangan="{{ $k->id_ruangan }}">{{ $k->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div id="tambahKegiatanSection" class="hidden space-y-2">
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Kegiatan</label>
+                <input type="text" name="nama_kegiatan" id="tambahNamaKegiatan" value="Istirahat" placeholder="Misal: Istirahat, Rapat, Upacara, Literasi, dll" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+            </div>
+
+            <div id="tambahPelajaranSection" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
-                    <select name="id_kelas" id="tambahKelas" onchange="onKelasChange()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                        <option value="">-- Pilih Kelas --</option>
-                        @foreach($daftarKelas as $k)
-                            <option value="{{ $k->id }}" data-ruangan="{{ $k->id_ruangan }}">{{ $k->nama }}</option>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru Pengajar <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
+                    <select name="id_guru" id="tambahGuru" onchange="onGuruChange('tambah'); evaluasiFormJadwal();" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                        <option value="">-- Pilih Guru / Belum Ditentukan --</option>
+                        @foreach($daftarGuru as $g)
+                            <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->nip ?: ($g->mapel_utama ?? 'Guru') }})</option>
                         @endforeach
                     </select>
+                    <div id="statusGuruText" class="text-xs mt-1"></div>
                 </div>
+
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran</label>
-                    <select name="id_mapel" id="tambahMapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Mata Pelajaran</label>
+                    <select name="id_mapel" id="tambahMapel" onchange="onMapelChange('tambah'); evaluasiFormJadwal();" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         <option value="">-- Pilih Mata Pelajaran --</option>
                         @foreach($daftarMapel as $m)
                             <option value="{{ $m->id }}">{{ $m->kode }} - {{ $m->nama }}</option>
                         @endforeach
                     </select>
                 </div>
-            </div>
 
-            <div>
-                <div class="flex items-center justify-between mb-1">
-                    <label class="block text-sm font-semibold text-slate-700">Ruang Belajar</label>
-                    <label class="flex items-center space-x-1.5 text-xs text-slate-600 cursor-pointer select-none">
-                        <input type="checkbox" id="checkFilterRuangKosong" onchange="renderDropdownRuangan()" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-                        <span class="font-medium">Sembunyikan ruangan terpakai</span>
-                    </label>
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-sm font-semibold text-slate-700">Pilih Ruangan</label>
+                        <label class="flex items-center space-x-1.5 text-xs text-slate-600 cursor-pointer select-none">
+                            <input type="checkbox" id="checkFilterRuangKosong" onchange="renderDropdownRuangan()" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                            <span class="font-medium">Sembunyikan terpakai</span>
+                        </label>
+                    </div>
+                    <select name="id_ruangan" id="tambahRuangan" onchange="evaluasiFormJadwal()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                        <option value="">-- Pilih Ruangan --</option>
+                        @foreach($daftarRuangan as $r)
+                            <option value="{{ $r->id }}">{{ $r->kode }} - {{ $r->nama }}</option>
+                        @endforeach
+                    </select>
+                    <div id="statusRuangText" class="text-xs mt-1"></div>
                 </div>
-                <select name="id_ruangan" id="tambahRuangan" onchange="evaluasiFormJadwal()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                    <option value="">-- Pilih Ruangan --</option>
-                    @foreach($daftarRuangan as $r)
-                        <option value="{{ $r->id }}">{{ $r->kode }} - {{ $r->nama }}</option>
-                    @endforeach
-                </select>
-                <div id="statusRuangText" class="text-xs mt-1"></div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Guru Pengajar <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <select name="id_guru" id="tambahGuru" onchange="evaluasiFormJadwal()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                    <option value="">-- Tanpa Guru / Belum Ditentukan --</option>
-                    @foreach($daftarGuru as $g)
-                        <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->mapel_utama ?? 'Guru' }})</option>
-                    @endforeach
-                </select>
-                <div id="statusGuruText" class="text-xs mt-1"></div>
             </div>
 
             <div id="alertBentrokJadwal" class="p-3.5 rounded-2xl text-xs font-semibold hidden"></div>
 
             <div class="flex justify-end space-x-3 pt-3">
                 <button type="button" onclick="closeTambahModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Batal</button>
-                <button type="submit" id="btnSimpanJadwal" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-sm">Simpan Jadwal</button>
+                <button type="submit" id="btnSimpanJadwal" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-sm">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="editModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-8 max-w-xl w-full shadow-2xl relative max-h-[92vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl p-7 max-w-xl w-full shadow-2xl relative max-h-[92vh] overflow-y-auto">
         <button type="button" onclick="closeEditModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <div class="mb-4">
-            <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                <i class="fa-solid fa-pen-to-square text-emerald-700"></i>
-                <span>Edit Jadwal Pelajaran</span>
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">Periksa ketersediaan ruangan dan guru jika ingin memindahkan jadwal.</p>
+        <div class="flex items-center justify-between mb-4 pr-8">
+            <div>
+                <h3 id="editModalTitle" class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square text-emerald-700"></i>
+                    <span>Edit Jadwal</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">Perbarui informasi mata pelajaran, guru, ruangan, atau jam pelajaran.</p>
+            </div>
+            <label class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-xl cursor-pointer select-none border border-slate-200">
+                <input type="checkbox" id="editIsKegiatan" name="is_kegiatan" value="1" onchange="toggleKegiatanMode('edit', this.checked)" class="rounded text-emerald-600 focus:ring-emerald-500">
+                <span class="text-xs font-bold text-slate-700">Kegiatan</span>
+            </label>
         </div>
 
         <form id="editForm" method="POST" action="" class="space-y-4">
             @csrf
             @method('PUT')
+            <input type="hidden" id="editIsKegiatanHidden" name="is_kegiatan" value="0">
 
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -663,50 +722,56 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+                <select id="editKelas" name="id_kelas" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm font-semibold" required>
+                    @foreach($daftarKelas as $k)
+                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div id="editKegiatanSection" class="hidden space-y-2">
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Kegiatan</label>
+                <input type="text" name="nama_kegiatan" id="editNamaKegiatan" placeholder="Misal: Istirahat, Rapat, Upacara, Literasi, dll" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+            </div>
+
+            <div id="editPelajaranSection" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
-                    <select id="editKelas" name="id_kelas" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                        @foreach($daftarKelas as $k)
-                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Guru Pengajar <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
+                    <select id="editGuru" name="id_guru" onchange="onGuruChange('edit'); evaluasiEditForm();" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
+                        <option value="">-- Tanpa Guru / Belum Ditentukan --</option>
+                        @foreach($daftarGuru as $g)
+                            <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->nip ?: ($g->mapel_utama ?? 'Guru') }})</option>
                         @endforeach
                     </select>
+                    <div id="editStatusGuruText" class="text-xs mt-1"></div>
                 </div>
+
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Mata Pelajaran</label>
-                    <select id="editMapel" name="id_mapel" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Mata Pelajaran</label>
+                    <select id="editMapel" name="id_mapel" onchange="onMapelChange('edit'); evaluasiEditForm();" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
                         @foreach($daftarMapel as $m)
                             <option value="{{ $m->id }}">{{ $m->kode }} - {{ $m->nama }}</option>
                         @endforeach
                     </select>
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Ruang Belajar</label>
-                <select id="editRuang" name="id_ruangan" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
-                    @foreach($daftarRuangan as $r)
-                        <option value="{{ $r->id }}">{{ $r->kode }} - {{ $r->nama }}</option>
-                    @endforeach
-                </select>
-                <div id="editStatusRuangText" class="text-xs mt-1"></div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Guru Pengajar <span class="text-xs text-slate-400 font-normal">(Opsional)</span></label>
-                <select id="editGuru" name="id_guru" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm">
-                    <option value="">-- Tanpa Guru / Belum Ditentukan --</option>
-                    @foreach($daftarGuru as $g)
-                        <option value="{{ $g->id }}">{{ $g->nama }} ({{ $g->mapel_utama ?? 'Guru' }})</option>
-                    @endforeach
-                </select>
-                <div id="editStatusGuruText" class="text-xs mt-1"></div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Ruangan</label>
+                    <select id="editRuang" name="id_ruangan" onchange="evaluasiEditForm()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm" required>
+                        @foreach($daftarRuangan as $r)
+                            <option value="{{ $r->id }}">{{ $r->kode }} - {{ $r->nama }}</option>
+                        @endforeach
+                    </select>
+                    <div id="editStatusRuangText" class="text-xs mt-1"></div>
+                </div>
             </div>
 
             <div id="editAlertBentrok" class="p-3.5 rounded-2xl text-xs font-semibold hidden"></div>
 
             <div class="flex items-center justify-between pt-3">
-                <button type="button" id="btnHapusJadwal" onclick="hapusJadwalAktif()" class="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold transition">
+                <button type="button" id="btnHapusJadwal" onclick="hapusJadwalAktif()" class="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-semibold transition cursor-pointer">
                     <i class="fa-solid fa-trash mr-1"></i> Hapus Jadwal
                 </button>
                 <div class="flex space-x-2">
@@ -715,18 +780,65 @@
                 </div>
             </div>
         </form>
-        <form id="deleteForm" method="POST" action="" class="hidden">
+    </div>
+</div>
+
+<div id="importModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-7 max-w-lg w-full shadow-2xl relative">
+        <button type="button" onclick="closeImportModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <div class="mb-5">
+            <h3 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-file-excel text-emerald-700"></i>
+                <span>Import Jadwal Excel</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">Unggah file jadwal berformat .xlsx atau .csv sesuai template sistem.</p>
+        </div>
+
+        <form method="POST" action="{{ route('admin.jadwal.import') }}" enctype="multipart/form-data" class="space-y-4">
             @csrf
-            @method('DELETE')
+            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-emerald-600 transition bg-slate-50/50">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-700 mb-2"></i>
+                <p class="text-xs font-semibold text-slate-700">Pilih berkas Excel (.xlsx) atau CSV (.csv)</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Maksimal 10 MB per berkas</p>
+                <input type="file" name="file" accept=".xlsx,.xls,.csv" required class="mt-4 block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-700 file:text-white hover:file:bg-emerald-600 cursor-pointer">
+            </div>
+
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-900">
+                <p class="font-bold flex items-center space-x-1 mb-1">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Struktur Kolom Template:</span>
+                </p>
+                <p class="text-[11px] text-emerald-800 font-mono">Hari, Slot, Kelas, Mapel, Ruangan, Guru</p>
+            </div>
+
+            <div class="flex justify-end space-x-2.5 pt-2">
+                <button type="button" onclick="closeImportModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">Batal</button>
+                <button type="submit" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-xs flex items-center space-x-2">
+                    <i class="fa-solid fa-upload"></i>
+                    <span>Unggah & Impor</span>
+                </button>
+            </div>
         </form>
     </div>
 </div>
+
+<form id="directDeleteForm" method="POST" action="" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
+
+<form id="fixTeacherIdsForm" method="POST" action="{{ route('admin.jadwal.fix-teacher-ids') }}" class="hidden">
+    @csrf
+</form>
 
 <script>
 const SEMUA_JADWAL = @json($semuaJadwal);
 const DAFTAR_RUANGAN = @json($daftarRuangan);
 const DAFTAR_GURU = @json($daftarGuru);
 const DAFTAR_KELAS = @json($daftarKelas);
+const DAFTAR_MAPEL = @json($daftarMapel);
 const URL_JAM_HARI = @json(route('admin.jadwal.jam', ['hari' => '__HARI__']));
 const CACHE_JAM = {};
 CACHE_JAM[@json($hariTerpilih)] = @json($ringkasanHari);
@@ -773,35 +885,83 @@ function isiOpsiJam(idSelect, data, nilai) {
     select.value = String(tersedia ? pilihan : data.jam[0].jam_ke);
 }
 
-function rentangJam(dari, sampai) {
-    return dari === sampai ? `${dari}` : `${dari}-${sampai}`;
-}
+function toggleKegiatanMode(prefix, isKegiatan) {
+    const kegiatanSection = byId(prefix + 'KegiatanSection');
+    const pelajaranSection = byId(prefix + 'PelajaranSection');
+    const checkbox = byId(prefix + 'IsKegiatan');
+    const hiddenInput = byId(prefix + 'IsKegiatanHidden');
 
-function renderKeterangan(sufiks, data) {
-}
+    if (checkbox) checkbox.checked = isKegiatan;
+    if (hiddenInput) hiddenInput.value = isKegiatan ? '1' : '0';
 
-function melewatiIstirahat(data, mulai, selesai) {
-    return data.istirahat.some(i => i.setelah_jam >= mulai && i.setelah_jam < selesai);
-}
-
-function kumpulkanKesalahanJam(data, hari, mulai, selesai) {
-    const errors = [];
-
-    if (selesai < mulai) {
-        errors.push('Jam selesai tidak boleh lebih awal dari jam mulai.');
+    if (isKegiatan) {
+        kegiatanSection.classList.remove('hidden');
+        pelajaranSection.classList.add('hidden');
+        byId(prefix + 'NamaKegiatan').required = true;
+        byId(prefix + 'Mapel').required = false;
+        byId(prefix + 'Ruangan').required = false;
+    } else {
+        kegiatanSection.classList.add('hidden');
+        pelajaranSection.classList.remove('hidden');
+        byId(prefix + 'NamaKegiatan').required = false;
+        byId(prefix + 'Mapel').required = true;
+        byId(prefix + 'Ruangan').required = true;
     }
 
-    if (data) {
-        if (mulai > data.maks_jam || selesai > data.maks_jam) {
-            errors.push(`Hari ${hari} hanya memiliki Jam 1 sampai Jam ${data.maks_jam}.`);
-        }
+    if (prefix === 'tambah') evaluasiFormJadwal();
+    if (prefix === 'edit') evaluasiEditForm();
+}
 
-        if (melewatiIstirahat(data, mulai, selesai)) {
-            errors.push('Jadwal tidak boleh melewati jam istirahat. Harap pecah menjadi dua jadwal terpisah sebelum dan sesudah istirahat.');
-        }
+function onGuruChange(prefix) {
+    const guruSelect = byId(prefix + 'Guru');
+    const mapelSelect = byId(prefix + 'Mapel');
+    const guruId = guruSelect.value ? parseInt(guruSelect.value) : null;
+    const currentMapelId = mapelSelect.value ? parseInt(mapelSelect.value) : null;
+
+    if (!guruId) {
+        Array.from(mapelSelect.options).forEach(opt => {
+            opt.hidden = false;
+        });
+        return;
     }
 
-    return errors;
+    const guru = DAFTAR_GURU.find(g => g.id === guruId);
+    const allowedMapelIds = (guru && Array.isArray(guru.mapel_ids)) ? guru.mapel_ids : [];
+
+    let hasSelectedValid = false;
+    Array.from(mapelSelect.options).forEach(opt => {
+        if (!opt.value) {
+            opt.hidden = false;
+            return;
+        }
+        const mId = parseInt(opt.value);
+        if (allowedMapelIds.length === 0 || allowedMapelIds.includes(mId)) {
+            opt.hidden = false;
+            if (mId === currentMapelId) hasSelectedValid = true;
+        } else {
+            opt.hidden = true;
+        }
+    });
+
+    if (currentMapelId && !hasSelectedValid && allowedMapelIds.length > 0) {
+        mapelSelect.value = '';
+    }
+}
+
+function onMapelChange(prefix) {
+    const mapelSelect = byId(prefix + 'Mapel');
+    const guruSelect = byId(prefix + 'Guru');
+    const mapelId = mapelSelect.value ? parseInt(mapelSelect.value) : null;
+
+    if (!mapelId) return;
+
+    const currentGuruId = guruSelect.value ? parseInt(guruSelect.value) : null;
+    if (currentGuruId) {
+        const guru = DAFTAR_GURU.find(g => g.id === currentGuruId);
+        if (guru && Array.isArray(guru.mapel_ids) && guru.mapel_ids.length > 0 && !guru.mapel_ids.includes(mapelId)) {
+            guruSelect.value = '';
+        }
+    }
 }
 
 function switchMatriksView(view) {
@@ -828,12 +988,31 @@ function switchMatriksView(view) {
 }
 
 function openTambahModal() {
+    toggleKegiatanMode('tambah', false);
+    byId('tambahModalTitle').innerHTML = '<i class="fa-solid fa-plus text-emerald-700"></i><span>Atur Jadwal</span>';
     byId('tambahModal').classList.remove('hidden');
     onTambahHariChange();
 }
 
 function closeTambahModal() {
     byId('tambahModal').classList.add('hidden');
+}
+
+function openTambahModalForCell(kelasId, jamKe, hari) {
+    byId('tambahHari').value = hari || @json($hariTerpilih);
+    byId('tambahKelas').value = kelasId;
+    toggleKegiatanMode('tambah', false);
+    byId('tambahModalTitle').innerHTML = `<i class="fa-solid fa-plus text-emerald-700"></i><span>Atur Jadwal - Jam ${jamKe}</span>`;
+
+    ambilJamHari(byId('tambahHari').value).then(data => {
+        isiOpsiJam('tambahMulai', data, jamKe);
+        isiOpsiJam('tambahSelesai', data, jamKe);
+        byId('tambahModal').classList.remove('hidden');
+        onKelasChange();
+        evaluasiFormJadwal();
+    }).catch(() => {
+        byId('tambahModal').classList.remove('hidden');
+    });
 }
 
 async function onTambahHariChange() {
@@ -847,7 +1026,6 @@ async function onTambahHariChange() {
 
         isiOpsiJam('tambahMulai', data, byId('tambahMulai').value);
         isiOpsiJam('tambahSelesai', data, byId('tambahSelesai').value);
-        renderKeterangan('Tambah', data);
         onJamMulaiChange();
     } catch (e) {
         showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
@@ -875,12 +1053,12 @@ function onKelasChange() {
 
 async function tambahJadwalUntukRuangan(hari, idRuangan, jam) {
     byId('tambahHari').value = hari;
+    toggleKegiatanMode('tambah', false);
 
     try {
         const data = await ambilJamHari(hari);
         isiOpsiJam('tambahMulai', data, jam);
         isiOpsiJam('tambahSelesai', data, jam);
-        renderKeterangan('Tambah', data);
     } catch (e) {
         showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
         return;
@@ -905,6 +1083,7 @@ function renderDropdownRuangan() {
 
     DAFTAR_RUANGAN.forEach(r => {
         const bentrok = SEMUA_JADWAL.find(j =>
+            !j.is_kegiatan &&
             j.hari === hari &&
             j.id_ruangan === r.id &&
             j.jam_ke_mulai <= selesai &&
@@ -981,6 +1160,7 @@ function renderDropdownGuru() {
 
     DAFTAR_GURU.forEach(g => {
         const bentrok = SEMUA_JADWAL.find(j =>
+            !j.is_kegiatan &&
             j.hari === hari &&
             j.id_guru === g.id &&
             j.jam_ke_mulai <= selesai &&
@@ -997,7 +1177,7 @@ function renderDropdownGuru() {
     selectGuru.innerHTML = '';
     const defaultOpt = document.createElement('option');
     defaultOpt.value = '';
-    defaultOpt.textContent = '-- Tanpa Guru / Belum Ditentukan --';
+    defaultOpt.textContent = '-- Pilih Guru / Belum Ditentukan --';
     selectGuru.appendChild(defaultOpt);
 
     if (guruTersedia.length > 0) {
@@ -1006,7 +1186,7 @@ function renderDropdownGuru() {
         guruTersedia.forEach(g => {
             const opt = document.createElement('option');
             opt.value = g.id;
-            opt.textContent = `${g.nama} (${g.mapel_utama || 'Guru'})`;
+            opt.textContent = `${g.nama} (${g.nip || g.mapel_utama || 'Guru'})`;
             if (String(g.id) === String(nilaiLama)) {
                 opt.selected = true;
             }
@@ -1044,7 +1224,34 @@ function renderDropdownGuru() {
     }
 }
 
-function tampilkanHasilEvaluasi(alertBox, btnSimpan, errors) {
+function pecahRentangJamJs(dataJam, mulai, selesai) {
+    if (!dataJam || !Array.isArray(dataJam.istirahat)) {
+        return [{ mulai: mulai, selesai: selesai }];
+    }
+    const titikIstirahat = [];
+    dataJam.istirahat.forEach(ist => {
+        const setelah = parseInt(ist.setelah_jam);
+        if (setelah >= mulai && setelah < selesai) {
+            titikIstirahat.push(setelah);
+        }
+    });
+    titikIstirahat.sort((a, b) => a - b);
+    if (titikIstirahat.length === 0) {
+        return [{ mulai: mulai, selesai: selesai }];
+    }
+    const segmen = [];
+    let curMulai = mulai;
+    titikIstirahat.forEach(titik => {
+        segmen.push({ mulai: curMulai, selesai: titik });
+        curMulai = titik + 1;
+    });
+    if (curMulai <= selesai) {
+        segmen.push({ mulai: curMulai, selesai: selesai });
+    }
+    return segmen;
+}
+
+function tampilkanHasilEvaluasi(alertBox, btnSimpan, errors, segmen = []) {
     if (errors.length > 0) {
         alertBox.className = 'p-3.5 rounded-2xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800 flex items-start space-x-2';
         alertBox.innerHTML = `
@@ -1059,6 +1266,19 @@ function tampilkanHasilEvaluasi(alertBox, btnSimpan, errors) {
         alertBox.classList.remove('hidden');
         btnSimpan.disabled = true;
         btnSimpan.classList.add('opacity-50', 'cursor-not-allowed');
+    } else if (segmen && segmen.length > 1) {
+        const detailSesi = segmen.map(s => s.mulai === s.selesai ? `Jam ${s.mulai}` : `Jam ${s.mulai}-${s.selesai}`).join(' dan ');
+        alertBox.className = 'p-3.5 rounded-2xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start space-x-2';
+        alertBox.innerHTML = `
+            <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5 text-sm"></i>
+            <div>
+                <p class="font-bold text-emerald-900">Otomatis Terpisah Melewati Istirahat</p>
+                <p class="text-emerald-700 mt-0.5">Jadwal melewati waktu istirahat dan akan otomatis disimpan menjadi ${segmen.length} sesi terpisah (${detailSesi}).</p>
+            </div>
+        `;
+        alertBox.classList.remove('hidden');
+        btnSimpan.disabled = false;
+        btnSimpan.classList.remove('opacity-50', 'cursor-not-allowed');
     } else {
         alertBox.className = 'p-3.5 rounded-2xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center space-x-2';
         alertBox.innerHTML = `
@@ -1073,7 +1293,7 @@ function tampilkanHasilEvaluasi(alertBox, btnSimpan, errors) {
 
 function kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, kecualiId) {
     const errors = [];
-    const sama = j => (kecualiId === null || String(j.id) !== String(kecualiId)) &&
+    const sama = j => !j.is_kegiatan && (kecualiId === null || String(j.id) !== String(kecualiId)) &&
         j.hari === hari &&
         j.jam_ke_mulai <= selesai &&
         j.jam_ke_selesai >= mulai;
@@ -1109,49 +1329,62 @@ function evaluasiFormJadwal() {
     renderDropdownRuangan();
     renderDropdownGuru();
 
+    const isKegiatan = byId('tambahIsKegiatan').checked;
     const hari = byId('tambahHari').value;
     const mulai = parseInt(byId('tambahMulai').value) || 1;
     const selesai = parseInt(byId('tambahSelesai').value) || mulai;
     const idKelas = parseInt(byId('tambahKelas').value);
-    const idRuang = parseInt(byId('tambahRuangan').value);
-    const idGuru = parseInt(byId('tambahGuru').value) || null;
+    const idRuang = isKegiatan ? null : parseInt(byId('tambahRuangan').value);
+    const idGuru = isKegiatan ? null : (parseInt(byId('tambahGuru').value) || null);
+    const dataJam = CACHE_JAM[hari];
+    const segmen = pecahRentangJamJs(dataJam, mulai, selesai);
 
-    const errors = kumpulkanKesalahanJam(CACHE_JAM[hari], hari, mulai, selesai)
-        .concat(kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, null));
-
-    tampilkanHasilEvaluasi(byId('alertBentrokJadwal'), byId('btnSimpanJadwal'), errors);
-}
-
-async function openEditModalFromCell(sel) {
-    currentEditId = sel.getAttribute('data-id');
-    const hari = sel.getAttribute('data-hari');
-    const kelas = sel.getAttribute('data-kelas');
-    const mapel = sel.getAttribute('data-mapel');
-    const ruang = sel.getAttribute('data-ruang');
-    const guru = sel.getAttribute('data-guru');
-    const mulai = sel.getAttribute('data-mulai');
-    const selesai = sel.getAttribute('data-selesai');
-
-    try {
-        const data = await ambilJamHari(hari);
-        isiOpsiJam('editMulai', data, mulai);
-        isiOpsiJam('editSelesai', data, selesai);
-        renderKeterangan('Edit', data);
-    } catch (e) {
-        showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
-        return;
+    let errors = [];
+    if (selesai < mulai) {
+        errors.push('Jam selesai tidak boleh lebih awal dari jam mulai.');
     }
 
-    byId('editForm').action = '/admin/jadwal/' + currentEditId;
-    byId('deleteForm').action = '/admin/jadwal/' + currentEditId;
-    byId('editHari').value = hari;
-    byId('editKelas').value = kelas;
-    byId('editMapel').value = mapel;
-    byId('editRuang').value = ruang;
-    byId('editGuru').value = guru || '';
+    if (dataJam && (mulai > dataJam.maks_jam || selesai > dataJam.maks_jam)) {
+        errors.push(`Hari ${hari} hanya memiliki Jam 1 sampai Jam ${dataJam.maks_jam}.`);
+    }
 
-    byId('editModal').classList.remove('hidden');
-    evaluasiEditForm();
+    if (!isKegiatan) {
+        segmen.forEach(s => {
+            errors = errors.concat(kumpulkanBentrok(hari, s.mulai, s.selesai, idKelas, idRuang, idGuru, null));
+        });
+        errors = Array.from(new Set(errors));
+    }
+
+    tampilkanHasilEvaluasi(byId('alertBentrokJadwal'), byId('btnSimpanJadwal'), errors, segmen);
+}
+
+function openEditModalFromDirect(id, hari, kelasId, mapelId, ruangId, guruId, mulai, selesai, isKegiatan, namaKegiatan) {
+    currentEditId = id;
+    byId('editForm').action = '/admin/jadwal/' + id;
+    byId('editHari').value = hari;
+    byId('editKelas').value = kelasId;
+
+    toggleKegiatanMode('edit', isKegiatan);
+
+    if (isKegiatan) {
+        byId('editNamaKegiatan').value = namaKegiatan || 'Kegiatan';
+    } else {
+        byId('editMapel').value = mapelId;
+        byId('editRuang').value = ruangId;
+        byId('editGuru').value = guruId || '';
+        onGuruChange('edit');
+    }
+
+    byId('editModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-700"></i><span>Edit Jadwal - Jam ${mulai}</span>`;
+
+    ambilJamHari(hari).then(data => {
+        isiOpsiJam('editMulai', data, mulai);
+        isiOpsiJam('editSelesai', data, selesai);
+        byId('editModal').classList.remove('hidden');
+        evaluasiEditForm();
+    }).catch(() => {
+        byId('editModal').classList.remove('hidden');
+    });
 }
 
 function closeEditModal() {
@@ -1169,7 +1402,6 @@ async function onEditHariChange() {
 
         isiOpsiJam('editMulai', data, byId('editMulai').value);
         isiOpsiJam('editSelesai', data, byId('editSelesai').value);
-        renderKeterangan('Edit', data);
         onEditJamMulaiChange();
     } catch (e) {
         showModalMsg('Gagal Memuat Data', 'Gagal memuat daftar jam pelajaran. Muat ulang halaman lalu coba lagi.', 'error');
@@ -1186,23 +1418,66 @@ function onEditJamMulaiChange() {
 }
 
 function evaluasiEditForm() {
+    const isKegiatan = byId('editIsKegiatan').checked;
     const hari = byId('editHari').value;
     const mulai = parseInt(byId('editMulai').value) || 1;
     const selesai = parseInt(byId('editSelesai').value) || mulai;
     const idKelas = parseInt(byId('editKelas').value);
-    const idRuang = parseInt(byId('editRuang').value);
-    const idGuru = parseInt(byId('editGuru').value) || null;
+    const idRuang = isKegiatan ? null : parseInt(byId('editRuang').value);
+    const idGuru = isKegiatan ? null : (parseInt(byId('editGuru').value) || null);
+    const dataJam = CACHE_JAM[hari];
+    const segmen = pecahRentangJamJs(dataJam, mulai, selesai);
 
-    const errors = kumpulkanKesalahanJam(CACHE_JAM[hari], hari, mulai, selesai)
-        .concat(kumpulkanBentrok(hari, mulai, selesai, idKelas, idRuang, idGuru, currentEditId));
+    let errors = [];
+    if (selesai < mulai) {
+        errors.push('Jam selesai tidak boleh lebih awal dari jam mulai.');
+    }
 
-    tampilkanHasilEvaluasi(byId('editAlertBentrok'), byId('btnSimpanEditJadwal'), errors);
+    if (dataJam && (mulai > dataJam.maks_jam || selesai > dataJam.maks_jam)) {
+        errors.push(`Hari ${hari} hanya memiliki Jam 1 sampai Jam ${dataJam.maks_jam}.`);
+    }
+
+    if (!isKegiatan) {
+        segmen.forEach((s, idx) => {
+            const kecId = (idx === 0) ? currentEditId : null;
+            errors = errors.concat(kumpulkanBentrok(hari, s.mulai, s.selesai, idKelas, idRuang, idGuru, kecId));
+        });
+        errors = Array.from(new Set(errors));
+    }
+
+    tampilkanHasilEvaluasi(byId('editAlertBentrok'), byId('btnSimpanEditJadwal'), errors, segmen);
 }
 
 function hapusJadwalAktif() {
+    if (!currentEditId) return;
     bukaKonfirmasi('Apakah Anda yakin ingin menghapus jadwal ini?', function() {
-        byId('deleteForm').submit();
+        const form = byId('directDeleteForm');
+        form.action = '/admin/jadwal/' + currentEditId;
+        form.submit();
     }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
+}
+
+function hapusJadwalDirect(id, event) {
+    if (event) event.stopPropagation();
+    bukaKonfirmasi('Apakah Anda yakin ingin menghapus jadwal ini?', function() {
+        const form = byId('directDeleteForm');
+        form.action = '/admin/jadwal/' + id;
+        form.submit();
+    }, { warna: 'rose', tombolTeks: 'Ya, Hapus' });
+}
+
+function triggerFixTeacherIds() {
+    bukaKonfirmasi('Ini akan memperbaiki jadwal yang memiliki teacher ID berupa nama guru menjadi ID yang valid. Lanjutkan?', function() {
+        byId('fixTeacherIdsForm').submit();
+    }, { warna: 'emerald', tombolTeks: 'Ya, Perbaiki' });
+}
+
+function openImportModal() {
+    byId('importModal').classList.remove('hidden');
+}
+
+function closeImportModal() {
+    byId('importModal').classList.add('hidden');
 }
 
 function getActiveMatriksElement() {
