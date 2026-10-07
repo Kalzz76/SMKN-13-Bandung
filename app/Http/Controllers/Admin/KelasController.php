@@ -10,6 +10,7 @@ use App\Models\Ruangan;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class KelasController extends Controller
 {
@@ -34,22 +35,37 @@ class KelasController extends Controller
         $daftarKelas = $query->paginate(10)->withQueryString();
         $daftarRuangan = Ruangan::orderBy('kode')->get();
         $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $semuaKelas = Kelas::with(['ruangan', 'waliKelas'])->get();
 
-        return view('admin.kelas.index', compact('daftarKelas', 'daftarRuangan', 'daftarGuru'));
+        return view('admin.kelas.index', compact('daftarKelas', 'daftarRuangan', 'daftarGuru', 'semuaKelas'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:100|unique:kelas,nama',
-            'id_ruangan' => 'nullable|exists:ruangan,id',
-            'id_wali_kelas' => 'nullable|exists:guru,id',
+            'id_ruangan' => 'nullable|exists:ruangan,id|unique:kelas,id_ruangan',
+            'id_wali_kelas' => 'nullable|exists:guru,id|unique:kelas,id_wali_kelas',
+        ], [
+            'nama.required' => 'Nama kelas wajib diisi.',
+            'nama.unique' => 'Nama kelas sudah digunakan.',
+            'id_ruangan.unique' => 'Ruangan ini sudah digunakan oleh kelas lain.',
+            'id_ruangan.exists' => 'Ruangan yang dipilih tidak valid.',
+            'id_wali_kelas.unique' => 'Guru ini sudah menjadi wali kelas di kelas lain.',
+            'id_wali_kelas.exists' => 'Guru yang dipilih tidak valid.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', $validator->errors()->first());
+        }
 
         $kelas = Kelas::create([
             'nama' => $request->nama,
-            'id_ruangan' => $request->id_ruangan,
-            'id_wali_kelas' => $request->id_wali_kelas,
+            'id_ruangan' => $request->id_ruangan ?: null,
+            'id_wali_kelas' => $request->id_wali_kelas ?: null,
         ]);
 
         LogAktivitas::catat('Tambah Kelas', "Menambahkan kelas '{$kelas->nama}'");
@@ -61,16 +77,30 @@ class KelasController extends Controller
     {
         $kelas = Kelas::findOrFail($id);
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:100|unique:kelas,nama,' . $id,
-            'id_ruangan' => 'nullable|exists:ruangan,id',
-            'id_wali_kelas' => 'nullable|exists:guru,id',
+            'id_ruangan' => 'nullable|exists:ruangan,id|unique:kelas,id_ruangan,' . $id,
+            'id_wali_kelas' => 'nullable|exists:guru,id|unique:kelas,id_wali_kelas,' . $id,
+        ], [
+            'nama.required' => 'Nama kelas wajib diisi.',
+            'nama.unique' => 'Nama kelas sudah digunakan.',
+            'id_ruangan.unique' => 'Ruangan ini sudah digunakan oleh kelas lain.',
+            'id_ruangan.exists' => 'Ruangan yang dipilih tidak valid.',
+            'id_wali_kelas.unique' => 'Guru ini sudah menjadi wali kelas di kelas lain.',
+            'id_wali_kelas.exists' => 'Guru yang dipilih tidak valid.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', $validator->errors()->first());
+        }
 
         $kelas->update([
             'nama' => $request->nama,
-            'id_ruangan' => $request->id_ruangan,
-            'id_wali_kelas' => $request->id_wali_kelas,
+            'id_ruangan' => $request->id_ruangan ?: null,
+            'id_wali_kelas' => $request->id_wali_kelas ?: null,
         ]);
 
         LogAktivitas::catat('Ubah Kelas', "Memperbarui kelas '{$kelas->nama}'");
@@ -86,15 +116,17 @@ class KelasController extends Controller
 
         $daftarRuangan = Ruangan::orderBy('kode')->get();
         $daftarGuru = Guru::where('jenis', 'Guru')->orderBy('nama')->get();
+        $daftarKelasLain = Kelas::where('id', '!=', $id)->get();
 
-        return view('admin.kelas.show', compact('kelas', 'daftarRuangan', 'daftarGuru'));
+        return view('admin.kelas.show', compact('kelas', 'daftarRuangan', 'daftarGuru', 'daftarKelasLain'));
     }
 
     public function updateStruktur(Request $request, $id)
     {
         $kelas = Kelas::with('siswa')->findOrFail($id);
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
+            'id_wali_kelas' => 'nullable|exists:guru,id|unique:kelas,id_wali_kelas,' . $id,
             'km' => 'nullable|string|max:255',
             'wakil_km' => 'nullable|string|max:255',
             'bendahara_1' => 'nullable|string|max:255',
@@ -103,9 +135,25 @@ class KelasController extends Controller
             'sekretaris_2' => 'nullable|string|max:255',
             'pj_keagamaan' => 'nullable|string|max:255',
             'pj_keamanan' => 'nullable|string|max:255',
+        ], [
+            'id_wali_kelas.unique' => 'Guru ini sudah menjadi wali kelas di kelas lain.',
+            'id_wali_kelas.exists' => 'Guru yang dipilih tidak valid.',
         ]);
 
-        $kelas->struktur = $validated;
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', $validator->errors()->first());
+        }
+
+        if ($request->has('id_wali_kelas')) {
+            $kelas->id_wali_kelas = $request->id_wali_kelas ?: null;
+        }
+
+        $validated = $validator->validated();
+        $struktur = collect($validated)->except(['id_wali_kelas'])->all();
+        $kelas->struktur = $struktur;
         $kelas->save();
 
         Siswa::where('id_kelas', $kelas->id)->update(['jabatan' => 'Anggota']);

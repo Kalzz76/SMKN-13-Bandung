@@ -170,8 +170,8 @@ class DataMasterDanJadwalTest extends TestCase
 
     public function test_crud_kelas_dan_proteksi_hapus(): void
     {
-        $ruang = Ruangan::first();
-        $guru = Guru::first();
+        $ruang = Ruangan::whereNotIn('id', Kelas::whereNotNull('id_ruangan')->pluck('id_ruangan'))->first();
+        $guru = Guru::where('jenis', 'Guru')->whereNotIn('id', Kelas::whereNotNull('id_wali_kelas')->pluck('id_wali_kelas'))->first();
 
         $responseTambah = $this->actingAs($this->admin)->post('/admin/kelas', [
             'nama' => 'XI RPL 2',
@@ -182,6 +182,23 @@ class DataMasterDanJadwalTest extends TestCase
         $this->assertDatabaseHas('kelas', ['nama' => 'XI RPL 2']);
 
         $kelas = Kelas::where('nama', 'XI RPL 2')->first();
+
+        $responseDupNama = $this->actingAs($this->admin)->post('/admin/kelas', [
+            'nama' => 'XI RPL 2',
+        ]);
+        $responseDupNama->assertSessionHas('error');
+
+        $responseDupRuang = $this->actingAs($this->admin)->post('/admin/kelas', [
+            'nama' => 'Kelas Ruang Sama',
+            'id_ruangan' => $ruang->id,
+        ]);
+        $responseDupRuang->assertSessionHas('error');
+
+        $responseDupWali = $this->actingAs($this->admin)->post('/admin/kelas', [
+            'nama' => 'Kelas Wali Sama',
+            'id_wali_kelas' => $guru->id,
+        ]);
+        $responseDupWali->assertSessionHas('error');
 
         $responseEdit = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id, [
             'nama' => 'XI RPL 2 Unggulan',
@@ -195,13 +212,27 @@ class DataMasterDanJadwalTest extends TestCase
         $responseShow->assertStatus(200);
         $responseShow->assertSee('XI RPL 2 Unggulan');
 
+        $guruBaru = Guru::where('jenis', 'Guru')->whereNotIn('id', Kelas::whereNotNull('id_wali_kelas')->pluck('id_wali_kelas'))->first();
+
         $responseStruktur = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id . '/struktur', [
+            'id_wali_kelas' => $guruBaru ? $guruBaru->id : $guru->id,
             'km' => 'Siswa Ketua',
             'wakil_km' => 'Siswa Wakil',
             'bendahara_1' => 'Siswa Bendahara 1',
         ]);
         $responseStruktur->assertRedirect('/admin/kelas/' . $kelas->id);
         $this->assertDatabaseHas('kelas', ['id' => $kelas->id]);
+        if ($guruBaru) {
+            $this->assertDatabaseHas('kelas', ['id' => $kelas->id, 'id_wali_kelas' => $guruBaru->id]);
+        }
+
+        $kelasLain = Kelas::where('id', '!=', $kelas->id)->whereNotNull('id_wali_kelas')->first();
+        if ($kelasLain) {
+            $responseStrukturBentrok = $this->actingAs($this->admin)->put('/admin/kelas/' . $kelas->id . '/struktur', [
+                'id_wali_kelas' => $kelasLain->id_wali_kelas,
+            ]);
+            $responseStrukturBentrok->assertSessionHas('error');
+        }
 
         $kelasTerpakai = Kelas::where('nama', 'XII RPL 1')->first();
         $responseHapusTerpakai = $this->actingAs($this->admin)->delete('/admin/kelas/' . $kelasTerpakai->id);

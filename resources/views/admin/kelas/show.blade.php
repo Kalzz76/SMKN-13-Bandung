@@ -234,6 +234,25 @@
             @csrf
             @method('PUT')
 
+            <div class="p-3.5 bg-emerald-50/70 border border-emerald-100 rounded-2xl mb-4">
+                <label class="block text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-chalkboard-user text-emerald-700"></i>
+                    <span>Wali Kelas</span>
+                </label>
+                <select name="id_wali_kelas" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-600 text-sm bg-white font-medium text-slate-800">
+                    <option value="">-- Pilih Guru Wali Kelas --</option>
+                    @foreach($daftarGuru as $g)
+                        @php
+                            $guruTerpakai = $daftarKelasLain->firstWhere('id_wali_kelas', $g->id);
+                        @endphp
+                        <option value="{{ $g->id }}" {{ (old('id_wali_kelas', $kelas->id_wali_kelas) == $g->id) ? 'selected' : '' }} {{ $guruTerpakai ? 'disabled class=text-slate-400' : '' }}>
+                            {{ $g->nama }} ({{ $g->nip ?? 'No NIP' }}){{ $guruTerpakai ? ' (Wali: ' . $guruTerpakai->nama . ')' : '' }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-[11px] text-slate-500 mt-1">Guru wali kelas yang bertanggung jawab membimbing siswa kelas ini.</p>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ketua Murid (KM)</label>
