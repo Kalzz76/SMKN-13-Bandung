@@ -77,57 +77,57 @@
 
             <div class="space-y-2.5">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Pilih Jam</h3>
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-8">
-                    <div class="flex items-center justify-center space-x-3 sm:space-x-5">
+                <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+                    <div class="flex items-center justify-center space-x-3 sm:space-x-4">
                         <div class="flex flex-col items-center">
-                            <div class="px-5 sm:px-8 py-3.5 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-2xl text-white shadow-md">
-                                <span id="displayHour" class="font-mono text-3xl sm:text-5xl font-black tracking-tight">
+                            <div class="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl text-white shadow-sm">
+                                <span id="displayHour" class="font-mono text-2xl sm:text-3xl font-black tracking-tight">
                                     {{ sprintf('%02d', $status['hour']) }}
                                 </span>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-400 mt-2 uppercase">Jam</span>
+                            <span class="text-[10px] font-bold text-slate-400 mt-1.5 uppercase">Jam</span>
                         </div>
 
-                        <span class="text-3xl sm:text-5xl font-black text-indigo-600 pb-5">:</span>
+                        <span class="text-2xl sm:text-3xl font-black text-indigo-600 pb-4">:</span>
 
                         <div class="flex flex-col items-center">
-                            <div class="px-5 sm:px-8 py-3.5 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-2xl text-white shadow-md">
-                                <span id="displayMinute" class="font-mono text-3xl sm:text-5xl font-black tracking-tight">
+                            <div class="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl text-white shadow-sm">
+                                <span id="displayMinute" class="font-mono text-2xl sm:text-3xl font-black tracking-tight">
                                     {{ sprintf('%02d', $status['minute']) }}
                                 </span>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-400 mt-2 uppercase">Menit</span>
+                            <span class="text-[10px] font-bold text-slate-400 mt-1.5 uppercase">Menit</span>
                         </div>
 
-                        <span class="text-3xl sm:text-5xl font-black text-indigo-600 pb-5">:</span>
+                        <span class="text-2xl sm:text-3xl font-black text-indigo-600 pb-4">:</span>
 
                         <div class="flex flex-col items-center">
-                            <div class="px-5 sm:px-8 py-3.5 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-2xl text-white shadow-md">
-                                <span id="displaySecond" class="font-mono text-3xl sm:text-5xl font-black tracking-tight">
+                            <div class="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl text-white shadow-sm">
+                                <span id="displaySecond" class="font-mono text-2xl sm:text-3xl font-black tracking-tight">
                                     {{ sprintf('%02d', $status['second'] ?? 0) }}
                                 </span>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-400 mt-2 uppercase">Detik</span>
+                            <span class="text-[10px] font-bold text-slate-400 mt-1.5 uppercase">Detik</span>
                         </div>
                     </div>
 
-                    <div class="space-y-6 pt-2">
-                        <div class="space-y-2">
+                    <div class="space-y-5 pt-1">
+                        <div class="space-y-1.5">
                             <div class="flex justify-between items-center text-xs">
-                                <span class="font-mono text-slate-400">06:00</span>
+                                <span class="font-mono text-slate-400 text-[11px]">06:00</span>
                                 <span class="font-bold text-slate-700">Geser Jam: <span id="sliderHourVal" class="text-indigo-600 font-mono">{{ sprintf('%02d', $status['hour']) }}:00</span></span>
-                                <span class="font-mono text-slate-400">18:00</span>
+                                <span class="font-mono text-slate-400 text-[11px]">18:00</span>
                             </div>
-                            <input type="range" name="hour" id="sliderHour" min="6" max="18" value="{{ max(6, min(18, $status['hour'])) }}" class="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <input type="range" name="hour" id="sliderHour" min="6" max="18" value="{{ max(6, min(18, $status['hour'])) }}" class="w-full h-1.5 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600">
                         </div>
 
-                        <div class="space-y-2">
+                        <div class="space-y-1.5">
                             <div class="flex justify-between items-center text-xs">
-                                <span class="font-mono text-slate-400">00</span>
+                                <span class="font-mono text-slate-400 text-[11px]">00</span>
                                 <span class="font-bold text-slate-700">Geser Menit: <span id="sliderMinuteVal" class="text-purple-600 font-mono">{{ sprintf('%02d', $status['minute']) }} menit</span></span>
-                                <span class="font-mono text-slate-400">59</span>
+                                <span class="font-mono text-slate-400 text-[11px]">59</span>
                             </div>
-                            <input type="range" name="minute" id="sliderMinute" min="0" max="59" value="{{ $status['minute'] }}" class="w-full h-2 bg-purple-100 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                            <input type="range" name="minute" id="sliderMinute" min="0" max="59" value="{{ $status['minute'] }}" class="w-full h-1.5 bg-purple-100 rounded-lg appearance-none cursor-pointer accent-purple-600">
                         </div>
                     </div>
 

@@ -10,10 +10,10 @@
 
     <div class="flex items-center space-x-3 sm:space-x-4">
         @if(!empty($chronos['enabled']))
-            <a href="{{ route('admin.chronos.index') }}" title="Chronos Waktu Virtual Aktif - Klik untuk mengatur" class="flex items-center space-x-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-xl shadow-xs transition">
-                <i class="fa-solid fa-flask-vial animate-pulse text-indigo-600"></i>
-                <span class="hidden sm:inline">Chronos:</span>
-                <span>{{ $chronos['badge_text'] }}</span>
+            <a href="{{ route('admin.chronos.index') }}" title="Chronos Waktu Virtual Aktif - Klik untuk mengatur" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1.5 rounded-xl shadow-xs transition whitespace-nowrap shrink-0">
+                <i class="fa-solid fa-flask-vial animate-pulse text-indigo-600 text-xs"></i>
+                <span class="hidden sm:inline font-bold">Chronos:</span>
+                <span class="font-mono font-bold">{{ $chronos['day_name'] }}, {{ $chronos['formatted_time'] }}</span>
             </a>
         @endif
 

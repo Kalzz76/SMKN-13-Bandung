@@ -182,8 +182,7 @@
             @endif
         </div>
 
-        {{-- 5. Tampilan Mingguan (Weekly Grouped View) --}}
-        <div id="wrapperJadwalMingguan" class="hidden space-y-4">
+        <div id="wrapperJadwalMingguan" class="hidden space-y-6">
             @php
                 $adaJadwalMingguan = $semuaJadwal->isNotEmpty();
             @endphp
@@ -197,45 +196,53 @@
                     @php
                         $jadwalHariTersebut = $jadwalMingguanPerHari[$hari] ?? collect();
                     @endphp
-                    @if($jadwalHariTersebut->isNotEmpty())
-                        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-3.5">
-                            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                                <div class="flex items-center space-x-2.5">
-                                    <div class="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
-                                        <i class="fa-solid fa-calendar-day"></i>
-                                    </div>
-                                    <h4 class="text-sm sm:text-base font-bold text-slate-900">{{ $hari }}</h4>
-                                </div>
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                                    {{ $jadwalHariTersebut->count() }} Sesi
-                                </span>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                                <h4 class="font-bold text-base text-slate-900 tracking-tight">{{ $hari }}</h4>
                             </div>
+                            <span class="text-xs text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200/60">
+                                {{ $jadwalHariTersebut->count() }} Sesi
+                            </span>
+                        </div>
 
-                            <div class="divide-y divide-slate-100">
+                        @if($jadwalHariTersebut->isEmpty())
+                            <div class="py-3 px-4 rounded-xl bg-slate-50/80 border border-dashed border-slate-200 text-xs text-slate-400 italic">
+                                Tidak ada jadwal mengajar pada hari {{ $hari }}.
+                            </div>
+                        @else
+                            <div class="space-y-2.5">
                                 @foreach($jadwalHariTersebut as $jm)
-                                    <div class="py-3 flex items-center justify-between gap-3">
-                                        <div class="flex items-start sm:items-center space-x-3 min-w-0 flex-1">
-                                            <div class="w-20 sm:w-24 text-[11px] sm:text-xs font-mono font-bold text-slate-700 flex-shrink-0 bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-200 text-center">
+                                    <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-xs hover:border-emerald-200 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <div class="space-y-1">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span class="font-black text-slate-900 text-sm">{{ $jm->kelas ? $jm->kelas->nama : '-' }}</span>
+                                                <span class="text-slate-300 hidden sm:inline">•</span>
+                                                <span class="text-xs sm:text-sm font-bold text-emerald-700">{{ $jm->mapel ? $jm->mapel->nama : '-' }}</span>
+                                            </div>
+                                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                                                <span class="flex items-center space-x-1.5">
+                                                    <i class="fa-solid fa-door-open text-slate-400 text-[11px]"></i>
+                                                    <span>{{ $jm->ruangan ? $jm->ruangan->nama : 'Ruang Kelas' }}</span>
+                                                </span>
+                                                <span class="flex items-center space-x-1.5">
+                                                    <i class="fa-solid fa-hashtag text-slate-400 text-[11px]"></i>
+                                                    <span>Jam ke-{{ $jm->jam_ke_mulai }}{{ $jm->jam_ke_selesai != $jm->jam_ke_mulai ? '-'.$jm->jam_ke_selesai : '' }}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="shrink-0 self-start sm:self-center">
+                                            <span class="inline-flex items-center text-xs font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-3 py-1.5 rounded-lg">
+                                                <i class="fa-regular fa-clock text-[11px] mr-1.5 text-emerald-600"></i>
                                                 {{ $jm->rentang_waktu }}
-                                            </div>
-                                            <div class="min-w-0 flex-1">
-                                                <div class="flex flex-wrap items-center gap-1.5">
-                                                    <span class="font-bold text-xs sm:text-sm text-slate-900">{{ $jm->kelas ? $jm->kelas->nama : '-' }}</span>
-                                                    <span class="text-slate-300 hidden sm:inline">•</span>
-                                                    <span class="text-xs font-semibold text-emerald-700">{{ $jm->mapel ? $jm->mapel->nama : '-' }}</span>
-                                                </div>
-                                                <div class="text-[11px] sm:text-xs text-slate-500 mt-0.5 flex flex-wrap items-center gap-2">
-                                                    <span><i class="fa-solid fa-door-open mr-1 text-slate-400"></i>{{ $jm->ruangan ? $jm->ruangan->nama : 'Ruang Kelas' }}</span>
-                                                    <span>•</span>
-                                                    <span>Jam {{ $jm->jam_ke_mulai }}-{{ $jm->jam_ke_selesai }}</span>
-                                                </div>
-                                            </div>
+                                            </span>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 @endforeach
             @endif
         </div>

@@ -159,49 +159,57 @@
             @endif
         </div>
 
-        <div id="viewJadwalMingguan" class="hidden space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-xs space-y-3">
-                        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
-                            <span class="font-extrabold text-sm sm:text-base text-slate-800">{{ $hari }}</span>
-                            <span class="text-xs text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-lg">
-                                {{ isset($jadwalKelasMingguan[$hari]) ? $jadwalKelasMingguan[$hari]->count() : 0 }} Mata Pelajaran
-                            </span>
+        <div id="viewJadwalMingguan" class="hidden space-y-6">
+            @foreach(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+                @php
+                    $jadwalHari = $jadwalKelasMingguan[$hari] ?? collect();
+                @endphp
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                            <h4 class="font-bold text-base text-slate-900 tracking-tight">{{ $hari }}</h4>
                         </div>
+                        <span class="text-xs text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200/60">
+                            {{ $jadwalHari->count() }} Mata Pelajaran
+                        </span>
+                    </div>
 
-                        @if(!isset($jadwalKelasMingguan[$hari]) || $jadwalKelasMingguan[$hari]->isEmpty())
-                            <p class="text-xs text-slate-400 italic py-4 text-center">Tidak ada jadwal.</p>
-                        @else
-                            <div class="space-y-2.5">
-                                @foreach($jadwalKelasMingguan[$hari] as $jm)
-                                    <div class="p-3 rounded-xl bg-slate-50/80 border border-slate-100 text-xs space-y-1.5">
-                                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-1">
-                                            <span class="font-bold text-slate-900 text-xs sm:text-sm leading-snug">{{ $jm->mapel->nama }}</span>
-                                            <span class="inline-flex items-center text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md self-start shrink-0">
-                                                <i class="fa-regular fa-clock text-[9px] mr-1 text-emerald-600"></i>
-                                                {{ $jm->jam_ke_label_singkat }} ({{ $jm->rentang_waktu ?? '' }})
-                                            </span>
-                                        </div>
-                                        <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
-                                            <span class="flex items-center space-x-1.5 truncate">
-                                                <i class="fa-solid fa-chalkboard-user text-slate-400 text-[10px]"></i>
-                                                <span class="truncate">{{ $jm->guru->nama ?? 'Guru' }}</span>
+                    @if($jadwalHari->isEmpty())
+                        <div class="py-3 px-4 rounded-xl bg-slate-50/80 border border-dashed border-slate-200 text-xs text-slate-400 italic">
+                            Tidak ada jadwal pelajaran pada hari {{ $hari }}.
+                        </div>
+                    @else
+                        <div class="space-y-2.5">
+                            @foreach($jadwalHari as $jm)
+                                <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-xs hover:border-emerald-200 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="space-y-1">
+                                        <h5 class="font-bold text-slate-900 text-sm leading-snug">{{ $jm->mapel->nama }}</h5>
+                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                                            <span class="flex items-center space-x-1.5">
+                                                <i class="fa-solid fa-chalkboard-user text-slate-400 text-[11px]"></i>
+                                                <span>{{ $jm->guru->nama ?? 'Guru' }}</span>
                                             </span>
                                             @if($jm->ruangan)
-                                                <span class="flex items-center space-x-1 text-slate-400 shrink-0 ml-2">
-                                                    <i class="fa-solid fa-door-open text-[10px]"></i>
+                                                <span class="flex items-center space-x-1.5">
+                                                    <i class="fa-solid fa-door-open text-slate-400 text-[11px]"></i>
                                                     <span>{{ $jm->ruangan->nama }}</span>
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
+                                    <div class="shrink-0 self-start sm:self-center">
+                                        <span class="inline-flex items-center text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-3 py-1.5 rounded-lg">
+                                            <i class="fa-regular fa-clock text-[11px] mr-1.5 text-emerald-600"></i>
+                                            {{ $jm->jam_ke_label_singkat }} ({{ $jm->rentang_waktu ?? '' }})
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endforeach
         </div>
     </div>
 </div>
